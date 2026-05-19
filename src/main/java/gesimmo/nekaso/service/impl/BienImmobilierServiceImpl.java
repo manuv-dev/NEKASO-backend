@@ -4,41 +4,61 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import gesimmo.nekaso.dto.BienImmobilierDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.enums.Statut;
 import gesimmo.nekaso.entity.enums.TypeBien;
+import gesimmo.nekaso.exception.ResourceNotFoundException;
+import gesimmo.nekaso.mapper.BienImmobilierMapper;
 import gesimmo.nekaso.repository.BienImmobilierRepository;
 import gesimmo.nekaso.service.BienImmobilierService;
 
 @Service
 public class BienImmobilierServiceImpl implements BienImmobilierService {
     private final BienImmobilierRepository bienImmobilierRepository;
+    private final BienImmobilierMapper bienImmobilierMapper = new BienImmobilierMapper();
 
     public BienImmobilierServiceImpl(BienImmobilierRepository bienImmobilierRepository) {
         this.bienImmobilierRepository = bienImmobilierRepository;
     }
 
-    public List<BienImmobilier> searchBienImmobilierByStatut(String statut, String type) {
+    public List<BienImmobilierDTO> searchBienImmobilierByStatut(String statut, String type) {
+        if (statut == null) {
+            statut = "";
+        }
+        if (type == null) {
+            type = "";
+        }
+        statut = statut.trim();
+        type = type.trim();
+
+        List<BienImmobilier> biens;
+
         if (type.isEmpty() && statut.isEmpty()) {
-            return bienImmobilierRepository.findAll();
+            biens = bienImmobilierRepository.findAll();
+        } else if (type.isEmpty()) {
+            biens = bienImmobilierRepository.findByStatutBien(Statut.valueOf(statut.toUpperCase()));
+        } else if (statut.isEmpty()) {
+            biens = bienImmobilierRepository.findByTypeBien(TypeBien.valueOf(type.toUpperCase()));
+        } else {
+            biens = bienImmobilierRepository.findByStatutBienAndTypeBien(
+                    Statut.valueOf(statut.toUpperCase()),
+                    TypeBien.valueOf(type.toUpperCase()));
         }
-        if (type.isEmpty()) {
-            return bienImmobilierRepository.findByStatutBien(Statut.valueOf(statut));
-        }
-        if (statut.isEmpty()) {
 
-            return bienImmobilierRepository.findByTypeBien(TypeBien.valueOf(type));
-        }
-        return bienImmobilierRepository.findByStatutBienAndTypeBien(Statut.valueOf(statut), TypeBien.valueOf(type));
+        return bienImmobilierMapper.toDTOList(biens);
+    }
 
-    };
+    public BienImmobilierDTO getBienById(Long id) {
+        BienImmobilier bien = bienImmobilierRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Bien immobilier introuvable avec l'id : " + id));
+        return bienImmobilierMapper.toDTO(bien);
+    }
 
-    public BienImmobilier getBienById(Long id) {
-        return bienImmobilierRepository.findById(id).orElse(null);
-    };
-
-    public BienImmobilier createBien(BienImmobilier bien) {
-        return bienImmobilierRepository.save(bien);
-    };
+    public BienImmobilierDTO createBien(BienImmobilierDTO bienDTO) {
+        BienImmobilier bien = bienImmobilierMapper.toEntity(bienDTO);
+        BienImmobilier bienEnregistre = bienImmobilierRepository.save(bien);
+        return bienImmobilierMapper.toDTO(bienEnregistre);
+    }
 
 }

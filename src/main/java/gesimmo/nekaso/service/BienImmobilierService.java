@@ -2,10 +2,12 @@ package gesimmo.nekaso.service;
 
 import java.util.List;
 
-import gesimmo.nekaso.entity.BienImmobilier;
+import gesimmo.nekaso.dto.BienImmobilierDTO;
 
 public interface BienImmobilierService {
-    public List<BienImmobilier> searchBienImmobilierByStatut(String statut,String type);
-    public BienImmobilier getBienById(Long id);
-    public BienImmobilier createBien(BienImmobilier bien);
+    public List<BienImmobilierDTO> searchBienImmobilierByStatut(String statut, String type);
+
+    public BienImmobilierDTO getBienById(Long id);
+
+    public BienImmobilierDTO createBien(BienImmobilierDTO bienDTO);
 }

@@ -79,9 +79,17 @@ public class BienImmobilierMock implements CommandLineRunner {
         bien5.setDescription("Belle maison avec jardin à Lille.");
         bien5.setDateAjout(LocalDate.now());
         bienImmobilierRepository.save(bien5);
-        
 
-        
+        BienImmobilier bien6 = new BienImmobilier();
+        bien6.setTypeBien(TypeBien.STUDIO);
+        bien6.setAdresse("987 Ambroise  de Strasbourg, 67000 Strasbourg");
+        bien6.setSurface(200.0);
+        bien6.setNombrePieces(6);
+        bien6.setLoyer(3000.0);
+        bien6.setStatutBien(Statut.DISPONIBLE);
+        bien6.setDescription("Superbe appartement avec vue sur la cathédrale.");
+        bien6.setDateAjout(LocalDate.now());
+        bienImmobilierRepository.save(bien6);
        
     }}
     
