@@ -9,5 +9,5 @@ public interface BienImmobilierService {
 
     public BienImmobilierDTO getBienById(Long id);
 
-    public BienImmobilierDTO createBien(BienImmobilierDTO bienDTO);
+   
 }

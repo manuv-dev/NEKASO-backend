@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gesimmo.nekaso.dto.BienImmobilierDTO;
+import gesimmo.nekaso.dto.PhotoBienDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
+import gesimmo.nekaso.entity.PhotoBien;
 import gesimmo.nekaso.entity.enums.Statut;
 import gesimmo.nekaso.entity.enums.TypeBien;
 
@@ -26,6 +28,7 @@ public class BienImmobilierMapper {
 		dto.setStatutBien(bien.getStatutBien() != null ? bien.getStatutBien().name() : null);
 		dto.setDescription(bien.getDescription());
 		dto.setDateAjout(bien.getDateAjout());
+		dto.setPhotos(photoListToDTO(bien.getPhotos()));
 		return dto;
 	}
 
@@ -49,5 +52,19 @@ public class BienImmobilierMapper {
 		bien.setDescription(dto.getDescription());
 		bien.setDateAjout(dto.getDateAjout() != null ? dto.getDateAjout() : LocalDate.now());
 		return bien;
+	}
+
+	private List<PhotoBienDTO> photoListToDTO(List<PhotoBien> photos) {
+		if (photos == null) {
+			return new ArrayList<>();
+		}
+		List<PhotoBienDTO> dtos = new ArrayList<>();
+		for (PhotoBien photo : photos) {
+			PhotoBienDTO dto = new PhotoBienDTO();
+			dto.setUrlPhoto(photo.getUrlPhoto());
+			dto.setDateUpload(photo.getDateUpload());
+			dtos.add(dto);
+		}
+		return dtos;
 	}
 }

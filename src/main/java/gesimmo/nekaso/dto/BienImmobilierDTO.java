@@ -1,6 +1,7 @@
 package gesimmo.nekaso.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import lombok.Data;
 
@@ -15,5 +16,6 @@ public class BienImmobilierDTO {
     private String statutBien;
     private String description;
     private LocalDate dateAjout;
+    private List<PhotoBienDTO> photos;
 
 }

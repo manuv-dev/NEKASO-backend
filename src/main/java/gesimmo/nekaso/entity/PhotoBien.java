@@ -11,8 +11,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import lombok.Data;
+
 @Entity
 @Table(name = "photo_bien")
+@Data
 public class PhotoBien {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

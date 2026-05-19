@@ -1,25 +1,34 @@
 package gesimmo.nekaso.service.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import gesimmo.nekaso.dto.BienImmobilierDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
+import gesimmo.nekaso.entity.PhotoBien;
 import gesimmo.nekaso.entity.enums.Statut;
 import gesimmo.nekaso.entity.enums.TypeBien;
 import gesimmo.nekaso.exception.ResourceNotFoundException;
 import gesimmo.nekaso.mapper.BienImmobilierMapper;
 import gesimmo.nekaso.repository.BienImmobilierRepository;
+import gesimmo.nekaso.repository.PhotoBienRepository;
 import gesimmo.nekaso.service.BienImmobilierService;
 
 @Service
 public class BienImmobilierServiceImpl implements BienImmobilierService {
     private final BienImmobilierRepository bienImmobilierRepository;
+   
     private final BienImmobilierMapper bienImmobilierMapper = new BienImmobilierMapper();
 
-    public BienImmobilierServiceImpl(BienImmobilierRepository bienImmobilierRepository) {
+    public BienImmobilierServiceImpl(BienImmobilierRepository bienImmobilierRepository,
+            PhotoBienRepository photoBienRepository
+           ) {
         this.bienImmobilierRepository = bienImmobilierRepository;
+       
+        
     }
 
     public List<BienImmobilierDTO> searchBienImmobilierByStatut(String statut, String type) {
@@ -55,10 +64,9 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
         return bienImmobilierMapper.toDTO(bien);
     }
 
-    public BienImmobilierDTO createBien(BienImmobilierDTO bienDTO) {
-        BienImmobilier bien = bienImmobilierMapper.toEntity(bienDTO);
-        BienImmobilier bienEnregistre = bienImmobilierRepository.save(bien);
-        return bienImmobilierMapper.toDTO(bienEnregistre);
+  
+
+            
     }
 
-}
+
