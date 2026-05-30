@@ -1,0 +1,13 @@
+
+@baseUrl = http://localhost:8080
+
+GET {{baseUrl}}/api/biens/gestionnaire
+###
+
+GET {{baseUrl}}/api/biens/gestionnaire?type=APPARTEMENT
+###
+
+GET {{baseUrl}}/api/biens/gestionnaire?statut=LOUE
+###
+GET {{baseUrl}}/api/biens/gestionnaire?type=&statut=
+
