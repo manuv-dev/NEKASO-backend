@@ -1,43 +1,30 @@
 package gesimmo.nekaso.entity;
 
-import java.time.LocalDate;
+import jakarta.persistence.*;
+import lombok.*;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "photo_bien")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PhotoBien {
-	@Getter
-	@Setter
-    @Id
+
+	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Setter
-	@Getter
-    @Column(nullable = false)
+	@Column(nullable = false)
 	private String urlPhoto;
 
-	@Setter
-	@Getter
-    @Column(nullable = false)
-	private LocalDate dateUpload;
-	
-	@Setter
-	@Getter
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "bien_id")
-	private BienImmobilier bienImmobilier;
+	@Column(nullable = false)
+	private LocalDateTime dateUpload = LocalDateTime.now();
 
-	public void setBien(BienImmobilier savedBien) {
-	}
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "bien_id", nullable = false)
+	private BienImmobilier bienImmobilier;
 }

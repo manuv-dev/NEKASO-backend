@@ -1,6 +1,7 @@
 package gesimmo.nekaso.service.impl;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import gesimmo.nekaso.dto.BienImmobilierDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.PhotoBien;
-import gesimmo.nekaso.entity.enums.Statut;
+import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.TypeBien;
 import gesimmo.nekaso.repository.BienImmobilierRepository;
 import gesimmo.nekaso.repository.PhotoBienRepository;
@@ -39,13 +40,13 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
             return bienImmobilierRepository.findAll();
         }
         if (type.isEmpty()) {
-            return bienImmobilierRepository.findByStatutBien(Statut.valueOf(statut));
+            return bienImmobilierRepository.findByStatutBien(StatutBien.valueOf(statut));
         }
         if (statut.isEmpty()) {
             return bienImmobilierRepository.findByTypeBien(TypeBien.valueOf(type));
         }
         return bienImmobilierRepository.findByStatutBienAndTypeBien(
-                Statut.valueOf(statut),
+                StatutBien.valueOf(statut),
                 TypeBien.valueOf(type)
         );
     }
@@ -114,17 +115,79 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
 
         BienImmobilier savedBien = bienImmobilierRepository.save(bien);
 
-        // Étape 3 : Créer les PhotoBien avec les URLs Cloudinary
         for (String photoUrl : photoUrls) {
             PhotoBien photo = new PhotoBien();
             photo.setUrlPhoto(photoUrl);
-            photo.setDateUpload(LocalDate.now());
-            photo.setBien(savedBien);
+            photo.setDateUpload(LocalDateTime.from(LocalDate.now()));
+            photo.setBienImmobilier(savedBien);
             photoBienRepository.save(photo);
             savedBien.getPhotos().add(photo);
         }
 
-        // Retourner le bien avec ses photos
+
         return savedBien;
+    }
+    @Override
+    public BienImmobilier archiverBien(Long id) {
+        BienImmobilier bien = bienImmobilierRepository.findById(id).orElse(null);
+        if (bien != null) {
+            bien.setStatutBien(StatutBien.ARCHIVE);
+            bienImmobilierRepository.save(bien);
+        }
+
+        return bien;
+    }
+
+    @Override
+    public void desarchiverBien(Long id) {
+        BienImmobilier bien = bienImmobilierRepository.findById(id).orElse(null);
+        if (bien != null) {
+            bien.setStatutBien(StatutBien.DISPONIBLE);
+            bienImmobilierRepository.save(bien);
+        }
+    }
+    @Override
+    public List<BienImmobilier> getAllBiens() {
+        return bienImmobilierRepository.findAll();
+    }
+
+    @Override
+    public List<BienImmobilier> getBiensByGestionnaire(Long gestionnaireId) {
+        return bienImmobilierRepository.findByGestionnaire_Id(gestionnaireId);
+    }
+    @Override
+    public List<BienImmobilier> getBiensByNombrePieces(Integer nombrePiecesMin, Integer nombrePiecesMax) {
+        return bienImmobilierRepository.findByNombrePiecesBetween(nombrePiecesMin, nombrePiecesMax);
+    }
+    @Override
+    public List<BienImmobilier> getBiensByLoyer(Double loyerMin, Double loyerMax) {
+        return bienImmobilierRepository.findByLoyerBetween(loyerMin, loyerMax);
+    }
+    @Override
+    public List<BienImmobilier> getBiensByMultipleCriteria(String type, Integer nombrePieces, Double loyerMin, Double loyerMax) {
+        return bienImmobilierRepository.findByTypeBienAndNombrePiecesAndLoyerBetween(
+                TypeBien.valueOf(type),
+                nombrePieces,
+                loyerMin,
+                loyerMax
+        );
+    }
+
+    @Override
+    public void deletePhoto(Long id, Long photoId) {
+        BienImmobilier bien = bienImmobilierRepository.findById(id).orElse(null);
+        if (bien != null) {
+            PhotoBien photo = photoBienRepository.findById(photoId).orElse(null);
+            if (photo != null && photo.getBienImmobilier().getId().equals(id)) {
+                cloudinaryService.deleteImage(extractPublicIdFromUrl(photo.getUrlPhoto()));
+                photoBienRepository.delete(photo);
+            }
+        }
+    }
+
+    private String extractPublicIdFromUrl(String url) {
+        String[] parts = url.split("/");
+        String filename = parts[parts.length - 1]; // public_id.jpg
+        return filename.substring(0, filename.lastIndexOf('.')); // public_id
     }
 }

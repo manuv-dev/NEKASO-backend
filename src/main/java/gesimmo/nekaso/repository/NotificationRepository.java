@@ -1,4 +1,7 @@
 package gesimmo.nekaso.repository;
 
-public interface NotificationRepository {
+import gesimmo.nekaso.entity.Notification;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface NotificationRepository extends JpaRepository<Notification, Long> {
 }

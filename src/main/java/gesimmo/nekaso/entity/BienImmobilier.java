@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import gesimmo.nekaso.entity.enums.Statut;
+import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.TypeBien;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -59,7 +59,7 @@ public class BienImmobilier {
     @Getter
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Statut statutBien;
+    private StatutBien statutBien;
 
     @Setter
     @Getter

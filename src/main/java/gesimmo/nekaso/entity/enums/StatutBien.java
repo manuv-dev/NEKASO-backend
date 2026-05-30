@@ -1,6 +1,6 @@
 package gesimmo.nekaso.entity.enums;
 
-public enum Statut {
+public enum StatutBien {
     LOUE,
     DISPONIBLE,
     RESERVE,

@@ -1,6 +1,6 @@
 package gesimmo.nekaso.dto;
 
-import gesimmo.nekaso.entity.enums.Statut;
+import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.TypeBien;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +19,7 @@ public class BienImmobilierDTO {
     private Double surface;
     private Integer nombrePieces;
     private Double loyer;
-    private Statut statutBien;
+    private StatutBien statutBien;
     private String description;
     private LocalDate dateAjout;
     private List<String> urlPhotos; // URLs des photos uploadées via Cloudinary
