@@ -9,4 +9,5 @@ public interface ContratService {
     List<ContratBail> getContratsParLocataire(Long locataireId);
     List<ContratBail> getContratsParBien(Long bienId);
     List<ContratBail> getContratsParGestionnaire(Long gestionnaireId);
+    ContratBail getContratById(Long id);
 }

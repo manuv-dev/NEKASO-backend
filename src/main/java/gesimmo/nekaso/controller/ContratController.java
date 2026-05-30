@@ -6,6 +6,9 @@ import gesimmo.nekaso.service.ContratService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import org.springframework.http.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/api/contrats")
@@ -31,5 +34,19 @@ public class ContratController {
     @GetMapping("/gestionnaire")
     public List<ContratBail> getContratsParGestionnaire(@RequestParam Long gestionnaireId) {
         return contratService.getContratsParGestionnaire(gestionnaireId);
+    }
+    // Télécharger contrat PDF
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> getContratPdf(@PathVariable Long id) {
+        ContratBail contrat = contratService.getContratById(id);
+        try {
+            byte[] pdf = Files.readAllBytes(Paths.get(contrat.getCheminPDF()));
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=contrat_" + id + ".pdf")
+                    .body(pdf);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
