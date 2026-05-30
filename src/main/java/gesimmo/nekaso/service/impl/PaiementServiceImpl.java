@@ -2,6 +2,7 @@ package gesimmo.nekaso.service.impl;
 
 import gesimmo.nekaso.dto.PaiementDTO;
 import gesimmo.nekaso.dto.QuittanceDTO;
+import gesimmo.nekaso.dto.QuittanceAffichageDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.ContratBail;
 import gesimmo.nekaso.entity.DemandeLocation;
@@ -171,6 +172,51 @@ public class PaiementServiceImpl implements PaiementService {
     @Override
     public Quittance getQuittanceParPaiement(Long paiementId) {
         return quittanceRepository.findByPaiement_Id(paiementId).orElse(null);
+    }
+
+    @Override
+    public List<QuittanceAffichageDTO> getQuittancesParLocataire(Long locataireId, Long bienId) {
+        List<Quittance> quittances;
+        if (bienId != null) {
+            quittances = quittanceRepository.findByLocataireAndBien(locataireId, bienId);
+        } else {
+            quittances = quittanceRepository.findByLocataire(locataireId);
+        }
+        return quittances.stream().map(this::mapToAffichageDTO).toList();
+    }
+
+    @Override
+    public List<QuittanceAffichageDTO> getQuittancesParBien(Long bienId, Long locataireId) {
+        List<Quittance> quittances;
+        if (locataireId != null) {
+            quittances = quittanceRepository.findByBienAndLocataire(bienId, locataireId);
+        } else {
+            quittances = quittanceRepository.findByBien(bienId);
+        }
+        return quittances.stream().map(this::mapToAffichageDTO).toList();
+    }
+
+    private QuittanceAffichageDTO mapToAffichageDTO(Quittance quittance) {
+        Paiement paiement = quittance.getPaiement();
+        BienImmobilier bien = paiement.getBien();
+        ContratBail contrat = paiement.getContrat();
+
+        return QuittanceAffichageDTO.builder()
+                .id(quittance.getId())
+                .numero(quittance.getNumero())
+                .montantPaye(paiement.getMontant())
+                .periode(paiement.getMois())
+                .datePaiement(paiement.getDatePaiement())
+                .dateEmission(quittance.getDateEmission())
+                .cheminPDF(quittance.getCheminPDF())
+                .bienId(bien != null ? bien.getId() : null)
+                .bienAdresse(bien != null ? bien.getAdresse() : null)
+                .bienType(bien != null ? bien.getTypeBien().toString() : null)
+                .bienLoyer(bien != null ? bien.getLoyer() : null)
+                .contratId(contrat != null ? contrat.getId() : null)
+                .contratDateDebut(contrat != null ? contrat.getDateDebut() : null)
+                .contratMontantLoyer(contrat != null ? contrat.getMontantLoyer() : null)
+                .build();
     }
 
     private String genererNumero(Long paiementId, LocalDate emissionDate) {

@@ -2,6 +2,7 @@ package gesimmo.nekaso.service;
 
 import gesimmo.nekaso.dto.PaiementDTO;
 import gesimmo.nekaso.dto.QuittanceDTO;
+import gesimmo.nekaso.dto.QuittanceAffichageDTO;
 import gesimmo.nekaso.entity.Paiement;
 import gesimmo.nekaso.entity.Quittance;
 
@@ -23,4 +24,9 @@ public interface PaiementService {
     Quittance creerQuittance(Long paiementId, QuittanceDTO dto);
 
     Quittance getQuittanceParPaiement(Long paiementId);
+
+    // Côté locataire
+    List<QuittanceAffichageDTO> getQuittancesParLocataire(Long locataireId, Long bienId);
+
+    List<QuittanceAffichageDTO> getQuittancesParBien(Long bienId, Long locataireId);
 }
