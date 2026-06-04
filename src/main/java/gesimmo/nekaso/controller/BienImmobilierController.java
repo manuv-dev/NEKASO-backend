@@ -36,7 +36,7 @@ public class BienImmobilierController {
             @RequestParam(defaultValue = "") String statut,
             @RequestParam(defaultValue = "") String type,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "5") int size) {
             
             Pageable pageable = PageRequest.of(page, size);
             Page<BienImmobilier> bienPage = bienImmobilierService.searchBienImmobilierByStatut(statut, type, pageable);
