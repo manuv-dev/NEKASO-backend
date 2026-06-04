@@ -7,8 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.TypeBien;
+import org.springframework.data.jpa.repository.Query;
 
 public interface BienImmobilierRepository extends JpaRepository<BienImmobilier, Long> {
+    int countByGestionnaireId(Long gestionnaireId);
     List<BienImmobilier> findByStatutBien(StatutBien statutBien);
     List<BienImmobilier> findByTypeBien(TypeBien typeBien);
     List<BienImmobilier> findByStatutBienAndTypeBien(StatutBien statutBien, TypeBien typeBien);
@@ -16,4 +18,6 @@ public interface BienImmobilierRepository extends JpaRepository<BienImmobilier, 
     List<BienImmobilier> findByNombrePiecesBetween(Integer nombrePiecesMin, Integer nombrePiecesMax);
     List<BienImmobilier> findByLoyerBetween(Double loyerMin, Double loyerMax);
     List<BienImmobilier> findByTypeBienAndNombrePiecesAndLoyerBetween(TypeBien typeBien, Integer nombrePieces, Double loyerMin, Double loyerMax);
+    @Query("SELECT b.typeBien, COUNT(b) FROM BienImmobilier b WHERE b.gestionnaire.id = :gestionnaireId GROUP BY b.typeBien")
+    List<Object[]> countByTypeBienAndGestionnaire(Long gestionnaireId);
 }
