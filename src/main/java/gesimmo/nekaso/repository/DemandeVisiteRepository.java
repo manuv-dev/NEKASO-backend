@@ -1,4 +1,9 @@
 package gesimmo.nekaso.repository;
 
-public interface DemandeVisiteRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import gesimmo.nekaso.entity.DemandeVisite;
+
+public interface DemandeVisiteRepository extends JpaRepository<DemandeVisite, Long> {
+
 }

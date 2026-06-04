@@ -2,12 +2,16 @@ package gesimmo.nekaso.service;
 
 import java.util.List;
 
-import gesimmo.nekaso.dto.BienImmobilierDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTO;
+import gesimmo.nekaso.entity.BienImmobilier;
 
 public interface BienImmobilierService {
-    public List<BienImmobilierDTO> searchBienImmobilierByStatut(String statut, String type);
+ public Page<BienImmobilier> searchBienImmobilierByStatut(String statut, String type,Pageable pageable);
 
-    public BienImmobilierDTO getBienById(Long id);
+    // public BienImmobilierResponseDTO getBienById(Long id);
 
    
 }
