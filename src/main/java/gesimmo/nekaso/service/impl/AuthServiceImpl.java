@@ -1,7 +1,5 @@
 package gesimmo.nekaso.service.impl;
 
-import java.util.Set;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,7 +27,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponseDTO login(AuthRequestDTO authRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(authRequest.getTelephone(), authRequest.getMotDePasse()));
 
         String token = jwtUtils.generateToken(authentication);
         return new AuthResponseDTO("Bearer", token);
@@ -37,14 +35,17 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String register(AuthRequestDTO authRequest) {
-        if (userRepository.existsByUsername(authRequest.getUsername())) {
-            throw new IllegalArgumentException("Username already exists.");
+        if (userRepository.existsByTelephone(authRequest.getTelephone())) {
+            throw new IllegalArgumentException("Telephone already exists.");
         }
 
         User user = new User();
-        user.setUsername(authRequest.getUsername());
-        user.setPassword(passwordEncoder.encode(authRequest.getPassword()));
-        user.setRoles(Set.of(Role.LOCATAIRE));
+        user.setNom(authRequest.getNom());
+        user.setPrenom(authRequest.getPrenom());
+        user.setTelephone(authRequest.getTelephone());
+        user.setMotDePasse(passwordEncoder.encode(authRequest.getMotDePasse()));
+        user.setRole(Role.LOCATAIRE);
+        user.setStatut("ACTIF");
         userRepository.save(user);
 
         return "User registered successfully.";

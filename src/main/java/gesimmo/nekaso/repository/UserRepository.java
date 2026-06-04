@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import gesimmo.nekaso.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUsername(String username);
+    Optional<User> findByTelephone(String telephone);
 
-    boolean existsByUsername(String username);
+    boolean existsByTelephone(String telephone);
 }

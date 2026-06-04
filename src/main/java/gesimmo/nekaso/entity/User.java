@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -19,27 +17,25 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // username/password used for authentication
-    @Column(unique = true)
-    private String username;
-
-    private String password;
-
-    // legacy / display fields (kept for compatibility)
+    @Column(nullable = false)
     private String nom;
 
+    @Column(nullable = false)
     private String prenom;
 
+    @Column(nullable = false, unique = true)
     private String telephone;
 
+    @Column(nullable = false)
+    private String motDePasse;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Column(nullable = false)
     private LocalDateTime dateCreation = LocalDateTime.now();
 
-    private boolean active = true;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    private Set<Role> roles = new HashSet<>();
-
+    @Column(nullable = false)
     private String statut;
 }

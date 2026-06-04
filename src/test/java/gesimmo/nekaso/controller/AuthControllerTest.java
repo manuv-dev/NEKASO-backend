@@ -44,8 +44,8 @@ class AuthControllerTest {
     @Test
     void loginShouldReturnJwtToken() throws Exception {
         AuthRequestDTO request = new AuthRequestDTO();
-        request.setUsername("user1");
-        request.setPassword("secret");
+        request.setTelephone("+33612345678");
+        request.setMotDePasse("secret");
 
         when(authService.login(any(AuthRequestDTO.class)))
                 .thenReturn(new AuthResponseDTO("Bearer", "fake-jwt-token"));
@@ -61,8 +61,10 @@ class AuthControllerTest {
     @Test
     void registerShouldCreateNewUser() throws Exception {
         AuthRequestDTO request = new AuthRequestDTO();
-        request.setUsername("newuser");
-        request.setPassword("password");
+        request.setTelephone("+33698765432");
+        request.setMotDePasse("password");
+        request.setNom("Dupont");
+        request.setPrenom("Alice");
 
         when(authService.register(any(AuthRequestDTO.class))).thenReturn("User registered successfully.");
 
