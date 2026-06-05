@@ -20,6 +20,7 @@ public class Paiement {
     private Double montant;
     private String typePaiement;
     private String statut;
+    @Builder.Default
     private LocalDate datePaiement = LocalDate.now();
     private String mois;
     private String description;

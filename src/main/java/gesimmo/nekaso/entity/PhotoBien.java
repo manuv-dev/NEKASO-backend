@@ -21,6 +21,7 @@ public class PhotoBien {
 	@Column(nullable = false)
 	private String urlPhoto;
 
+	@Builder.Default
 	@Column(nullable = false)
 	private LocalDateTime dateUpload = LocalDateTime.now();
 

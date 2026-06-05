@@ -18,6 +18,7 @@ public class DemandeLocation {
 
     private String statut;
 
+    @Builder.Default
     private LocalDateTime dateDemande = LocalDateTime.now();
 
     @ManyToOne

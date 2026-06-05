@@ -1,6 +1,128 @@
 
 @baseUrl = http://localhost:8080
 
+# ========== TESTS D'AUTHENTIFICATION ==========
+
+### Valider un numéro de téléphone Orange
+GET {{baseUrl}}/api/auth/validate-phone/77123456789
+
+### Valider un numéro de téléphone YAS
+GET {{baseUrl}}/api/auth/validate-phone/76123456789
+
+### Valider un numéro de téléphone Expresso
+GET {{baseUrl}}/api/auth/validate-phone/70123456789
+
+### Valider un numéro de téléphone ProMobile
+GET {{baseUrl}}/api/auth/validate-phone/75123456789
+
+### Valider un numéro invalide (opérateur 71)
+GET {{baseUrl}}/api/auth/validate-phone/71123456789
+
+### Valider format international (+221)
+GET {{baseUrl}}/api/auth/validate-phone/%2B22177123456789
+
+### Valider format 00221
+GET {{baseUrl}}/api/auth/validate-phone/00221771234567
+
+### Valider format national (0)
+GET {{baseUrl}}/api/auth/validate-phone/0771234567
+
+### Vérifier si un numéro existe déjà
+GET {{baseUrl}}/api/auth/check-phone/77123456789
+
+### Enregistrer un nouveau locataire
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "telephone": "77123456789",
+  "motDePasse": "SecurePassword123",
+  "nom": "Diallo",
+  "prenom": "Mamadou"
+}
+
+### Enregistrer locataire avec numéro YAS
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "telephone": "76987654321",
+  "motDePasse": "SecurePassword123",
+  "nom": "Sall",
+  "prenom": "Aissatou"
+}
+
+### Tenter enregistrement avec numéro invalide
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "telephone": "71123456789",
+  "motDePasse": "SecurePassword123",
+  "nom": "Test",
+  "prenom": "User"
+}
+
+### Tenter enregistrement avec mot de passe court
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "telephone": "77123456789",
+  "motDePasse": "123",
+  "nom": "Test",
+  "prenom": "User"
+}
+
+### Connexion avec numéro et mot de passe
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "telephone": "77123456789",
+  "motDePasse": "SecurePassword123"
+}
+
+# ========== TESTS LOCATAIRE ==========
+
+### Créer un profil locataire
+POST {{baseUrl}}/api/locataires
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "nom": "Diallo",
+  "prenom": "Mamadou",
+  "telephone": "77123456789",
+  "statut": "ACTIF"
+}
+
+### Récupérer locataire par ID
+GET {{baseUrl}}/api/locataires/1
+
+### Récupérer locataire par ID utilisateur
+GET {{baseUrl}}/api/locataires/user/1
+
+### Lister tous les locataires
+GET {{baseUrl}}/api/locataires
+
+### Mettre à jour un locataire
+PUT {{baseUrl}}/api/locataires/1
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "nom": "Diallo Mis à Jour",
+  "prenom": "Mamadou",
+  "telephone": "77123456789",
+  "statut": "ACTIF"
+}
+
+### Supprimer un locataire
+DELETE {{baseUrl}}/api/locataires/1
+
+# ========== TESTS BIENS IMMOBILIERS (EXISTANT) ==========
+
 GET {{baseUrl}}/api/biens/gestionnaire
 ###
 

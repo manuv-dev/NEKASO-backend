@@ -21,13 +21,11 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     @Override
     public String uploadImage(MultipartFile file) {
         try {
-            Map uploadResult = cloudinary.uploader().upload(
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(
                     file.getBytes(),
                     ObjectUtils.asMap(
                             "folder", "nekaso/photos",
-                            "resource_type", "auto"
-                    )
-            );
+                            "resource_type", "auto"));
             return (String) uploadResult.get("secure_url");
         } catch (IOException e) {
             throw new RuntimeException("Erreur lors de l'upload de l'image : " + e.getMessage(), e);

@@ -1,7 +1,5 @@
 package gesimmo.nekaso.service.impl;
 
-import java.util.stream.Collectors;
-
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

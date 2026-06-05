@@ -22,6 +22,7 @@ public class Notification {
     @Column(columnDefinition = "TEXT")
     private String message;
 
+    @Builder.Default
     private LocalDateTime dateEnvoi = LocalDateTime.now();
 
     @ManyToOne

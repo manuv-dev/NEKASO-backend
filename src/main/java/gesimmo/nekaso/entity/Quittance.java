@@ -18,6 +18,7 @@ public class Quittance {
     private Long id;
 
     private String numero;
+    @Builder.Default
     private LocalDate dateEmission = LocalDate.now();
     private String cheminPDF;
     private Double montant;

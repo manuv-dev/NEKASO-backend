@@ -20,7 +20,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gesimmo.nekaso.dto.AuthRequestDTO;
 import gesimmo.nekaso.dto.AuthResponseDTO;
+import gesimmo.nekaso.repository.LocataireRepository;
+import gesimmo.nekaso.repository.UserRepository;
 import gesimmo.nekaso.service.AuthService;
+import gesimmo.nekaso.validation.SenegalPhoneNumberValidator;
 
 @ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
@@ -32,11 +35,20 @@ class AuthControllerTest {
     @Mock
     private AuthService authService;
 
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private LocataireRepository locataireRepository;
+
+    @Mock
+    private SenegalPhoneNumberValidator phoneValidator;
+
     private AuthController authController;
 
     @BeforeEach
     void setUp() {
-        authController = new AuthController(authService);
+        authController = new AuthController(authService, userRepository, locataireRepository, phoneValidator);
         mockMvc = MockMvcBuilders.standaloneSetup(authController).build();
         objectMapper = new ObjectMapper();
     }
