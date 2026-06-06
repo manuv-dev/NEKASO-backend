@@ -1,6 +1,7 @@
 package gesimmo.nekaso.service.impl;
 
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteCreateResponseDTO;
@@ -34,8 +35,18 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 		this.demandeVisiteMapper = demandeVisiteMapper;}
 
 	@Override
+	@Transactional
 	public DemandeVisiteCreateResponseDTO createDemandeVisite(Long id_Locataire, Long id_Bien) {
 
+		boolean existeDeja = demandeVisiteRepository.existsByLocataireIdAndBienImmobilierIdAndStatut(
+        id_Locataire, 
+        id_Bien, 
+        VisiteStatut.EN_ATTENTE
+    );
+
+    if (existeDeja) {
+        throw new IllegalStateException("Vous avez déjà une demande en attente pour ce bien.");
+    }
 		Locataire locataire = locataireRepository.findById(id_Locataire)
 				.orElseThrow(() -> new ResourceNotFoundException("Le locataire avec l'ID " + id_Locataire + " n'a pas été trouvé"));
 		BienImmobilier bien = bienRepository.findById(id_Bien)

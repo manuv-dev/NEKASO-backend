@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteCreateResponseDTO;
 import gesimmo.nekaso.service.DemandeVisiteService;
+import gesimmo.nekaso.shared.Response.CreationRequestResponse;
 
 @RestController
 @RequestMapping("/api/visites")
@@ -24,10 +25,14 @@ public class DemandeVisiteController {
 	
 
 	@PostMapping("/locataire/{id_Locataire}/bien/{id_Bien}")
-	public ResponseEntity<DemandeVisiteCreateResponseDTO> createDemandeVisite(@PathVariable Long id_Locataire,
+	public ResponseEntity<CreationRequestResponse> createDemandeVisite(@PathVariable Long id_Locataire,
 		 @PathVariable Long id_Bien) {
 		DemandeVisiteCreateResponseDTO createdDemande = demandeVisiteService.createDemandeVisite(id_Locataire, id_Bien);
-		return ResponseEntity.status(HttpStatus.CREATED).body(createdDemande);
+		return new ResponseEntity<>(new CreationRequestResponse(
+			createdDemande.id(),
+			"Demande de visite créée avec succès",
+			createdDemande.dateCreation()
+		), HttpStatus.CREATED);
 	}
 
 }

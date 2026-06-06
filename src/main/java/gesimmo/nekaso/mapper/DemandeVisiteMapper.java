@@ -19,7 +19,7 @@ public class DemandeVisiteMapper {
             .id(demandeVisite.getId())
             .id_Locataire(demandeVisite.getLocataire().getId())
             .id_Bien(demandeVisite.getBienImmobilier().getId())
-            .dateVisite(dateMapper.formatLocalDate(demandeVisite.getDateCreation(), "yyyy-MM-dd"))
+            .dateCreation(dateMapper.formatLocalDate(demandeVisite.getDateCreation(), "yyyy-MM-dd"))
             .statut(demandeVisite.getStatut().toString())
             .build();
       

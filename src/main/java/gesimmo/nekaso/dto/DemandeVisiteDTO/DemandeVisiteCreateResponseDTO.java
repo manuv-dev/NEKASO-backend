@@ -7,7 +7,7 @@ public record DemandeVisiteCreateResponseDTO(
     Long id,
     Long id_Locataire,
     Long id_Bien,
-    String dateVisite,
+    String dateCreation,
     String statut
 ) {
     

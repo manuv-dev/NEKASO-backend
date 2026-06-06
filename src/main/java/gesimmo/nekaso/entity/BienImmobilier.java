@@ -64,5 +64,6 @@ public class BienImmobilier {
     private Gestionnaire gestionnaire;
 
     @OneToMany(mappedBy = "bienImmobilier", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private  List<PhotoBien> photos = new ArrayList<>();
 }
