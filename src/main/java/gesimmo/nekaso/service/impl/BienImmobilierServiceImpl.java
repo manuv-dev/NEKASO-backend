@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
 
 import gesimmo.nekaso.entity.enums.Statut;

@@ -1,13 +1,19 @@
 package gesimmo.nekaso.service;
 
-import java.util.List;
 
-import gesimmo.nekaso.dto.DemandeVisiteDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
+import gesimmo.nekaso.entity.DemandeVisite;
+@Service
 public interface DemandeVisiteService {
-	List<DemandeVisiteDTO> getDemandesForGestionnaire();
+	// Page<DemandeVisiteResponseDTO> getAllDemandesVisite(Pageable pageable);
 
-	void approuverVisite(Long id);
+	Page<DemandeVisite> getDemandesVisiteByLocataireId(Long locataireId, Pageable pageable);
+	Page<DemandeVisite> searchDemandesVisiteByLocataire(String nom, Pageable pageable,String prenom);
 
-	void refuserVisite(Long id);
+	// void approuverVisite(Long id);
+
+	// void refuserVisite(Long id);
 }

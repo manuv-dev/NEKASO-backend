@@ -1,11 +1,11 @@
 package gesimmo.nekaso.dto;
 
-import lombok.Data;
+import lombok.Builder;
 
-@Data
-public class UtilisateurDTO {
-	private Long id;
-	private String nom;
-	private String prenom;
-	private String telephone;
-}
+@Builder
+public record UtilisateurDTO(
+	 Long id,
+	 String nom,
+	 String prenom,
+	 String telephone
+) {}

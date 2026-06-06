@@ -1,8 +1,7 @@
-package gesimmo.nekaso.dto.BienImmbilierDTO;
+package gesimmo.nekaso.dto;
 
 import java.util.List;
 
-import gesimmo.nekaso.dto.PhotoBienDTO;
 import lombok.Builder;
 
 @Builder

@@ -13,7 +13,7 @@ GET {{baseUrl}}/api/biens/gestionnaire?statut=LOUE&page=0&size=2
 ###
 GET {{baseUrl}}/api/biens/gestionnaire?type=APPARTEMENT&statut=ARCHIVE
 ###
-GET {{baseUrl}}/api/visites/gestionnaire
+GET {{baseUrl}}/api/visites?prenom=
 
 ###
 PATCH {{baseUrl}}/api/visites/1/approuver

@@ -2,13 +2,12 @@ package gesimmo.nekaso.service.impl;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import gesimmo.nekaso.dto.DemandeVisiteDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import gesimmo.nekaso.entity.DemandeVisite;
-import gesimmo.nekaso.entity.enums.VisiteStatut;
-import gesimmo.nekaso.exception.ResourceNotFoundException;
 
 import gesimmo.nekaso.repository.DemandeVisiteRepository;
 import gesimmo.nekaso.service.DemandeVisiteService;
@@ -22,40 +21,41 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 		this.demandeVisiteRepository = demandeVisiteRepository;
 	}
 
+	// @Override
+	// public Page<DemandeVisiteResponseDTO> getAllDemandesVisite(Pageable pageable) {
+		
+		
+	// }
+
 	@Override
-	public List<DemandeVisiteDTO> getDemandesForGestionnaire() {
-		// For now return all demandes. Filtering by gestionnaire requires relation not present.
-		List<DemandeVisite> demandes = demandeVisiteRepository.findAll();
-		// return demandes.stream().map(DemandeVisiteDTO::fromEntity).toList();
-		return null;
+	public Page<DemandeVisite> getDemandesVisiteByLocataireId(Long locataireId, Pageable pageable) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getDemandesVisiteByLocataireId'");
 	}
 
 	@Override
-	@Transactional
-	public void approuverVisite(Long id) {
-		DemandeVisite demande = demandeVisiteRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Demande de visite introuvable"));
+	public Page<DemandeVisite> searchDemandesVisiteByLocataire(String nom, Pageable pageable,String prenom) {
+		 if (nom == null) {
+            nom = "";
+        }
+        if (prenom == null) {
+            prenom = "";
+        }
 
-		if (demande.getStatut() != null && demande.getStatut() != VisiteStatut.EN_ATTENTE) {
-			throw new IllegalStateException("Cette demande de visite a déjà été traitée");
+        nom = nom.trim();
+        prenom = prenom.trim();	
+	
+	Page<DemandeVisite> demandes ;
+	
+	if (nom.isEmpty() && prenom.isEmpty()) {
+			return demandes=demandeVisiteRepository.findAll(pageable);
 		}
 
-		demande.setStatut(VisiteStatut.CONFIRMEE);
-		demandeVisiteRepository.save(demande);
-	}
+			return demandes=demandeVisiteRepository.rechercherParNomEtPrenomLocataire(nom, prenom, pageable);
+		
 
-	@Override
-	@Transactional
-	public void refuserVisite(Long id) {
-		DemandeVisite demande = demandeVisiteRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Demande de visite introuvable"));
+	
 
-		if (demande.getStatut() != null && demande.getStatut() != VisiteStatut.EN_ATTENTE) {
-			throw new IllegalStateException("Cette demande de visite a déjà été traitée");
-		}
-
-		demande.setStatut(VisiteStatut.REFUSEE);
-		demandeVisiteRepository.save(demande);
-	}
+}
 
 }
