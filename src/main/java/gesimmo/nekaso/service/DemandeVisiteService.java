@@ -1,13 +1,7 @@
 package gesimmo.nekaso.service;
 
-import java.util.List;
-
-import gesimmo.nekaso.dto.DemandeVisiteDTO;
+import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteCreateResponseDTO;
 
 public interface DemandeVisiteService {
-	List<DemandeVisiteDTO> getDemandesForGestionnaire();
-
-	void approuverVisite(Long id);
-
-	void refuserVisite(Long id);
+	public DemandeVisiteCreateResponseDTO createDemandeVisite(Long id_Locataire, Long id_Bien);
 }

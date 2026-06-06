@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.annotations.BatchSize;
-
 import gesimmo.nekaso.entity.enums.Statut;
 import gesimmo.nekaso.entity.enums.TypeBien;
 import jakarta.persistence.CascadeType;
@@ -66,5 +64,5 @@ public class BienImmobilier {
     private Gestionnaire gestionnaire;
 
     @OneToMany(mappedBy = "bienImmobilier", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PhotoBien> photos = new ArrayList<>();
+    private  List<PhotoBien> photos = new ArrayList<>();
 }

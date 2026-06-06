@@ -1,18 +1,15 @@
 package gesimmo.nekaso.service.impl;
 
-import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
 
 import gesimmo.nekaso.entity.enums.Statut;
 import gesimmo.nekaso.entity.enums.TypeBien;
-import gesimmo.nekaso.exception.ResourceNotFoundException;
-import gesimmo.nekaso.mapper.BienImmobilierMapper;
+
 import gesimmo.nekaso.repository.BienImmobilierRepository;
-import gesimmo.nekaso.repository.PhotoBienRepository;
+
 import gesimmo.nekaso.service.BienImmobilierService;
 
 

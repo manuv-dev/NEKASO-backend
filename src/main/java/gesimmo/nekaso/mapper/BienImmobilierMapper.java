@@ -1,6 +1,6 @@
 package gesimmo.nekaso.mapper;
 
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,8 +10,7 @@ import gesimmo.nekaso.dto.PhotoBienDTO;
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.PhotoBien;
-import gesimmo.nekaso.entity.enums.Statut;
-import gesimmo.nekaso.entity.enums.TypeBien;
+
 import gesimmo.nekaso.shared.mapper.DateMapper;
 @Component
 public class BienImmobilierMapper {

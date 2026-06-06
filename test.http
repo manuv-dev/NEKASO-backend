@@ -20,3 +20,6 @@ PATCH {{baseUrl}}/api/visites/1/approuver
 ###
 
 PATCH {{baseUrl}}/api/visites/2/refuser
+###
+POST {{baseUrl}}/api/visites/locataire/1/bien/1
+

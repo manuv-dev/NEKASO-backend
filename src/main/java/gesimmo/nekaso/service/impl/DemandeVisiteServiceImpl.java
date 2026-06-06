@@ -1,61 +1,59 @@
 package gesimmo.nekaso.service.impl;
 
-import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import gesimmo.nekaso.dto.DemandeVisiteDTO;
+import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteCreateResponseDTO;
+import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.DemandeVisite;
+import gesimmo.nekaso.mapper.DemandeVisiteMapper;
+import gesimmo.nekaso.entity.Locataire;
 import gesimmo.nekaso.entity.enums.VisiteStatut;
 import gesimmo.nekaso.exception.ResourceNotFoundException;
-
+import gesimmo.nekaso.repository.BienImmobilierRepository;
 import gesimmo.nekaso.repository.DemandeVisiteRepository;
+import gesimmo.nekaso.repository.LocataireRepository;
 import gesimmo.nekaso.service.DemandeVisiteService;
 
 @Service
 public class DemandeVisiteServiceImpl implements DemandeVisiteService {
-
 	private final DemandeVisiteRepository demandeVisiteRepository;
+	private final LocataireRepository locataireRepository;
+	private final BienImmobilierRepository bienRepository;
+	private final DemandeVisiteMapper demandeVisiteMapper;
 
-	public DemandeVisiteServiceImpl(DemandeVisiteRepository demandeVisiteRepository) {
-		this.demandeVisiteRepository = demandeVisiteRepository;
-	}
+	public DemandeVisiteServiceImpl(
+		DemandeVisiteRepository demandeVisiteRepository,
+		LocataireRepository locataireRepository,
+		BienImmobilierRepository bienRepository,
+		DemandeVisiteMapper demandeVisiteMapper) 
 
-	@Override
-	public List<DemandeVisiteDTO> getDemandesForGestionnaire() {
-		// For now return all demandes. Filtering by gestionnaire requires relation not present.
-		List<DemandeVisite> demandes = demandeVisiteRepository.findAll();
-		// return demandes.stream().map(DemandeVisiteDTO::fromEntity).toList();
-		return null;
-	}
-
-	@Override
-	@Transactional
-	public void approuverVisite(Long id) {
-		DemandeVisite demande = demandeVisiteRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Demande de visite introuvable"));
-
-		if (demande.getStatut() != null && demande.getStatut() != VisiteStatut.EN_ATTENTE) {
-			throw new IllegalStateException("Cette demande de visite a déjà été traitée");
-		}
-
-		demande.setStatut(VisiteStatut.CONFIRMEE);
-		demandeVisiteRepository.save(demande);
-	}
+		{this.demandeVisiteRepository = demandeVisiteRepository;
+		this.locataireRepository = locataireRepository;
+		this.bienRepository = bienRepository;
+		this.demandeVisiteMapper = demandeVisiteMapper;}
 
 	@Override
-	@Transactional
-	public void refuserVisite(Long id) {
-		DemandeVisite demande = demandeVisiteRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Demande de visite introuvable"));
+	public DemandeVisiteCreateResponseDTO createDemandeVisite(Long id_Locataire, Long id_Bien) {
 
-		if (demande.getStatut() != null && demande.getStatut() != VisiteStatut.EN_ATTENTE) {
-			throw new IllegalStateException("Cette demande de visite a déjà été traitée");
-		}
+		Locataire locataire = locataireRepository.findById(id_Locataire)
+				.orElseThrow(() -> new ResourceNotFoundException("Le locataire avec l'ID " + id_Locataire + " n'a pas été trouvé"));
+		BienImmobilier bien = bienRepository.findById(id_Bien)
+				.orElseThrow(() -> new ResourceNotFoundException("Le bien immobilier avec l'ID " + id_Bien + " n'a pas été trouvé"));
 
-		demande.setStatut(VisiteStatut.REFUSEE);
-		demandeVisiteRepository.save(demande);
+		 DemandeVisite demandeVisite = DemandeVisite.builder()
+				.locataire(locataire)
+				.bienImmobilier(bien)
+				.dateCreation(java.time.LocalDate.now())
+				.statut(VisiteStatut.EN_ATTENTE)
+				.build();
+		demandeVisiteRepository.save(demandeVisite);
+
+		return demandeVisiteMapper.toDto(demandeVisite);
+		
+		
 	}
+
+	
 
 }

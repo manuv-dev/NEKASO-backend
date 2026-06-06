@@ -1,45 +1,29 @@
-// package gesimmo.nekaso.mapper;
+package gesimmo.nekaso.mapper;
 
-// import java.util.ArrayList;
-// import java.util.List;
+import org.springframework.stereotype.Component;
 
-// import gesimmo.nekaso.dto.DemandeVisiteDTO;
-// import gesimmo.nekaso.dto.UtilisateurDTO;
-// import gesimmo.nekaso.entity.DemandeVisite;
+import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteCreateResponseDTO;
+import gesimmo.nekaso.entity.DemandeVisite;
+import gesimmo.nekaso.shared.mapper.DateMapper;
 
-// public class DemandeVisiteMapper {
+@Component
+public class DemandeVisiteMapper {
+    public DemandeVisiteMapper(DateMapper dateMapper) {
+        this.dateMapper = dateMapper;
+    }
+    private DateMapper dateMapper ;
+    public DemandeVisiteCreateResponseDTO toDto(DemandeVisite demandeVisite) {
+           
+    
+           return  DemandeVisiteCreateResponseDTO.builder()
+            .id(demandeVisite.getId())
+            .id_Locataire(demandeVisite.getLocataire().getId())
+            .id_Bien(demandeVisite.getBienImmobilier().getId())
+            .dateVisite(dateMapper.formatLocalDate(demandeVisite.getDateCreation(), "yyyy-MM-dd"))
+            .statut(demandeVisite.getStatut().toString())
+            .build();
+      
 
-//     private final BienImmobilierMapper bienMapper = new BienImmobilierMapper();
+}
 
-//     public DemandeVisiteDTO toDTO(DemandeVisite entity) {
-//         if (entity == null) {
-//             return null;
-//         }
-//         DemandeVisiteDTO dto = new DemandeVisiteDTO();
-//         dto.setId(entity.getId());
-//         dto.setStatut(entity.getStatut() != null ? entity.getStatut().name() : null);
-//         dto.setDateCreation(entity.getDateCreation() != null ? entity.getDateCreation().toLocalDate() : null);
-//         if (entity.getLocataire() != null) {
-//             UtilisateurDTO u = new UtilisateurDTO();
-//             u.setId(entity.getLocataire().getId());
-//             u.setNom(entity.getLocataire().getNom());
-//             u.setPrenom(entity.getLocataire().getPrenom());
-//             u.setTelephone(entity.getLocataire().getTelephone());
-//             dto.setLocataire(u);
-//         }
-//         dto.setBien(bienMapper.toDTO(entity.getBienImmobilier()));
-//         return dto;
-//     }
-
-//     public List<DemandeVisiteDTO> toDTOList(List<DemandeVisite> entities) {
-//         List<DemandeVisiteDTO> list = new ArrayList<>();
-//         if (entities == null) {
-//             return list;
-//         }
-//         for (DemandeVisite e : entities) {
-//             list.add(toDTO(e));
-//         }
-//         return list;
-//     }
-// }
- 
+}
