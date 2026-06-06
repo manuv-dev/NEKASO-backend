@@ -17,5 +17,4 @@ public interface DemandeVisiteRepository extends JpaRepository<DemandeVisite, Lo
            "AND (:prenom = '' OR LOWER(l.prenom) LIKE LOWER(CONCAT('%', :prenom, '%')))")
 Page<DemandeVisite> rechercherParNomEtPrenomLocataire(@Param("nom") String nom, @Param("prenom") String prenom,  Pageable pageable);    DemandeVisite findDemandeVisiteById(Long id);
     
-  Page<DemandeVisite> findAll(Pageable page );
 }

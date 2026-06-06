@@ -3,10 +3,9 @@ package gesimmo.nekaso.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 import gesimmo.nekaso.entity.DemandeVisite;
-@Service
+
 public interface DemandeVisiteService {
 	// Page<DemandeVisiteResponseDTO> getAllDemandesVisite(Pageable pageable);
 

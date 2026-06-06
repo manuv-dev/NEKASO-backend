@@ -1,6 +1,5 @@
 package gesimmo.nekaso.repository;
 
-import java.util.List;
 
 
 import org.springframework.data.domain.Page;
