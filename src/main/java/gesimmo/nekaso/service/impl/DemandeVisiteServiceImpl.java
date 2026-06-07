@@ -2,6 +2,8 @@ package gesimmo.nekaso.service.impl;
 
 
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteCreateResponseDTO;
@@ -65,6 +67,20 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 		
 	}
 
-	
+	@Override
+	public Page<DemandeVisite> getAllDemandesVisite(Pageable pageable, String statut, Long id_Locataire) {
+		if(statut==null){
+			statut="";
+		}
+		
+		Page<DemandeVisite> demandesPage ;
+		if(statut.isEmpty()){
+			demandesPage = demandeVisiteRepository.findByLocataireId(id_Locataire, pageable);
+		} else {
+			 demandesPage = demandeVisiteRepository.findByStatutAndLocataireId(VisiteStatut.valueOf(statut.toUpperCase()), id_Locataire, pageable);
+		}
+		return demandesPage;
+		
+	}
 
 }

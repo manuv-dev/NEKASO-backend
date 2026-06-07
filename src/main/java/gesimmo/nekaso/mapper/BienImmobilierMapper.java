@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import gesimmo.nekaso.dto.PhotoBienDTO;
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTO;
+import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOLoc;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.PhotoBien;
 
@@ -39,6 +40,23 @@ public BienImmobilierMapper(DateMapper dateMapper) {
 			.photos(photoListToDTO(bien.getPhotos()))
 			.build();
 	}
+	public BienImmobilierResponseDTOLoc toDTOLoc(BienImmobilier bien) {
+		if (bien == null) {
+			return null;
+		}
+
+	return BienImmobilierResponseDTOLoc.builder()
+			.id(bien.getId())
+			.typeBien(bien.getTypeBien() != null ? bien.getTypeBien().name() : null)
+			.adresse(bien.getAdresse())
+			.loyer(bien.getLoyer())
+			.statutBien(bien.getStatutBien() != null ? bien.getStatutBien().name() : null)
+			
+			.dateAjout(dateMapper.formatLocalDate(bien.getDateAjout(), "dd/MM/yyyy"))
+			
+			.build();
+	}
+
 
 	// public List<BienImmobilierResponseDTO> toDTOList(List<BienImmobilier> biens) {
 	// 	List<BienImmobilierResponseDTO> list = new ArrayList<>();
