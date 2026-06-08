@@ -2,6 +2,9 @@ package gesimmo.nekaso.service.impl;
 
 
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.swing.text.html.parser.Entity;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,7 +14,9 @@ import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.DemandeVisite;
 import gesimmo.nekaso.mapper.DemandeVisiteMapper;
 import gesimmo.nekaso.entity.Locataire;
+import gesimmo.nekaso.entity.enums.Statut;
 import gesimmo.nekaso.entity.enums.VisiteStatut;
+import gesimmo.nekaso.exception.EntityExistException;
 import gesimmo.nekaso.exception.ResourceNotFoundException;
 import gesimmo.nekaso.repository.BienImmobilierRepository;
 import gesimmo.nekaso.repository.DemandeVisiteRepository;
@@ -47,7 +52,7 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
     );
 
     if (existeDeja) {
-        throw new IllegalStateException("Vous avez déjà une demande en attente pour ce bien.");
+        throw new EntityExistException("Vous avez déjà une demande en attente pour ce bien.");
     }
 		Locataire locataire = locataireRepository.findById(id_Locataire)
 				.orElseThrow(() -> new ResourceNotFoundException("Le locataire avec l'ID " + id_Locataire + " n'a pas été trouvé"));
@@ -67,21 +72,25 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 		
 	}
 
-	@Override
-	public Page<DemandeVisite> getAllDemandesVisite(Pageable pageable, String statut, Long id_Locataire) {
-		if(statut==null){
-			statut="";
-		}
-		
-		Page<DemandeVisite> demandesPage ;
-		if(statut.isEmpty()){
-			demandesPage = demandeVisiteRepository.findByLocataireId(id_Locataire, pageable);
-		} else {
-			 demandesPage = demandeVisiteRepository.findByStatutAndLocataireId(VisiteStatut.valueOf(statut.toUpperCase()), id_Locataire, pageable);
-		}
-		return demandesPage;
-		
-	}
+@Override
+public Page<DemandeVisite> getAllDemandesVisite(Pageable pageable, String statut, Long id_Locataire) {
+    Page<DemandeVisite> demandesPage;
+
+    if (statut == null || statut.isBlank()) {
+        demandesPage = demandeVisiteRepository.findByLocataireId(id_Locataire, pageable);
+    } else {
+        demandesPage = demandeVisiteRepository.findByStatutAndLocataireId(
+            VisiteStatut.valueOf(statut.toUpperCase()), id_Locataire, pageable
+        );
+    }
+
+    // On vérifie si la page est vide APRES avoir fait la requête
+    if (!demandesPage.hasContent()) {
+        throw new ResourceNotFoundException("Aucune demande trouvée pour ce locataire (ou ce statut).");
+    }
+
+    return demandesPage;
+}
 
 	public DemandeVisite annulerDemandeVisite(Long id_Demande) {
 		DemandeVisite demandeVisite = demandeVisiteRepository.findById(id_Demande)
@@ -90,6 +99,18 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 		return demandeVisiteRepository.save(demandeVisite);
 	}
 
-	// public Page<BienImmobilier>
+@Override
+public Page<BienImmobilier> getBiensDisponibles(Pageable pageable) {
+    // 1. On récupère la page directement
+    Page<BienImmobilier> page = bienRepository.findByStatutBien(Statut.DISPONIBLE, pageable);
+
+    // 2. On vérifie le contenu
+    if (!page.hasContent()) {
+        throw new ResourceNotFoundException("Aucun bien immobilier disponible trouvé.");
+    }
+
+    // 3. On retourne le résultat
+    return page;
+}
 
 }

@@ -24,3 +24,5 @@ PATCH {{baseUrl}}/api/visites/2/refuser
 POST {{baseUrl}}/api/visites/locataire/1/bien/1
 ###
 GET {{baseUrl}}/api/visites/mes_demandes/1
+###
+GET {{baseUrl}}/api/visites/biens_disponibles?page=0&size=3

@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTO;
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteCreateResponseDTO;
 
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteDTOList;
+import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.DemandeVisite;
 import gesimmo.nekaso.mapper.DemandeVisiteMapper;
+import gesimmo.nekaso.mapper.BienImmobilierMapper;
 import gesimmo.nekaso.service.DemandeVisiteService;
 import gesimmo.nekaso.shared.Response.CreationRequestResponse;
 import gesimmo.nekaso.shared.Response.PageResponse;
@@ -27,10 +30,12 @@ public class DemandeVisiteController {
 
 	private final DemandeVisiteService demandeVisiteService;
 	private final DemandeVisiteMapper demandeVisiteMapper;
+	private final BienImmobilierMapper bienImmobilierMapper;
 
-	public DemandeVisiteController(DemandeVisiteService demandeVisiteService, DemandeVisiteMapper demandeVisiteMapper) {
+	public DemandeVisiteController(DemandeVisiteService demandeVisiteService, DemandeVisiteMapper demandeVisiteMapper, BienImmobilierMapper bienImmobilierMapper) {
 		this.demandeVisiteService = demandeVisiteService;
-		this.demandeVisiteMapper = demandeVisiteMapper;	
+		this.demandeVisiteMapper = demandeVisiteMapper;
+		this.bienImmobilierMapper = bienImmobilierMapper;
 	}
 
 	@PostMapping("/locataire/{id_Locataire}/bien/{id_Bien}")
@@ -59,4 +64,18 @@ public class DemandeVisiteController {
 		return new ResponseEntity<>(PageResponse.fromPage(demandesDto), HttpStatus.OK);
 
 	}
+    @GetMapping("biens_disponibles")
+    public ResponseEntity<PageResponse<BienImmobilierResponseDTO>> getAllBiens(
+            @RequestParam(defaultValue = "") String statut,
+            @RequestParam(defaultValue = "") String type,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+            
+            Pageable pageable = PageRequest.of(page, size);
+            Page<BienImmobilier> bienPage = demandeVisiteService.getBiensDisponibles(pageable);
+            Page<BienImmobilierResponseDTO> bienDto=bienPage.map(bienImmobilierMapper::toDTO);
+           
+
+       return new ResponseEntity<>(PageResponse.fromPage(bienDto), HttpStatus.OK);
+    }
 }
