@@ -7,14 +7,20 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "quittance")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Quittance {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate dateEmission;
+    private String numero;
+    private LocalDate dateEmission = LocalDate.now();
     private String cheminPDF;
+    private Double montant;
 
     @ManyToOne
     @JoinColumn(name = "paiement_id")

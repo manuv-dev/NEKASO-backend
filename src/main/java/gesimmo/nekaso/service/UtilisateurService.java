@@ -1,7 +1,6 @@
 package gesimmo.nekaso.service;
 
 import java.util.Optional;
-
 import gesimmo.nekaso.entity.User;
 
 public interface UtilisateurService {
