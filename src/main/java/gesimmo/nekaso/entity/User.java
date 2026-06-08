@@ -1,9 +1,9 @@
 package gesimmo.nekaso.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
+import jakarta.persistence.*;
+
 
 @Entity
 @Table(name = "users")
@@ -17,17 +17,25 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String nom;
 
+    @Column(nullable = false)
     private String prenom;
 
+    @Column(nullable = false, unique = true)
     private String telephone;
 
+    @Column(nullable = false)
     private String motDePasse;
 
-    private String role;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
+    @Column(nullable = false)
     private LocalDateTime dateCreation = LocalDateTime.now();
 
+    @Column(nullable = false)
     private String statut;
 }

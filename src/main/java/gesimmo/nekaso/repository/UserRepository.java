@@ -1,5 +1,13 @@
 package gesimmo.nekaso.repository;
 
-import gesimmo.nekaso.entity.*;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
-public interface UserRepository extends JpaRepository<User, Long> {}
+
+import gesimmo.nekaso.entity.User;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByTelephone(String telephone);
+
+    boolean existsByTelephone(String telephone);
+}

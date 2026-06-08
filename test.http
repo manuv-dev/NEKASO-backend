@@ -9,5 +9,5 @@ GET {{baseUrl}}/api/biens/gestionnaire?type=APPARTEMENT
 
 GET {{baseUrl}}/api/biens/gestionnaire?statut=LOUE
 ###
-GET {{baseUrl}}/api/biens/gestionnaire?type=&statut=
-
+GET {{baseUrl}}/api/biens/gestionnaire?type=APPARTEMENT&statut=ARCHIVE
+###
