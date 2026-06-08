@@ -40,7 +40,8 @@ public class DemandeVisiteController {
 		return new ResponseEntity<>(new CreationRequestResponse(
 				createdDemande.id(),
 				"Demande de visite créée avec succès",
-				createdDemande.dateCreation()), HttpStatus.CREATED);
+				createdDemande.statut())
+				, HttpStatus.CREATED);
 	}
 
 	@GetMapping("mes_demandes/{id_Locataire}")

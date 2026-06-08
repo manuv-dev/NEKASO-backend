@@ -83,4 +83,13 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 		
 	}
 
+	public DemandeVisite annulerDemandeVisite(Long id_Demande) {
+		DemandeVisite demandeVisite = demandeVisiteRepository.findById(id_Demande)
+				.orElseThrow(() -> new ResourceNotFoundException("La demande de visite avec l'ID " + id_Demande + " n'a pas été trouvée"));
+		demandeVisite.setStatut(VisiteStatut.ANNULEE);
+		return demandeVisiteRepository.save(demandeVisite);
+	}
+
+	// public Page<BienImmobilier>
+
 }

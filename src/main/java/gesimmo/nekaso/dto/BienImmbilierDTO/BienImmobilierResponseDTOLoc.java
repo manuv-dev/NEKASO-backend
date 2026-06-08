@@ -12,6 +12,7 @@ public record BienImmobilierResponseDTOLoc(
     String adresse,
     Double loyer,
     String statutBien,
+    List<PhotoBienDTO> photos,
    
     String dateAjout
    

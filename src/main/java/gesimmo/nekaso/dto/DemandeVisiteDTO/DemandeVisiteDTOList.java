@@ -2,7 +2,8 @@ package gesimmo.nekaso.dto.DemandeVisiteDTO;
 
 
 
-import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOLoc;
+import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTO;
+
 import lombok.Builder;
 
 @Builder
@@ -11,6 +12,7 @@ public record DemandeVisiteDTOList(
 	 String statut,
 	 String dateCreation,
 	 Long id_Locataire,
-	 BienImmobilierResponseDTOLoc bien
+	 BienImmobilierResponseDTO bien
+
 ) {
 }

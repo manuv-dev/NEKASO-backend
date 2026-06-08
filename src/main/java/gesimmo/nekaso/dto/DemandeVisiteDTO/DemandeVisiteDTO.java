@@ -5,13 +5,13 @@ import java.time.LocalDate;
 import gesimmo.nekaso.dto.UtilisateurDTO;
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTO;
 import lombok.Builder;
-import lombok.Data;
+
 
 @Builder
-public class DemandeVisiteDTO {
-	private Long id;
-	private String statut;
-	private LocalDate dateCreation;
-	private UtilisateurDTO locataire;
-	private BienImmobilierResponseDTO bien;
-}
+public record DemandeVisiteDTO(
+	Long id,
+	String statut,
+	String dateCreation,
+	UtilisateurDTO locataire,
+	BienImmobilierResponseDTO bien) {
+} 

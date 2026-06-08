@@ -3,7 +3,6 @@ package gesimmo.nekaso.mapper;
 import org.springframework.stereotype.Component;
 
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteCreateResponseDTO;
-import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteDTO;
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteDTOList;
 import gesimmo.nekaso.entity.DemandeVisite;
 import gesimmo.nekaso.shared.mapper.DateMapper;
@@ -38,7 +37,8 @@ public class DemandeVisiteMapper {
             
             .dateCreation(dateMapper.formatLocalDate(demandeVisite.getDateCreation(), "yyyy-MM-dd"))
             .statut(demandeVisite.getStatut().toString())
-            .bien(demandeVisite.getBienImmobilier()!=null ? bienImmobilierMapper.toDTOLoc(demandeVisite.getBienImmobilier()) : null)
+            .bien(demandeVisite.getBienImmobilier()!=null ? bienImmobilierMapper.toDTO(demandeVisite.getBienImmobilier()) : null)
+          
             .build();
       
 
