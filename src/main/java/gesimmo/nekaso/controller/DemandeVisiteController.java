@@ -6,11 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import gesimmo.nekaso.dto.BienImmobilierResponseDTO;
 import gesimmo.nekaso.dto.DemandeVisiteResponseDTO;
 import gesimmo.nekaso.entity.DemandeVisite;
 import gesimmo.nekaso.mapper.DemandeVisiteMapper;
-import gesimmo.nekaso.repository.DemandeVisiteRepository;
 import gesimmo.nekaso.service.DemandeVisiteService;
 import gesimmo.nekaso.shared.Response.PageResponse;
 
@@ -38,8 +36,8 @@ public class DemandeVisiteController {
 	public ResponseEntity<PageResponse<DemandeVisiteResponseDTO>> getAllDemandesVisite(
 			@RequestParam(defaultValue = "") String nom,
 			@RequestParam(defaultValue = "") String prenom,
-			@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "5") int size) {
+			@RequestParam(defaultValue = "${api.pagination.default-page}") int page,
+			@RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<DemandeVisite> demandes = demandeVisiteService.searchDemandesVisiteByLocataire(nom, pageable, prenom);
 		Page<DemandeVisiteResponseDTO> demandesDto= demandes.map(demandeVisiteMapper::toDTO);
