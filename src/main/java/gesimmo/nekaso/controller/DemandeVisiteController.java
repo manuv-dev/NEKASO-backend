@@ -54,8 +54,8 @@ public class DemandeVisiteController {
 	public ResponseEntity<PageResponse<DemandeVisiteDTOList>> getAllDemandesVisite(
 			@PathVariable(required = true) Long id_Locataire,
 			@RequestParam(defaultValue = "") String statut,
-			@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "5") int size) {
+			@RequestParam(defaultValue = "${api.pagination.default-page}") int page,
+			@RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
 		Pageable pageable = PageRequest.of(page, size);
 
 		Page<DemandeVisite> demandes = demandeVisiteService.getAllDemandesVisite(pageable, statut, id_Locataire);
@@ -68,8 +68,8 @@ public class DemandeVisiteController {
     public ResponseEntity<PageResponse<BienImmobilierResponseDTO>> getAllBiens(
             @RequestParam(defaultValue = "") String statut,
             @RequestParam(defaultValue = "") String type,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
+            @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
+            @RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
             
             Pageable pageable = PageRequest.of(page, size);
             Page<BienImmobilier> bienPage = demandeVisiteService.getBiensDisponibles(pageable);
