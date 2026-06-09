@@ -5,6 +5,7 @@ import gesimmo.nekaso.dto.QuittanceDTO;
 import gesimmo.nekaso.dto.QuittanceAffichageDTO;
 import gesimmo.nekaso.entity.Paiement;
 import gesimmo.nekaso.entity.Quittance;
+import gesimmo.nekaso.entity.enums.MethodePaiement;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,7 +20,7 @@ public interface PaiementService {
             LocalDate dateFin,
             String statut,
             String mois,
-            String typePaiement);
+            MethodePaiement modePaiement);
 
     Quittance creerQuittance(Long paiementId, QuittanceDTO dto);
 

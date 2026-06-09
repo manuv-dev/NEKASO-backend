@@ -1,5 +1,6 @@
 package gesimmo.nekaso.dto;
 
+import gesimmo.nekaso.entity.enums.MethodePaiement;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 public class PaiementDTO {
     private Long id;
     private Double montant;
-    private String typePaiement;
+    private MethodePaiement modePaiement;
     private String statut;
     private LocalDate datePaiement;
     private String description;

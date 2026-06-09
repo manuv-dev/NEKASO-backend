@@ -4,6 +4,7 @@ import gesimmo.nekaso.dto.PaiementDTO;
 import gesimmo.nekaso.dto.QuittanceDTO;
 import gesimmo.nekaso.entity.Paiement;
 import gesimmo.nekaso.entity.Quittance;
+import gesimmo.nekaso.entity.enums.MethodePaiement;
 import gesimmo.nekaso.service.PaiementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -40,10 +41,13 @@ public class PaiementController {
             @RequestParam(required = false) String dateFin,
             @RequestParam(required = false) String statut,
             @RequestParam(required = false) String mois,
-            @RequestParam(required = false) String typePaiement) {
+            @RequestParam(required = false) String modePaiement) {
         try {
             LocalDate debut = parseDate(dateDebut);
             LocalDate fin = parseDate(dateFin);
+            MethodePaiement methode = modePaiement != null && !modePaiement.isBlank()
+                    ? MethodePaiement.valueOf(modePaiement.toUpperCase().replace(" ", "_"))
+                    : null;
             List<Paiement> paiements = paiementService.rechercherPaiements(
                     gestionnaireId,
                     bienId,
@@ -52,7 +56,7 @@ public class PaiementController {
                     fin,
                     statut,
                     mois,
-                    typePaiement);
+                    methode);
             return ResponseEntity.ok(paiements);
         } catch (DateTimeParseException e) {
             return ResponseEntity.badRequest().body(null);

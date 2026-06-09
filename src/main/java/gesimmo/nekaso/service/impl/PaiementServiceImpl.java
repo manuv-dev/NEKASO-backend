@@ -5,17 +5,13 @@ import gesimmo.nekaso.dto.QuittanceDTO;
 import gesimmo.nekaso.dto.QuittanceAffichageDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.ContratBail;
-import gesimmo.nekaso.entity.DemandeLocation;
-import gesimmo.nekaso.entity.Locataire;
 import gesimmo.nekaso.entity.Paiement;
 import gesimmo.nekaso.entity.Quittance;
-import gesimmo.nekaso.repository.BienImmobilierRepository;
+import gesimmo.nekaso.entity.enums.MethodePaiement;
 import gesimmo.nekaso.repository.ContratBailRepository;
-import gesimmo.nekaso.repository.DemandeLocationRepository;
 import gesimmo.nekaso.repository.PaiementRepository;
 import gesimmo.nekaso.repository.QuittanceRepository;
 import gesimmo.nekaso.service.PaiementService;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -34,9 +30,6 @@ public class PaiementServiceImpl implements PaiementService {
     private final PaiementRepository paiementRepository;
     private final QuittanceRepository quittanceRepository;
     private final ContratBailRepository contratBailRepository;
-    private final BienImmobilierRepository bienImmobilierRepository;
-    private final DemandeLocationRepository demandeLocationRepository;
-    private final EntityManager entityManager;
 
     @Override
     @Transactional
@@ -46,54 +39,27 @@ public class PaiementServiceImpl implements PaiementService {
 
         Paiement paiement = Paiement.builder()
                 .montant(dto.getMontant())
-                .typePaiement(dto.getTypePaiement())
-                .statut(dto.getStatut())
+                .methodePaiement(dto.getModePaiement())
                 .datePaiement(datePaiement)
                 .mois(mois)
+                .statut(dto.getStatut())
                 .description(dto.getDescription())
                 .cheminPDF(dto.getCheminPDF())
+                .reference(genererReference(dto.getContratId(), datePaiement))
                 .build();
 
-        if (dto.getContratId() != null) {
-            ContratBail contrat = contratBailRepository.findById(dto.getContratId())
-                    .orElseThrow(() -> new IllegalArgumentException("Contrat introuvable"));
-            paiement.setContrat(contrat);
-            DemandeLocation demande = contrat.getDemandeLocation();
-            if (demande != null) {
-                paiement.setLocataire(demande.getLocataire());
-                paiement.setBien(demande.getBien());
-                paiement.setDemandeLocation(demande);
-            }
+        if (dto.getContratId() == null) {
+            throw new IllegalArgumentException("Un paiement doit être associé à un contrat.");
         }
 
-        if (dto.getBienId() != null) {
-            BienImmobilier bien = bienImmobilierRepository.findById(dto.getBienId())
-                    .orElseThrow(() -> new IllegalArgumentException("Bien introuvable"));
-            paiement.setBien(bien);
-        }
+        ContratBail contrat = contratBailRepository.findById(dto.getContratId())
+                .orElseThrow(() -> new IllegalArgumentException("Contrat introuvable"));
+        paiement.setContrat(contrat);
 
-        if (dto.getDemandeLocationId() != null) {
-            DemandeLocation demande = demandeLocationRepository.findById(dto.getDemandeLocationId())
-                    .orElseThrow(() -> new IllegalArgumentException("Demande de location introuvable"));
-            paiement.setDemandeLocation(demande);
-            paiement.setLocataire(demande.getLocataire());
-            paiement.setBien(demande.getBien());
-        }
-
-        if (dto.getLocataireId() != null) {
-            Locataire locataire = entityManager.find(Locataire.class, dto.getLocataireId());
-            if (locataire == null) {
-                throw new IllegalArgumentException("Locataire introuvable");
-            }
-            paiement.setLocataire(locataire);
-        }
-
-        if (paiement.getContrat() == null
-                && paiement.getLocataire() == null
-                && paiement.getBien() == null
-                && paiement.getDemandeLocation() == null) {
-            throw new IllegalArgumentException(
-                    "Un paiement doit être associé à un contrat, locataire, bien ou demande de location.");
+        if (contrat.getDemandeLocation() != null) {
+            paiement.setDemandeLocation(contrat.getDemandeLocation());
+            paiement.setLocataire(contrat.getDemandeLocation().getLocataire());
+            paiement.setBien(contrat.getDemandeLocation().getBien());
         }
 
         return paiementRepository.save(paiement);
@@ -107,26 +73,28 @@ public class PaiementServiceImpl implements PaiementService {
             LocalDate dateFin,
             String statut,
             String mois,
-            String typePaiement) {
+            MethodePaiement modePaiement) {
         Specification<Paiement> spec = (root, query, cb) -> {
             List<jakarta.persistence.criteria.Predicate> predicates = new ArrayList<>();
 
             if (gestionnaireId != null) {
-                jakarta.persistence.criteria.Join<Object, Object> bienJoin = root.join("bien");
+                jakarta.persistence.criteria.Join<Object, Object> contratJoin = root.join("contrat");
+                jakarta.persistence.criteria.Join<Object, Object> demandeJoin = contratJoin.join("demandeLocation");
+                jakarta.persistence.criteria.Join<Object, Object> bienJoin = demandeJoin.join("bien");
                 jakarta.persistence.criteria.Join<Object, Object> gestionnaireJoin = bienJoin.join("gestionnaire");
                 predicates.add(cb.equal(gestionnaireJoin.get("id"), gestionnaireId));
             }
             if (bienId != null) {
-                predicates.add(cb.equal(root.get("bien").get("id"), bienId));
+                predicates.add(cb.equal(root.get("contrat").get("demandeLocation").get("bien").get("id"), bienId));
             }
             if (locataireId != null) {
-                predicates.add(cb.equal(root.get("locataire").get("id"), locataireId));
+                predicates.add(cb.equal(root.get("contrat").get("demandeLocation").get("locataire").get("id"), locataireId));
             }
             if (statut != null && !statut.isBlank()) {
                 predicates.add(cb.equal(root.get("statut"), statut));
             }
-            if (typePaiement != null && !typePaiement.isBlank()) {
-                predicates.add(cb.equal(root.get("typePaiement"), typePaiement));
+            if (modePaiement != null) {
+                predicates.add(cb.equal(root.get("methodePaiement"), modePaiement.name()));
             }
             if (mois != null && !mois.isBlank()) {
                 predicates.add(cb.equal(root.get("mois"), mois));
@@ -198,8 +166,10 @@ public class PaiementServiceImpl implements PaiementService {
 
     private QuittanceAffichageDTO mapToAffichageDTO(Quittance quittance) {
         Paiement paiement = quittance.getPaiement();
-        BienImmobilier bien = paiement.getBien();
         ContratBail contrat = paiement.getContrat();
+        BienImmobilier bien = contrat != null && contrat.getDemandeLocation() != null
+                ? contrat.getDemandeLocation().getBien()
+                : null;
 
         return QuittanceAffichageDTO.builder()
                 .id(quittance.getId())
@@ -222,4 +192,10 @@ public class PaiementServiceImpl implements PaiementService {
     private String genererNumero(Long paiementId, LocalDate emissionDate) {
         return String.format("Q-%d-%s", paiementId, emissionDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
     }
+
+    private String genererReference(Long contratId, LocalDate datePaiement) {
+        String prefix = contratId != null ? String.format("CTR-%d", contratId) : "CTR-NA";
+        return String.format("%s-%s-%d", prefix, datePaiement.format(DateTimeFormatter.ofPattern("yyyyMMdd")), System.currentTimeMillis() % 1000000);
+    }
 }
+
