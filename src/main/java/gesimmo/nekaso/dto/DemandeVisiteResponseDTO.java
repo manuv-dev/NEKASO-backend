@@ -1,6 +1,5 @@
 package gesimmo.nekaso.dto;
 
-import java.time.LocalDate;
 
 import lombok.Builder;
 

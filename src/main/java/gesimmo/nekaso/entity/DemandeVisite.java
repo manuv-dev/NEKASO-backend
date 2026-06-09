@@ -1,7 +1,6 @@
 package gesimmo.nekaso.entity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import gesimmo.nekaso.entity.enums.VisiteStatut;
 import jakarta.persistence.Column;
