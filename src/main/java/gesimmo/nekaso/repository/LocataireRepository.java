@@ -1,5 +1,9 @@
 package gesimmo.nekaso.repository;
 
-import gesimmo.nekaso.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
-public interface LocataireRepository extends JpaRepository<Locataire, Long> {}
+
+import gesimmo.nekaso.entity.Locataire;
+
+public interface LocataireRepository extends JpaRepository<Locataire, Long> {
+
+}

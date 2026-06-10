@@ -1,44 +1,56 @@
 package gesimmo.nekaso.entity;
 
-import lombok.*;
 import java.time.LocalDateTime;
-import jakarta.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
-
+import gesimmo.nekaso.entity.enums.Role;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "users")
-@Data
+@Inheritance(strategy = InheritanceType.JOINED)
+@lombok.Data
+@SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class User {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Column(nullable = false)
+	private String nom;
 
-    @Column(nullable = false)
-    private String nom;
+	@Column(nullable = false)
+	private String prenom;
 
-    @Column(nullable = false)
-    private String prenom;
+	private String telephone;
 
-    @Column(nullable = false, unique = true)
-    private String telephone;
+	@Column(nullable = false)
+	private String motDePasse;
 
-    @Column(nullable = false)
-    private String motDePasse;
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Role role;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Role role;
+	private LocalDateTime dateCreation;
 
-    @Column(nullable = false)
-    private LocalDateTime dateCreation = LocalDateTime.now();
+	private String statut;
 
-    @Column(nullable = false)
-    private String statut;
+	@PrePersist
+	public void onCreate() {
+		if (dateCreation == null) {
+			dateCreation = LocalDateTime.now();
+		}
+	}
 }

@@ -18,6 +18,8 @@ import gesimmo.nekaso.repository.BienImmobilierRepository;
 import gesimmo.nekaso.repository.PhotoBienRepository;
 import gesimmo.nekaso.service.BienImmobilierService;
 import gesimmo.nekaso.service.CloudinaryService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class BienImmobilierServiceImpl implements BienImmobilierService {

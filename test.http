@@ -3,11 +3,26 @@
 
 GET {{baseUrl}}/api/biens/gestionnaire
 ###
-
-GET {{baseUrl}}/api/biens/gestionnaire?type=APPARTEMENT
+GET {{baseUrl}}/api/biens/gestionnaire?page=1&size=2
 ###
 
-GET {{baseUrl}}/api/biens/gestionnaire?statut=LOUE
+GET {{baseUrl}}/api/biens/gestionnaire?type=APPARTEMENT&page=0&size=2
 ###
-GET {{baseUrl}}/api/biens/gestionnaire?type=&statut=
 
+GET {{baseUrl}}/api/biens/gestionnaire?statut=LOUE&page=0&size=2
+###
+GET {{baseUrl}}/api/biens/gestionnaire?type=APPARTEMENT&statut=ARCHIVE
+###
+GET {{baseUrl}}/api/visites/gestionnaire
+
+###
+PATCH {{baseUrl}}/api/visites/1/approuver
+###
+
+PATCH {{baseUrl}}/api/visites/2/refuser
+###
+POST {{baseUrl}}/api/visites/locataire/1/bien/1
+###
+GET {{baseUrl}}/api/visites/mes_demandes/1
+###
+GET {{baseUrl}}/api/visites/biens_disponibles?page=0&size=3

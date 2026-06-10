@@ -1,8 +1,6 @@
-package gesimmo.nekaso.entity;
+package gesimmo.nekaso.entity.enums;
 
 public enum Role {
-    ADMIN,
     GESTIONNAIRE,
     LOCATAIRE,
-    VISITEUR
 }
