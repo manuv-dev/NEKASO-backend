@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gesimmo.nekaso.dto.AuthRequestDTO;
 import gesimmo.nekaso.dto.AuthResponseDTO;
 import gesimmo.nekaso.service.AuthService;
+import gesimmo.nekaso.service.UserService;
 
 @ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
@@ -32,11 +33,14 @@ class AuthControllerTest {
     @Mock
     private AuthService authService;
 
+    @Mock
+    private UserService userService;
+
     private AuthController authController;
 
     @BeforeEach
     void setUp() {
-        authController = new AuthController(authService);
+        authController = new AuthController(authService, userService);
         mockMvc = MockMvcBuilders.standaloneSetup(authController).build();
         objectMapper = new ObjectMapper();
     }
@@ -66,7 +70,7 @@ class AuthControllerTest {
         request.setNom("Dupont");
         request.setPrenom("Alice");
 
-        when(authService.register(any(AuthRequestDTO.class))).thenReturn("User registered successfully.");
+        when(userService.register(any(AuthRequestDTO.class))).thenReturn("User registered successfully.");
 
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)

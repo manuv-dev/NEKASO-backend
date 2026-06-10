@@ -9,15 +9,18 @@ import org.springframework.web.bind.annotation.RestController;
 import gesimmo.nekaso.dto.AuthRequestDTO;
 import gesimmo.nekaso.dto.AuthResponseDTO;
 import gesimmo.nekaso.service.AuthService;
+import gesimmo.nekaso.service.UserService;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;
+    private final UserService userService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
+        this.userService = userService;
     }
 
     @PostMapping("/login")
@@ -29,7 +32,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody AuthRequestDTO authRequest) {
         try {
-            String message = authService.register(authRequest);
+            String message = userService.register(authRequest);
             return ResponseEntity.ok(message);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
