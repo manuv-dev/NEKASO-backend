@@ -3,6 +3,7 @@ package gesimmo.nekaso.repository.mock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import gesimmo.nekaso.entity.enums.StatutBien;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +34,7 @@ public class BienImmobilierMock implements CommandLineRunner {
         bien1.setSurface(75.0);
         bien1.setNombrePieces(3);
         bien1.setLoyer(1200.0);
-        bien1.setStatutBien(Statut.DISPONIBLE);
+        bien1.setStatutBien(StatutBien.DISPONIBLE);
         bien1.setDescription("Bel appartement au cœur de Paris.");
         bien1.setDateAjout(LocalDate.now());
 
@@ -45,7 +46,7 @@ public class BienImmobilierMock implements CommandLineRunner {
         bien2.setSurface(150.0);
         bien2.setNombrePieces(5);
         bien2.setLoyer(2500.0);
-        bien2.setStatutBien(Statut.DISPONIBLE);
+        bien2.setStatutBien(StatutBien.DISPONIBLE);
         bien2.setDescription("Magnifique maison en plein centre-ville.");
         bien2.setDateAjout(LocalDate.now());
 
@@ -57,7 +58,7 @@ public class BienImmobilierMock implements CommandLineRunner {
         bien3.setSurface(30.0);
         bien3.setNombrePieces(1);
         bien3.setLoyer(800.0);
-        bien3.setStatutBien(Statut.RESERVE);
+        bien3.setStatutBien(StatutBien.RESERVE);
         bien3.setDescription("Charmant studio en plein cœur de Marseille.");
         bien3.setDateAjout(LocalDate.now());
 
@@ -69,7 +70,7 @@ public class BienImmobilierMock implements CommandLineRunner {
         bien4.setSurface(60.0);
         bien4.setNombrePieces(2);
         bien4.setLoyer(1000.0); 
-        bien4.setStatutBien(Statut.LOUE);
+        bien4.setStatutBien(StatutBien.LOUE);
         bien4.setDescription("Appartement cosy à proximité du centre-ville.");
         bien4.setDateAjout(LocalDate.now());
         bienImmobilierRepository.save(bien4);
@@ -80,7 +81,7 @@ public class BienImmobilierMock implements CommandLineRunner {
         bien5.setSurface(120.0);
         bien5.setNombrePieces(4);
         bien5.setLoyer(2000.0);
-        bien5.setStatutBien(Statut.ARCHIVE);
+        bien5.setStatutBien(StatutBien.ARCHIVE);
         bien5.setDescription("Belle maison avec jardin à Lille.");
         bien5.setDateAjout(LocalDate.now());
         bienImmobilierRepository.save(bien5);
@@ -91,7 +92,7 @@ public class BienImmobilierMock implements CommandLineRunner {
         bien6.setSurface(200.0);
         bien6.setNombrePieces(6);
         bien6.setLoyer(3000.0);
-        bien6.setStatutBien(Statut.DISPONIBLE);
+        bien6.setStatutBien(StatutBien.DISPONIBLE);
         bien6.setDescription("Superbe appartement avec vue sur la cathédrale.");
         bien6.setDateAjout(LocalDate.now());
         bienImmobilierRepository.save(bien6);

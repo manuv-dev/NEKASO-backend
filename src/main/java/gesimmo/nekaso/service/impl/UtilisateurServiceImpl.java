@@ -18,15 +18,19 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     }
 
     @Override
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public Optional<User> findByTelephone(String telephone) {
+        return userRepository.findByTelephone(telephone);
     }
 
     @Override
-    public boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username);
+    public boolean existsByUserTelephone(String telephone) {
+        return false;
     }
 
+    @Override
+    public boolean existsByTelephone(String telephone) {
+        return userRepository.existsByTelephone(telephone);
+    }
     @Override
     public User save(User user) {
         return userRepository.save(user);

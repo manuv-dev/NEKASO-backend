@@ -4,9 +4,11 @@ import java.util.Optional;
 import gesimmo.nekaso.entity.User;
 
 public interface UtilisateurService {
-    Optional<User> findByUsername(String username);
+    Optional<User> findByTelephone(String telephone);
 
-    boolean existsByUsername(String username);
+    boolean existsByUserTelephone(String telephone);
+
+    boolean existsByTelephone(String telephone);
 
     User save(User user);
 }

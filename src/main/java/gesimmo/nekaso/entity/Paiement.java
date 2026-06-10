@@ -17,27 +17,23 @@ public class Paiement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private Double montant;
-    private String typePaiement;
-    private String statut;
+
+    @Column (nullable = false)
+    @Enumerated(EnumType.STRING)
+    private String MethodePaiement;
+
     private LocalDate datePaiement = LocalDate.now();
+
+    @Column(nullable = false)
     private String mois;
-    private String description;
-    private String cheminPDF;
+
+    @Column(nullable = false)
+    private String reference;
 
     @ManyToOne
     @JoinColumn(name = "contrat_id")
     private ContratBail contrat;
 
-    @ManyToOne
-    @JoinColumn(name = "locataire_id")
-    private Locataire locataire;
-
-    @ManyToOne
-    @JoinColumn(name = "bien_id")
-    private BienImmobilier bien;
-
-    @ManyToOne
-    @JoinColumn(name = "demande_location_id")
-    private DemandeLocation demandeLocation;
 }

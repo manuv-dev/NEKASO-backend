@@ -10,23 +10,21 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface PaiementService {
-    Paiement creerPaiement(PaiementDTO dto);
-
-    List<Paiement> rechercherPaiements(Long gestionnaireId,
-            Long bienId,
-            Long locataireId,
-            LocalDate dateDebut,
-            LocalDate dateFin,
-            String statut,
-            String mois,
-            String typePaiement);
-
-    Quittance creerQuittance(Long paiementId, QuittanceDTO dto);
-
-    Quittance getQuittanceParPaiement(Long paiementId);
-
-    // Côté locataire
-    List<QuittanceAffichageDTO> getQuittancesParLocataire(Long locataireId, Long bienId);
-
-    List<QuittanceAffichageDTO> getQuittancesParBien(Long bienId, Long locataireId);
+//    Paiement creerPaiement(PaiementDTO dto);
+//
+//    List<Paiement> rechercherPaiements(Long gestionnaireId,
+//            Long bienId,
+//            Long locataireId,
+//            LocalDate datePaiement,
+//            String reference,
+//            String mois,
+//            String typePaiement);
+//
+//
+//    Quittance getQuittanceParPaiement(Long paiementId);
+//
+//    // Côté locataire
+//    List<QuittanceAffichageDTO> getQuittancesParLocataire(Long locataireId, Long bienId);
+//
+//    List<QuittanceAffichageDTO> getQuittancesParBien(Long bienId, Long locataireId);
 }

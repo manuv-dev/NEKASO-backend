@@ -2,9 +2,8 @@ package gesimmo.nekaso.dto;
 
 import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.TypeBien;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,5 +21,6 @@ public class BienImmobilierDTO {
     private StatutBien statutBien;
     private String description;
     private LocalDate dateAjout;
-    private List<String> urlPhotos; // URLs des photos uploadées via Cloudinary
+    private List<String> urlPhotos;
+
 }

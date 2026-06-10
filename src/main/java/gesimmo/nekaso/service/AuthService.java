@@ -5,6 +5,6 @@ import gesimmo.nekaso.dto.AuthResponseDTO;
 
 public interface AuthService {
     AuthResponseDTO login(AuthRequestDTO authRequest);
-
     String register(AuthRequestDTO authRequest);
+
 }

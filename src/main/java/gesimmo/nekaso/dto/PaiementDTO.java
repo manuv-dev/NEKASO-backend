@@ -11,13 +11,9 @@ import java.time.LocalDate;
 public class PaiementDTO {
     private Long id;
     private Double montant;
-    private String typePaiement;
-    private String statut;
     private LocalDate datePaiement;
-    private String description;
-    private String cheminPDF;
+    private String mois;
+    private String reference;
+    private String MethodePaiement;
     private Long contratId;
-    private Long locataireId;
-    private Long bienId;
-    private Long demandeLocationId;
 }

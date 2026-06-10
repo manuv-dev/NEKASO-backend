@@ -4,9 +4,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import gesimmo.nekaso.entity.enums.Statut;
+import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.TypeBien;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "bien_immobilier")
@@ -34,7 +35,7 @@ public class BienImmobilier {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Statut statutBien;
+    private StatutBien statutBien;
 
     @Column(length = 500 )
     private String description;
