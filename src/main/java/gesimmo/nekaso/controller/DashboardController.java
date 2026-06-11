@@ -18,20 +18,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DashboardController {
 
-    private final DashboardService dashboardService;
+    // private final DashboardService dashboardService;
 
-    @GetMapping("/gestionnaire/{id}")
-    public ResponseEntity<DashboardDTO> getDashboard(@PathVariable Long id) {
-        return ResponseEntity.ok(dashboardService.getDashboardGestionnaire(id));
-    }
+    // @GetMapping("/gestionnaire/{id}")
+    // public ResponseEntity<DashboardDTO> getDashboard(@PathVariable Long id) {
+    //     return ResponseEntity.ok(dashboardService.getDashboardGestionnaire(id));
+    // }
 
-    @GetMapping("/gestionnaire/{id}/revenus")
-    public ResponseEntity<List<RevenueMensuelDTO>> getRevenus(@PathVariable Long id) {
-        return ResponseEntity.ok(dashboardService.getRevenus6DerniersMois(id));
-    }
+    // @GetMapping("/gestionnaire/{id}/revenus")
+    // public ResponseEntity<List<RevenueMensuelDTO>> getRevenus(@PathVariable Long id) {
+    //     return ResponseEntity.ok(dashboardService.getRevenus6DerniersMois(id));
+    // }
 
-    @GetMapping("/gestionnaire/{id}/repartition")
-    public ResponseEntity<List<RepartitionBienDTO>> getRepartition(@PathVariable Long id) {
-        return ResponseEntity.ok(dashboardService.getRepartitionBiens(id));
-    }
+    // @GetMapping("/gestionnaire/{id}/repartition")
+    // public ResponseEntity<List<RepartitionBienDTO>> getRepartition(@PathVariable Long id) {
+    //     return ResponseEntity.ok(dashboardService.getRepartitionBiens(id));
+    // }
 }

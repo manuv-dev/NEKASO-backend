@@ -38,7 +38,7 @@ public class DemandeLocationServiceImpl implements DemandeLocationService {
         demandeRepo.save(demande);
 
         dto.setDemandeLocationId(demande.getId());
-        ContratBail contrat = contratService.creerContrat(dto);
+        // ContratBail contrat = contratService.creerContrat(dto);
 
         notificationService.envoyerNotification(
                 demande.getLocataire().getUser(),
@@ -46,7 +46,7 @@ public class DemandeLocationServiceImpl implements DemandeLocationService {
                 "LOCATION"
         );
 
-        return contrat;
+        return null; // ou retourner le contrat créé    
     }
 
 

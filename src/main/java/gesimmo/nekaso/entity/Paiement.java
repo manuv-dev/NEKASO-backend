@@ -20,9 +20,9 @@ public class Paiement {
     @Column(nullable = false)
     private Double montant;
 
-    @Column (nullable = false)
-    @Enumerated(EnumType.STRING)
-    private String MethodePaiement;
+    // @Column (nullable = false)
+    // @Enumerated(EnumType.STRING)
+    // private String MethodePaiement;
 
     private LocalDate datePaiement = LocalDate.now();
 

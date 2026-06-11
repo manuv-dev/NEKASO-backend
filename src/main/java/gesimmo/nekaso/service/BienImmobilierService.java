@@ -4,15 +4,18 @@ import java.util.List;
 
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.dto.BienImmobilierDTO;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 
 public interface BienImmobilierService {
-    public List<BienImmobilier> searchBienImmobilierByStatut(String statut,String type);
+    public Page<BienImmobilier> searchBienImmobilierByStatut(String statut,String type, Pageable pageable);
     public BienImmobilier getBienById(Long id);
     BienImmobilier createBien(BienImmobilierDTO bienDTO, MultipartFile[] photos);
 
-    BienImmobilier createBien(BienImmobilier bien);
+
 
     public BienImmobilier updateBien(Long id, BienImmobilier bien);
 

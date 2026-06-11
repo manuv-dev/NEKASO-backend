@@ -11,6 +11,8 @@ public interface DemandeVisiteService {
 	public DemandeVisiteCreateResponseDTO createDemandeVisite(Long id_Locataire, Long id_Bien);
 	Page<DemandeVisite> getAllDemandesVisite(Pageable pageable,String statut,Long id_Locataire);
 	Page<BienImmobilier> getBiensDisponibles(Pageable pageable);
+	// DemandeVisite annulerDemandeVisite(Long id);
+	// DemandeVisite accepterDemandeVisite(Long id);
 
 
 }

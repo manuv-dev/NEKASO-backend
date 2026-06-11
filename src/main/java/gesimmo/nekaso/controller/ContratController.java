@@ -17,24 +17,24 @@ public class ContratController {
 
     private final ContratService contratService;
 
-    @PostMapping
-    public ContratBail creerContrat(@RequestBody ContratDTO dto) {
-        return contratService.creerContrat(dto);
-    }
-    @GetMapping("/locataire")
-    public List<ContratBail> getContratsParLocataire(@RequestParam Long locataireId) {
-        return contratService.getContratsParLocataire(locataireId);
-    }
+    // @PostMapping
+    // public ContratBail creerContrat(@RequestBody ContratDTO dto) {
+    //     return contratService.creerContrat(dto);
+    // }
+    // @GetMapping("/locataire")
+    // public List<ContratBail> getContratsParLocataire(@RequestParam Long locataireId) {
+    //     return contratService.getContratsParLocataire(locataireId);
+    // }
 
-    @GetMapping("/bien")
-    public List<ContratBail> getContratsParBien(@RequestParam Long bienId) {
-        return contratService.getContratsParBien(bienId);
-    }
+    // @GetMapping("/bien")
+    // public List<ContratBail> getContratsParBien(@RequestParam Long bienId) {
+    //     return contratService.getContratsParBien(bienId);
+    // }
 
-    @GetMapping("/gestionnaire")
-    public List<ContratBail> getContratsParGestionnaire(@RequestParam Long gestionnaireId) {
-        return contratService.getContratsParGestionnaire(gestionnaireId);
-    }
+    // @GetMapping("/gestionnaire")
+    // public List<ContratBail> getContratsParGestionnaire(@RequestParam Long gestionnaireId) {
+    //     return contratService.getContratsParGestionnaire(gestionnaireId);
+    // }
     // Télécharger contrat PDF
     @GetMapping("/{id}/pdf")
     public ResponseEntity<byte[]> getContratPdf(@PathVariable Long id) {

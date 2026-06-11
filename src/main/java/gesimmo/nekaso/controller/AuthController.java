@@ -14,25 +14,25 @@ import gesimmo.nekaso.service.AuthService;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthService authService;
+	private final AuthService authService;
 
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
+	public AuthController(AuthService authService) {
+		this.authService = authService;
+	}
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO authRequest) {
-        AuthResponseDTO response = authService.login(authRequest);
-        return ResponseEntity.ok(response);
-    }
+	@PostMapping("/login")
+	public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO authRequest) {
+		AuthResponseDTO response = authService.login(authRequest);
+		return ResponseEntity.ok(response);
+	}
 
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody AuthRequestDTO authRequest) {
-        try {
-            String message = authService.register(authRequest);
-            return ResponseEntity.ok(message);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+	@PostMapping("/register")
+	public ResponseEntity<String> register(@RequestBody AuthRequestDTO authRequest) {
+		try {
+			String message = authService.register(authRequest);
+			return ResponseEntity.ok(message);
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }

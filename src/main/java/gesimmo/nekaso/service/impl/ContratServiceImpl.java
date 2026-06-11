@@ -23,48 +23,48 @@ public class ContratServiceImpl implements ContratService {
     private final UserRepository usersRepo;
     private final PdfService pdfService;
 
-    @Override
-    public ContratBail creerContrat(ContratDTO dto) {
-        DemandeLocation demande = demandeRepo.findById(dto.getDemandeLocationId())
-                .orElseThrow(() -> new RuntimeException("Demande introuvable"));
+    // @Override
+    // public ContratBail creerContrat(ContratDTO dto) {
+    //     DemandeLocation demande = demandeRepo.findById(dto.getDemandeLocationId())
+    //             .orElseThrow(() -> new RuntimeException("Demande introuvable"));
 
-        // Création du contrat
-        ContratBail contrat = ContratBail.builder()
-                .dateSignature(dto.getDateSignature())
-                .dateDebut(dto.getDateDebut())
-                .montantLoyer(dto.getMontantLoyer())
-                .montantCaution(dto.getMontantCaution())
-                .conditions(dto.getConditions())
-                .demandeLocation(demande)
-                .build();
+    //     // Création du contrat
+    //     ContratBail contrat = ContratBail.builder()
+    //             .dateSignature(dto.getDateSignature())
+    //             .dateDebut(dto.getDateDebut())
+    //             .montantLoyer(dto.getMontantLoyer())
+    //             .montantCaution(dto.getMontantCaution())
+    //             .conditions(dto.getConditions())
+    //             .demandeLocation(demande)
+    //             .build();
 
-        contrat = contratRepo.save(contrat);
+    //     contrat = contratRepo.save(contrat);
 
-        // Récupérer infos locataire et gestionnaire
-        User locataireUser = demande.getLocataire().getUser();
-        User gestionnaireUser = demande.getBien().getGestionnaire().getUser();
+    //     // Récupérer infos locataire et gestionnaire
+    //     User locataireUser = demande.getLocataire().getUser();
+    //     User gestionnaireUser = demande.getBien().getGestionnaire().getUser();
 
-        // Générer PDF et mettre chemin
-        String cheminPDF = pdfService.genererContratPdf(contrat, locataireUser, gestionnaireUser);
-        contrat.setCheminPDF(cheminPDF);
+    //     // Générer PDF et mettre chemin
+    //     String cheminPDF = pdfService.genererContratPdf(contrat, locataireUser, gestionnaireUser);
+    //     contrat.setCheminPDF(cheminPDF);
 
-        return contratRepo.save(contrat);
-    }
+    //     return contratRepo.save(contrat);
+    // }
 
-    @Override
-    public List<ContratBail> getContratsParLocataire(Long locataireId) {
-        return contratRepo.findByLocataireId(locataireId);
-    }
+    // @Override
+    // public List<ContratBail> getContratsParLocataire(Long locataireId) {
+    //     return contratRepo.findByLocataireId(locataireId);
+    // }
 
-    @Override
-    public List<ContratBail> getContratsParBien(Long bienId) {
-        return contratRepo.findByBienId(bienId);
-    }
+    // @Override
+    // public List<ContratBail> getContratsParBien(Long bienId) {
+    //     return contratRepo.findByBienId(bienId);
+    // }
 
-    @Override
-    public List<ContratBail> getContratsParGestionnaire(Long gestionnaireId) {
-        return contratRepo.findByGestionnaireId(gestionnaireId);
-    }
+    // @Override
+    // public List<ContratBail> getContratsParGestionnaire(Long gestionnaireId) {
+    //     return contratRepo.findByGestionnaireId(gestionnaireId);
+    // }
 
     @Override
     public ContratBail getContratById(Long id) {

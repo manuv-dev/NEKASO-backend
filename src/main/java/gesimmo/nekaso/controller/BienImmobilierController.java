@@ -2,31 +2,48 @@ package gesimmo.nekaso.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
+import gesimmo.nekaso.mapper.BienImmobilierMapper;
 import gesimmo.nekaso.service.BienImmobilierService;
+import gesimmo.nekaso.shared.Response.PageResponse;
 @RestController
 @RequestMapping("/api/biens/gestionnaire")
 public class BienImmobilierController {
     private final BienImmobilierService bienService;
+    private final BienImmobilierMapper bienImmobilierMapper;
 
-    public BienImmobilierController(BienImmobilierService bienService) {
+    public BienImmobilierController(BienImmobilierService bienService, BienImmobilierMapper bienImmobilierMapper) {
         this.bienService = bienService;
+        this.bienImmobilierMapper = bienImmobilierMapper;
     }
 
-    @GetMapping("/gestionnaire")
-    public List<BienImmobilier> getAllBiens(@RequestParam(defaultValue = "") String statut,
-                                            @RequestParam(defaultValue = "") String type) {
-        return bienService.searchBienImmobilierByStatut(statut, type);
+ @GetMapping("")
+    public ResponseEntity<PageResponse<BienImmobilierResponseDTO>> getAllBiens(
+            @RequestParam(defaultValue = "") String statut,
+            @RequestParam(defaultValue = "") String type,
+            @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
+            @RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
+            
+            Pageable pageable = PageRequest.of(page, size);
+            Page<BienImmobilier> bienPage = bienService.searchBienImmobilierByStatut(statut, type, pageable);
+            Page<BienImmobilierResponseDTO> bienDto=bienPage.map(bienImmobilierMapper::toDTO);
+           
+
+       return new ResponseEntity<>(PageResponse.fromPage(bienDto), HttpStatus.OK);
     }
 
-    @PostMapping
-    public BienImmobilier createBien(@RequestBody BienImmobilier bien) {
-        return bienService.createBien(bien);
-    }
+    // @PostMapping
+    // public BienImmobilier createBien(@RequestBody BienImmobilier bien) {
+    //     return bienService.createBien(bien);
+    // }
 
     @PutMapping("/{id}")
     public BienImmobilier updateBien(@PathVariable Long id, @RequestBody BienImmobilier bien) {

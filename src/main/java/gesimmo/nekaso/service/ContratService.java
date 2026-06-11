@@ -5,9 +5,9 @@ import gesimmo.nekaso.entity.ContratBail;
 import java.util.List;
 
 public interface ContratService {
-    ContratBail creerContrat(ContratDTO dto);
-    List<ContratBail> getContratsParLocataire(Long locataireId);
-    List<ContratBail> getContratsParBien(Long bienId);
-    List<ContratBail> getContratsParGestionnaire(Long gestionnaireId);
+    // ContratBail creerContrat(ContratDTO dto);
+    // List<ContratBail> getContratsParLocataire(Long locataireId);
+    // List<ContratBail> getContratsParBien(Long bienId);
+    // List<ContratBail> getContratsParGestionnaire(Long gestionnaireId);
     ContratBail getContratById(Long id);
 }

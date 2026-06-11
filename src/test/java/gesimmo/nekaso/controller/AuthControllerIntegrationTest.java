@@ -34,8 +34,8 @@ class AuthControllerIntegrationTest {
         String base = "http://localhost:" + port + "/api/auth";
 
         AuthRequestDTO register = new AuthRequestDTO();
-        register.setUsername("intuser");
-        register.setPassword("intpass");
+        register.setTelephone("intuser");
+        register.setMotDePasse("intpass");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -47,8 +47,8 @@ class AuthControllerIntegrationTest {
         assertThat(regResp.getBody()).contains("User registered successfully");
 
         AuthRequestDTO login = new AuthRequestDTO();
-        login.setUsername("intuser");
-        login.setPassword("intpass");
+        login.setTelephone("intuser");
+        login.setMotDePasse("intpass");
 
         HttpEntity<String> loginReq = new HttpEntity<>(objectMapper.writeValueAsString(login), headers);
         ResponseEntity<String> loginResp = restTemplate.postForEntity(base + "/login", loginReq, String.class);

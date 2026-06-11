@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import gesimmo.nekaso.dto.BienImmobilierDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.PhotoBien;
+import gesimmo.nekaso.entity.enums.Statut;
 import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.TypeBien;
 import gesimmo.nekaso.repository.BienImmobilierRepository;
@@ -36,32 +37,41 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
         this.cloudinaryService = cloudinaryService;
     }
 
-    @Override
-    public List<BienImmobilier> searchBienImmobilierByStatut(String statut, String type) {
+ public Page<BienImmobilier> searchBienImmobilierByStatut(String statut, String type,Pageable pageable) {
+        if (statut == null) {
+            statut = "";
+        }
+        if (type == null) {
+            type = "";
+        }
+        statut = statut.trim();
+        type = type.trim();
+
+        Page<BienImmobilier> biens;
+
         if (type.isEmpty() && statut.isEmpty()) {
-            return bienImmobilierRepository.findAll();
+            biens = bienImmobilierRepository.findAll(pageable);
+        } else if (type.isEmpty()) {
+            biens = bienImmobilierRepository.findByStatutBien(Statut.valueOf(statut.toUpperCase()), pageable);
+        } else if (statut.isEmpty()) {
+            biens = bienImmobilierRepository.findByTypeBien(TypeBien.valueOf(type.toUpperCase()), pageable);
+        } else {
+            biens = bienImmobilierRepository.findByStatutBienAndTypeBien(
+                    Statut.valueOf(statut.toUpperCase()),
+                    TypeBien.valueOf(type.toUpperCase()),
+                    pageable);
         }
-        if (type.isEmpty()) {
-            return bienImmobilierRepository.findByStatutBien(StatutBien.valueOf(statut));
-        }
-        if (statut.isEmpty()) {
-            return bienImmobilierRepository.findByTypeBien(TypeBien.valueOf(type));
-        }
-        return bienImmobilierRepository.findByStatutBienAndTypeBien(
-                StatutBien.valueOf(statut),
-                TypeBien.valueOf(type)
-        );
+
+        return biens;
     }
+
 
     @Override
     public BienImmobilier getBienById(Long id) {
         return bienImmobilierRepository.findById(id).orElse(null);
     }
 
-    @Override
-    public BienImmobilier createBien(BienImmobilier bien) {
-        return bienImmobilierRepository.save(bien);
-    }
+  
 
     @Override
     public BienImmobilier updateBien(Long id, BienImmobilier bien) {
@@ -192,4 +202,6 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
         String filename = parts[parts.length - 1]; // public_id.jpg
         return filename.substring(0, filename.lastIndexOf('.')); // public_id
     }
+
+  
 }
