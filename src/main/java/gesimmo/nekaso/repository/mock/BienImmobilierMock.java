@@ -5,16 +5,18 @@ import java.time.LocalDateTime;
 
 import gesimmo.nekaso.entity.enums.StatutBien;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.PhotoBien;
-import gesimmo.nekaso.entity.enums.Statut;
+
 import gesimmo.nekaso.entity.enums.TypeBien;
 import gesimmo.nekaso.repository.BienImmobilierRepository;
 import gesimmo.nekaso.repository.PhotoBienRepository;
 
 @Component
+@Order(1)
 public class BienImmobilierMock implements CommandLineRunner {
     private final BienImmobilierRepository bienImmobilierRepository;
     private final PhotoBienRepository photoBienRepository;

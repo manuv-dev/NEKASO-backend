@@ -2,7 +2,7 @@ package gesimmo.nekaso.repository;
 
 import java.util.List;
 
-import gesimmo.nekaso.entity.enums.Statut;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,9 +22,9 @@ public interface BienImmobilierRepository extends JpaRepository<BienImmobilier, 
     List<BienImmobilier> findByTypeBienAndNombrePiecesAndLoyerBetween(TypeBien typeBien, Integer nombrePieces, Double loyerMin, Double loyerMax);
     @Query("SELECT b.typeBien, COUNT(b) FROM BienImmobilier b WHERE b.gestionnaire.id = :gestionnaireId GROUP BY b.typeBien")
     List<Object[]> countByTypeBienAndGestionnaire(Long gestionnaireId);
-    Page<BienImmobilier> findByStatutBien(Statut statut, Pageable pageable);
+    Page<BienImmobilier> findByStatutBien(StatutBien statutBien, Pageable pageable);
 
     Page<BienImmobilier> findByTypeBien(TypeBien typeBien,Pageable pageable);
 
-    Page<BienImmobilier> findByStatutBienAndTypeBien(Statut statutBien, TypeBien typeBien,Pageable pageable);
+    Page<BienImmobilier> findByStatutBienAndTypeBien(StatutBien statutBien, TypeBien typeBien,Pageable pageable);
 }

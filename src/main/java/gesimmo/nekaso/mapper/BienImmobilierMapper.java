@@ -59,27 +59,7 @@ public class BienImmobilierMapper {
 	}
 
 
-	// public List<BienImmobilierResponseDTO> toDTOList(List<BienImmobilier> biens) {
-	// 	List<BienImmobilierResponseDTO> list = new ArrayList<>();
-	// 	for (BienImmobilier bien : biens) {
-	// 		list.add(toDTO(bien));
-	// 	}
-	// 	return list;
-	// }
 
-	// public BienImmobilier toEntity(BienImmobilierResponseDTO dto) {
-	// 	BienImmobilier bien = new BienImmobilier();
-	// 	bien.setId(dto.getId());
-	// 	bien.setTypeBien(dto.getTypeBien() != null ? TypeBien.valueOf(dto.getTypeBien().trim().toUpperCase()) : null);
-	// 	bien.setAdresse(dto.getAdresse());
-	// 	bien.setSurface(dto.getSurface());
-	// 	bien.setNombrePieces(dto.getNombrePieces());
-	// 	bien.setLoyer(dto.getLoyer());
-	// 	bien.setStatutBien(dto.getStatutBien() != null ? Statut.valueOf(dto.getStatutBien().trim().toUpperCase()) : Statut.DISPONIBLE);
-	// 	bien.setDescription(dto.getDescription());
-	// 	bien.setDateAjout(dto.getDateAjout() != null ? dto.getDateAjout() : LocalDate.now());
-	// 	return bien;
-	// }
 
 	private List<PhotoBienDTO> photoListToDTO(List<PhotoBien> photos) {
 		if (photos == null) {
@@ -88,7 +68,8 @@ public class BienImmobilierMapper {
 		List<PhotoBienDTO> dtos = new ArrayList<>();
 		for (PhotoBien photo : photos) {
 			PhotoBienDTO dto = new PhotoBienDTO();
-			dto.setUrlPhoto(photo.getUrlPhoto());
+			dto.setId(photo.getId());
+			dto.setUrlPhoto(photo.getUrlPhoto());;
 			dto.setDateUpload(LocalDate.from(photo.getDateUpload()));
 			dtos.add(dto);
 		}

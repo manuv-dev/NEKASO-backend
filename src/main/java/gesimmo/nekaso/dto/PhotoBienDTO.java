@@ -13,4 +13,5 @@ public class PhotoBienDTO {
     private Long id;
     private String urlPhoto;
     private LocalDate dateUpload;
+   
 }

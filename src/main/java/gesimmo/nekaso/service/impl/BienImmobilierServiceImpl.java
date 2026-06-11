@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import gesimmo.nekaso.dto.BienImmobilierDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.PhotoBien;
-import gesimmo.nekaso.entity.enums.Statut;
+
 import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.TypeBien;
 import gesimmo.nekaso.repository.BienImmobilierRepository;
@@ -52,12 +52,12 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
         if (type.isEmpty() && statut.isEmpty()) {
             biens = bienImmobilierRepository.findAll(pageable);
         } else if (type.isEmpty()) {
-            biens = bienImmobilierRepository.findByStatutBien(Statut.valueOf(statut.toUpperCase()), pageable);
+            biens = bienImmobilierRepository.findByStatutBien(StatutBien.valueOf(statut.toUpperCase()), pageable);
         } else if (statut.isEmpty()) {
             biens = bienImmobilierRepository.findByTypeBien(TypeBien.valueOf(type.toUpperCase()), pageable);
         } else {
             biens = bienImmobilierRepository.findByStatutBienAndTypeBien(
-                    Statut.valueOf(statut.toUpperCase()),
+                    StatutBien.valueOf(statut.toUpperCase()),
                     TypeBien.valueOf(type.toUpperCase()),
                     pageable);
         }
