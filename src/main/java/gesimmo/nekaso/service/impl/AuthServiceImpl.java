@@ -12,15 +12,18 @@ import gesimmo.nekaso.entity.User;
 import gesimmo.nekaso.entity.enums.Role;
 import gesimmo.nekaso.repository.UserRepository;
 import gesimmo.nekaso.service.AuthService;
+import gesimmo.nekaso.service.UtilisateurService;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
 	private final UserRepository userRepository;
+	private final UtilisateurService utilisateurService;
 	private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-	public AuthServiceImpl(UserRepository userRepository) {
+	public AuthServiceImpl(UserRepository userRepository, UtilisateurService utilisateurService) {
 		this.userRepository = userRepository;
+		this.utilisateurService = utilisateurService;
 	}
 
 	@Override
@@ -37,29 +40,15 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public String register(AuthRequestDTO authRequest) {
-		if (userRepository.existsByTelephone(authRequest.getTelephone())) {
+		if (utilisateurService.existsByTelephone(authRequest.getTelephone())) {
 			throw new IllegalArgumentException("Telephone already exists.");
 		}
 
-		String nom = authRequest.getNom();
-		String prenom = authRequest.getPrenom();
-		if (nom == null || nom.isBlank()) {
-			nom = authRequest.getTelephone() != null ? authRequest.getTelephone() : "Utilisateur";
-		}
-		if (prenom == null || prenom.isBlank()) {
-			prenom = "Utilisateur";
-		}
-
-		User user = new User();
-		user.setNom(nom);
-		user.setPrenom(prenom);
-		user.setTelephone(authRequest.getTelephone());
-		user.setMotDePasse(passwordEncoder.encode(authRequest.getMotDePasse()));
-		user.setRole(authRequest.getRole() == null || authRequest.getRole().isBlank()
+		Role role = authRequest.getRole() == null || authRequest.getRole().isBlank()
 				? Role.LOCATAIRE
-				: Role.valueOf(authRequest.getRole().toUpperCase()));
-		user.setStatut("ACTIF");
-		userRepository.save(user);
+				: Role.valueOf(authRequest.getRole().toUpperCase());
+		utilisateurService.createUser(authRequest.getNom(), authRequest.getPrenom(), authRequest.getTelephone(),
+				authRequest.getMotDePasse(), role, "ACTIF");
 
 		return "User registered successfully.";
 	}

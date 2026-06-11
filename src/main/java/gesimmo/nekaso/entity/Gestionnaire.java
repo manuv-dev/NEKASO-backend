@@ -20,6 +20,8 @@ public class Gestionnaire {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	private Long numeroGestionnaire;
+
 	@OneToOne
 	@JoinColumn(name = "user_id")
 	private User user;
