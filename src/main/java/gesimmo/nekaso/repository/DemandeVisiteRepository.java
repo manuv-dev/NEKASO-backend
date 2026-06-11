@@ -10,8 +10,8 @@ import gesimmo.nekaso.entity.enums.VisiteStatut;
 @Repository
 public interface DemandeVisiteRepository extends JpaRepository<DemandeVisite, Long> {
     
-boolean existsByLocataireIdAndBienImmobilierIdAndStatut(Long locataireId, Long bienId, VisiteStatut statut);
-Page<DemandeVisite> findByStatutAndLocataireId(VisiteStatut statut, Long locataireId, Pageable pageable);
-Page<DemandeVisite> findByLocataireId(Long locataireId, Pageable pageable);
-
+    boolean existsByLocataireIdAndBienImmobilierIdAndStatut(Long locataireId, Long bienId, VisiteStatut statut);
+    Page<DemandeVisite> findByStatutAndLocataireId(VisiteStatut statut, Long locataireId, Pageable pageable);
+    Page<DemandeVisite> findByLocataireId(Long locataireId, Pageable pageable);
+    DemandeVisite save(DemandeVisite demandeVisite);
 }

@@ -3,6 +3,7 @@ package gesimmo.nekaso.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,7 +19,7 @@ public class DemandeLocation {
 
     private String statut;
 
-    private LocalDateTime dateDemande = LocalDateTime.now();
+    private LocalDate dateDemande = LocalDate.now();
 
     @ManyToOne
     @JoinColumn(name = "locataire_id")

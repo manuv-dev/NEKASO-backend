@@ -74,7 +74,6 @@ public class DemandeVisiteController {
             Pageable pageable = PageRequest.of(page, size);
             Page<BienImmobilier> bienPage = demandeVisiteService.getBiensDisponibles(pageable);
             Page<BienImmobilierResponseDTOGes> bienDto=bienPage.map(bienImmobilierMapper::toDTO);
-           
 
        return new ResponseEntity<>(PageResponse.fromPage(bienDto), HttpStatus.OK);
     }

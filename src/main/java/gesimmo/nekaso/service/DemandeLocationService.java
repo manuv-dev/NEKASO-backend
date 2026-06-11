@@ -1,15 +1,16 @@
 package gesimmo.nekaso.service;
 
-import gesimmo.nekaso.dto.ContratDTO;
-import gesimmo.nekaso.entity.ContratBail;
+import gesimmo.nekaso.dto.DemandeLocationDTO.DemandeLocationCreateDTO;
 import gesimmo.nekaso.entity.DemandeLocation;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface DemandeLocationService {
-    DemandeLocation creerDemande(DemandeLocation demande);
-    ContratBail validerDemande(Long demandeId, ContratDTO dto);
-    DemandeLocation rejeterDemande(Long demandeId);
-    List<DemandeLocation> getDemandesParGestionnaire(Long gestionnaireId);
-    List<DemandeLocation> getDemandesParLocataire(Long locataireId);
+
+    Page<DemandeLocation> getAllDemandesLocation(Pageable pageable,String statut, Long id_Locataire);
+    Page<DemandeLocation> getAllDemandesLocationByGestionnaireBienid(Pageable pageable, String statut, Long id_Gestionnaire);
+    public DemandeLocationCreateDTO createDemandeLocation(Long idLocataire, Long idBien);
+    void refuserDemandeLocation(Long demandeId);
+    void  accepterDemandeLocation(Long demandeId);
+    public void annulerDemandeLocation(Long demandeId);
 }

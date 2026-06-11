@@ -1,45 +1,72 @@
 package gesimmo.nekaso.controller;
 
-import gesimmo.nekaso.dto.ContratDTO;
-import gesimmo.nekaso.entity.ContratBail;
+import gesimmo.nekaso.dto.DemandeLocationDTO.DemandeLocationCreateDTO;
+import gesimmo.nekaso.dto.DemandeLocationDTO.DemandeLocationDTO;
+import gesimmo.nekaso.dto.DemandeLocationDTO.DemandeLocationDTOList;
 import gesimmo.nekaso.entity.DemandeLocation;
+import gesimmo.nekaso.mapper.BienImmobilierMapper;
+import gesimmo.nekaso.mapper.DemandeLocationMapper;
 import gesimmo.nekaso.service.DemandeLocationService;
-import lombok.RequiredArgsConstructor;
+import gesimmo.nekaso.shared.Response.PageResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/demandes")
-@RequiredArgsConstructor
 public class DemandeLocationController {
 
-    private final DemandeLocationService service;
+    private final DemandeLocationService demandeLocationService;
+    private final DemandeLocationMapper demandeLocationMapper;
 
-    @PostMapping
-    public DemandeLocation creerDemande(@RequestBody DemandeLocation demande) {
-        return service.creerDemande(demande);
+    public DemandeLocationController(DemandeLocationService demandeLocationService, DemandeLocationMapper demandeLocationMapper, BienImmobilierMapper bienImmobilierMapper, DemandeLocationMapper demandeLocationMapper1) {
+        this.demandeLocationService = demandeLocationService;
+        this.demandeLocationMapper = demandeLocationMapper;
     }
 
-    @PutMapping("/{id}/valider")
-    public ContratBail validerDemande(@PathVariable Long id, @RequestBody ContratDTO dto) {
-        return service.validerDemande(id, dto);
+    @PostMapping("/locataire/{id_Locataire}/bien/{id_Bien}")
+    public ResponseEntity<DemandeLocationCreateDTO> createDemandeLocation(@PathVariable Long id_Locataire,
+                                                                          @PathVariable Long id_Bien) {
+        DemandeLocationCreateDTO demandeLocationCreateDTO = demandeLocationService.createDemandeLocation(id_Locataire, id_Bien);
+        return new ResponseEntity<>(demandeLocationCreateDTO,
+                org.springframework.http.HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}/rejeter")
-    public DemandeLocation rejeterDemande(@PathVariable Long id) {
-        return service.rejeterDemande(id);
+    @PatchMapping("/demande/{id_Demande}/refuser")
+    public ResponseEntity<String> updateDemandeLocationStatus(@PathVariable Long id_Demande) {
+        demandeLocationService.refuserDemandeLocation(id_Demande);
+        return ResponseEntity.ok("Statut de la demande de location mis à jour avec succès.");
+
     }
 
-    // demandes liées aux biens d’un gestionnaire
-    @GetMapping("/gestionnaire/{gestionnaireId}")
-    public List<DemandeLocation> getDemandesParGestionnaire(@PathVariable Long gestionnaireId) {
-        return service.getDemandesParGestionnaire(gestionnaireId);
+     @PatchMapping("/demande/{id_Demande}/accepter")
+     public ResponseEntity<String> accepterDemandeLocation(@PathVariable Long id_Demande) {
+            demandeLocationService.accepterDemandeLocation(id_Demande);
+            return ResponseEntity.ok("Statut de la demande de location mis à jour avec succès.");
+    }
+    @PatchMapping("/demande/{id_Demande}/annuler")
+    public ResponseEntity<String> annulerDemandeLocation(@PathVariable Long id_Demande) {
+        demandeLocationService.annulerDemandeLocation(id_Demande);
+        return ResponseEntity.ok("Statut de la demande de location mis à jour avec succès.");
     }
 
-    // demandes faites par un locataire
-    @GetMapping("/locataire/{locataireId}")
-    public List<DemandeLocation> getDemandesParLocataire(@PathVariable Long locataireId) {
-        return service.getDemandesParLocataire(locataireId);
+    @GetMapping("/locataire/{id_Locataire}/Statut/{statut}")
+    public ResponseEntity<PageResponse<DemandeLocationDTO>> getAllDemandesLocation(
+            @PathVariable(required = true) Long id_Locataire,
+            @PathVariable(required = true) String statut,
+            @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
+            @RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page <DemandeLocation> demandesPage = demandeLocationService.getAllDemandesLocation(pageable,statut,id_Locataire);
+        Page<DemandeLocationDTO> demandeDTO= demandesPage.map(demandeLocationMapper::toDtoList);
+
+        return new ResponseEntity<>(PageResponse.fromPage(demandeDTO), HttpStatus.OK);
+
     }
+
+
 }
