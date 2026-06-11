@@ -2,8 +2,8 @@ package gesimmo.nekaso.dto.DemandeVisiteDTO;
 
 
 
-import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOGes;
 
+import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOGes;
 import lombok.Builder;
 
 @Builder

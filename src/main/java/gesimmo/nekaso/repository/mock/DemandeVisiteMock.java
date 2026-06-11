@@ -2,6 +2,7 @@ package gesimmo.nekaso.repository.mock;
 
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ import gesimmo.nekaso.repository.DemandeVisiteRepository;
 import gesimmo.nekaso.repository.LocataireRepository;
 
 @Component
+@Order(3)
 public class DemandeVisiteMock implements CommandLineRunner {
 
     private final DemandeVisiteRepository demandeVisiteRepository;

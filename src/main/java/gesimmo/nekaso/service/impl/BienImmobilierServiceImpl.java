@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierCreateDTO;
-import gesimmo.nekaso.mapper.BienImmobilierMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import gesimmo.nekaso.dto.BienImmobilierDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.PhotoBien;
-import gesimmo.nekaso.entity.enums.Statut;
+
 import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.TypeBien;
 import gesimmo.nekaso.repository.BienImmobilierRepository;
@@ -23,6 +22,7 @@ import gesimmo.nekaso.service.BienImmobilierService;
 import gesimmo.nekaso.service.CloudinaryService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import gesimmo.nekaso.mapper.BienImmobilierMapper;
 
 @Service
 public class BienImmobilierServiceImpl implements BienImmobilierService {
@@ -40,6 +40,7 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
         this.photoBienRepository = photoBienRepository;
         this.cloudinaryService = cloudinaryService;
         this.bienImmobilierMapper = bienImmobilierMapper;
+
     }
 
  public Page<BienImmobilier> searchBienImmobilierByStatut(String statut, String type,Pageable pageable) {
@@ -57,12 +58,12 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
         if (type.isEmpty() && statut.isEmpty()) {
             biens = bienImmobilierRepository.findAll(pageable);
         } else if (type.isEmpty()) {
-            biens = bienImmobilierRepository.findByStatutBien(Statut.valueOf(statut.toUpperCase()), pageable);
+            biens = bienImmobilierRepository.findByStatutBien(StatutBien.valueOf(statut.toUpperCase()), pageable);
         } else if (statut.isEmpty()) {
             biens = bienImmobilierRepository.findByTypeBien(TypeBien.valueOf(type.toUpperCase()), pageable);
         } else {
             biens = bienImmobilierRepository.findByStatutBienAndTypeBien(
-                    Statut.valueOf(statut.toUpperCase()),
+                    StatutBien.valueOf(statut.toUpperCase()),
                     TypeBien.valueOf(type.toUpperCase()),
                     pageable);
         }

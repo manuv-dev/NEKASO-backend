@@ -3,6 +3,8 @@
 
 GET {{baseUrl}}/api/biens/gestionnaire
 ###
+GET {{baseUrl}}/api/auth/
+###
 GET {{baseUrl}}/api/biens/gestionnaire?page=1&size=2
 ###
 

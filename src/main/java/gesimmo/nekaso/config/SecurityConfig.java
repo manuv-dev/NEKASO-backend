@@ -14,15 +14,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
-                        .requestMatchers("/api/biens/**").hasRole("GESTIONNAIRE")
-                        .requestMatchers("/api/utilisateurs/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(
-                        jwt -> jwt.jwkSetUri("http://localhost:8080/realms/nekaso/protocol/openid-connect/certs")
-                ));
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
         return http.build();
     }

@@ -17,4 +17,5 @@ public interface BienImmobilierService {
     BienImmobilier createBien(BienImmobilierCreateDTO bienDTO, MultipartFile[] photos);
     public Page<BienImmobilier> getBiensByGestionnaireId(Long gestionnaireId, Pageable pageable);
     public Page<BienImmobilier> getAllBienImmobilierDisponble(Pageable pageable);
+
 }

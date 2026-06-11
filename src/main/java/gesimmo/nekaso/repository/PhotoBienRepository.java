@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface PhotoBienRepository extends JpaRepository<PhotoBien, Long> {
-    PhotoBien save(PhotoBien photoBien);
+
+
+    // List<PhotoBien> findByBienId(Long bienId);
 
     @Transactional
     void deleteById(Long photoId);

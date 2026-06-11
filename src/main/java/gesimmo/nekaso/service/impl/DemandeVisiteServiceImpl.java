@@ -3,7 +3,6 @@ package gesimmo.nekaso.service.impl;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.parser.Entity;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +13,8 @@ import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.DemandeVisite;
 import gesimmo.nekaso.mapper.DemandeVisiteMapper;
 import gesimmo.nekaso.entity.Locataire;
-import gesimmo.nekaso.entity.enums.Statut;
+
+import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.VisiteStatut;
 import gesimmo.nekaso.exception.EntityExistException;
 import gesimmo.nekaso.exception.ResourceNotFoundException;
@@ -102,7 +102,7 @@ public Page<DemandeVisite> getAllDemandesVisite(Pageable pageable, String statut
 @Override
 public Page<BienImmobilier> getBiensDisponibles(Pageable pageable) {
     // 1. On récupère la page directement
-    Page<BienImmobilier> page = bienRepository.findByStatutBien(Statut.DISPONIBLE, pageable);
+    Page<BienImmobilier> page = bienRepository.findByStatutBien(StatutBien.DISPONIBLE, pageable);
 
     // 2. On vérifie le contenu
     if (!page.hasContent()) {

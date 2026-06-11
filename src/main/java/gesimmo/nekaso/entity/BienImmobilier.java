@@ -16,12 +16,11 @@ public class BienImmobilier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
-    private String libelle;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TypeBien typeBien;
+    private String libelle;
 
     @Column(nullable = false)
     private String adresse;
@@ -51,4 +50,5 @@ public class BienImmobilier {
     @ManyToOne
     @JoinColumn(name = "gestionnaire_id")
     private Gestionnaire gestionnaire;
+
 }
