@@ -1,6 +1,6 @@
 package gesimmo.nekaso.dto.DemandeVisiteDTO;
 import gesimmo.nekaso.dto.UtilisateurDTO;
-import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTO;
+import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOGes;
 import lombok.Builder;
 
 
@@ -10,5 +10,5 @@ public record DemandeVisiteDTO(
 	String statut,
 	String dateCreation,
 	UtilisateurDTO locataire,
-	BienImmobilierResponseDTO bien) {
+	BienImmobilierResponseDTOGes bien) {
 } 

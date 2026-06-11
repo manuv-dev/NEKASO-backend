@@ -1,6 +1,5 @@
 package gesimmo.nekaso.controller;
 
-import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOGes;
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteCreateResponseDTO;
 
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteDTOList;
@@ -65,7 +65,7 @@ public class DemandeVisiteController {
 
 	}
     @GetMapping("biens_disponibles")
-    public ResponseEntity<PageResponse<BienImmobilierResponseDTO>> getAllBiens(
+    public ResponseEntity<PageResponse<BienImmobilierResponseDTOGes>> getAllBiens(
             @RequestParam(defaultValue = "") String statut,
             @RequestParam(defaultValue = "") String type,
             @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
@@ -73,7 +73,7 @@ public class DemandeVisiteController {
             
             Pageable pageable = PageRequest.of(page, size);
             Page<BienImmobilier> bienPage = demandeVisiteService.getBiensDisponibles(pageable);
-            Page<BienImmobilierResponseDTO> bienDto=bienPage.map(bienImmobilierMapper::toDTO);
+            Page<BienImmobilierResponseDTOGes> bienDto=bienPage.map(bienImmobilierMapper::toDTO);
            
 
        return new ResponseEntity<>(PageResponse.fromPage(bienDto), HttpStatus.OK);

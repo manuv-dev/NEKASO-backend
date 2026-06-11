@@ -6,9 +6,10 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record BienImmobilierResponseDTO(
+public record BienImmobilierResponseDTOGes(
         Long id,
         String typeBien,
+        String libelle,
         String adresse,
         Double surface,
         Integer nombrePieces,

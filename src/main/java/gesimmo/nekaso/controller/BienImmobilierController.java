@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTO;
+import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOGes;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.mapper.BienImmobilierMapper;
 import gesimmo.nekaso.service.BienImmobilierService;
@@ -26,7 +26,7 @@ public class BienImmobilierController {
     }
 
  @GetMapping("")
-    public ResponseEntity<PageResponse<BienImmobilierResponseDTO>> getAllBiens(
+    public ResponseEntity<PageResponse<BienImmobilierResponseDTOGes>> getAllBiens(
             @RequestParam(defaultValue = "") String statut,
             @RequestParam(defaultValue = "") String type,
             @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
@@ -34,7 +34,7 @@ public class BienImmobilierController {
             
             Pageable pageable = PageRequest.of(page, size);
             Page<BienImmobilier> bienPage = bienService.searchBienImmobilierByStatut(statut, type, pageable);
-            Page<BienImmobilierResponseDTO> bienDto=bienPage.map(bienImmobilierMapper::toDTO);
+            Page<BienImmobilierResponseDTOGes> bienDto=bienPage.map(bienImmobilierMapper::toDTO);
            
 
        return new ResponseEntity<>(PageResponse.fromPage(bienDto), HttpStatus.OK);

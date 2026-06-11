@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import gesimmo.nekaso.dto.PhotoBienDTO;
-import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTO;
+import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOGes;
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOLoc;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.PhotoBien;
@@ -23,12 +23,12 @@ public class BienImmobilierMapper {
 		this.dateMapper = dateMapper;
 	}
 
-	public BienImmobilierResponseDTO toDTO(BienImmobilier bien) {
+	public BienImmobilierResponseDTOGes toDTO(BienImmobilier bien) {
 		if (bien == null) {
 			return null;
 		}
 
-		return BienImmobilierResponseDTO.builder()
+		return BienImmobilierResponseDTOGes.builder()
 				.id(bien.getId())
 				.typeBien(bien.getTypeBien() != null ? bien.getTypeBien().name() : null)
 				.adresse(bien.getAdresse())
@@ -67,11 +67,11 @@ public class BienImmobilierMapper {
 		}
 		List<PhotoBienDTO> dtos = new ArrayList<>();
 		for (PhotoBien photo : photos) {
-			PhotoBienDTO dto = new PhotoBienDTO();
-			dto.setId(photo.getId());
-			dto.setUrlPhoto(photo.getUrlPhoto());;
-			dto.setDateUpload(LocalDate.from(photo.getDateUpload()));
-			dtos.add(dto);
+			dtos.add(PhotoBienDTO.builder()
+					.id(photo.getId())
+					.urlPhoto(photo.getUrlPhoto())
+					.dateUpload(LocalDate.from(photo.getDateUpload()))
+					.build()); 
 		}
 		return dtos;
 	}
