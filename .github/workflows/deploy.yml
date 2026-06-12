@@ -44,4 +44,4 @@ jobs:
           script: |
             mkdir -p /home/NekasoVM/app
             pkill java || true
-            nohup java -jar /home/NekasoVM/app/*.jar > /home/NekasoVM/app/app.log 2>&1 &
+            nohup java -jar /home/NekasoVM/app/app.jar > /home/NekasoVM/app/app.log 2>&1 &
