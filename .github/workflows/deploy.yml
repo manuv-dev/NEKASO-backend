@@ -32,7 +32,7 @@ jobs:
           username: NekasoVM
           key: ${{ secrets.VM_SSH_KEY }}
           source: "target/*.jar"
-          target: "/home/NekasoVM/app/"
+          target: "/home/NekasoVM/app/app.jar"
 
       # 5. Redémarrer le backend sur la VM
       - name: Restart Spring Boot on VM
