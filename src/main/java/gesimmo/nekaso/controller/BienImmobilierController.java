@@ -30,8 +30,8 @@ public class BienImmobilierController {
         this.bienImmobilierMapper = bienImmobilierMapper;
     }
  @GetMapping("/test")
-    public ResponseEntity<String> testEndpoint() {
-        return  ResponseEntity.ok("Hello, World!"); 
+    public String testEndpoint() {
+        return  "Endpoint de test pour les biens immobiliers fonctionne correctement !";
     }
  @GetMapping("/gestionnaire")
     public ResponseEntity<PageResponse<BienImmobilierResponseDTOGes>> getAllBiens(
