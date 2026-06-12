@@ -9,22 +9,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout code
+      # 1. Checkout du code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Setup Java
+      # 2. Setup Java pour le build
       - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      # 3. Build Spring Boot
+      # 3. Build du JAR
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
-      # 4. Prepare VM folder
+      # 4. Préparation du dossier distant
       - name: Create remote folder
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -34,7 +34,7 @@ jobs:
           script: |
             mkdir -p /home/NekasoVM/app
 
-      # 5. Upload JAR
+      # 5. Upload du JAR propre
       - name: Upload JAR to VM
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -44,57 +44,21 @@ jobs:
           source: "target/nekaso-0.0.1-SNAPSHOT.jar"
           target: "/home/NekasoVM/app/"
 
-      # 6. Deploy, restart & verify backend
-      - name: Restart Spring Boot
+      # 6. Remplacement du fichier et redémarrage du service de production
+      - name: Restart Spring Boot Service
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VM_IP }}
           username: NekasoVM
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
-            echo "Stopping existing app..."
-            pkill -f '[j]ava -jar app.jar' || true
-            
-            sleep 5
-            
             set -e
-
-            echo "Cleaning old jar..."
-            rm -f /home/NekasoVM/app/app.jar
-
+            
             echo "Moving new jar..."
             mv /home/NekasoVM/app/target/nekaso-0.0.1-SNAPSHOT.jar /home/NekasoVM/app/app.jar
             rm -rf /home/NekasoVM/app/target
 
-            echo "Starting application..."
-            cd /home/NekasoVM/app
-            # Le '< /dev/null' force le détachement complet de la session SSH
-            nohup java -jar app.jar > app.log 2>&1 < /dev/null &
-
-            echo "Waiting for application to respond (Health Check)..."
-            success=false
-            
-            # Boucle compatible avec tous les shells (sh et bash)
-            for i in 1 2 3 4 5 6 7 8 9 10 11 12; do
-              # On récupère le code HTTP sans faire échouer le script, même si c'est un 404 ou 401
-              status_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 || echo "000")
-              
-              # Si le code est différent de 000, cela signifie que Spring Boot est debout et répond !
-              if [ "$status_code" != "000" ]; then
-                echo "Application is up and responding! (HTTP Status: $status_code) ✔"
-                success=true
-                break
-              fi
-              
-              echo "Application not ready yet (Port closed), retrying in 5 seconds... ($i/12)"
-              sleep 5
-            done
-
-            if [ "$success" = false ]; then
-              echo "❌ Error: Application failed to respond on port 8080 within 60 seconds."
-              echo "=== LAST 50 LINES OF APP.LOG ==="
-              tail -n 50 app.log
-              exit 1
-            fi
+            echo "Restarting Nekaso Service..."
+            sudo systemctl restart nekaso.service
 
             echo "Deployment finished successfully ✔"
