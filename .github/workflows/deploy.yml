@@ -34,7 +34,7 @@ jobs:
           script: |
             mkdir -p /home/NekasoVM/app
 
-      # 5. Upload JAR (SAFE MODE)
+      # 5. Upload JAR
       - name: Upload JAR to VM
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -44,7 +44,7 @@ jobs:
           source: "target/nekaso-0.0.1-SNAPSHOT.jar"
           target: "/home/NekasoVM/app/"
 
-      # 6. Deploy & restart backend
+      # 6. Deploy & restart backend (CORRIGÉ)
       - name: Restart Spring Boot
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -52,18 +52,28 @@ jobs:
           username: NekasoVM
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
-            set -e
-
+            # On stoppe l'app sans faire échouer le script si elle n'est pas lancée
             echo "Stopping existing app..."
             pkill -f nekaso || true
+            
+            # On laisse le temps au processus de se fermer proprement
+            sleep 5
+            
+            # On active le mode strict pour la suite
+            set -e
 
             echo "Cleaning old jar..."
             rm -f /home/NekasoVM/app/app.jar
 
-            echo "Renaming jar..."
-            mv /home/NekasoVM/app/nekaso-0.0.1-SNAPSHOT.jar /home/NekasoVM/app/app.jar
+            echo "Moving new jar..."
+            # Note : le scp place le fichier dans /home/NekasoVM/app/target/
+            mv /home/NekasoVM/app/target/nekaso-0.0.1-SNAPSHOT.jar /home/NekasoVM/app/app.jar
+            
+            # Nettoyage du dossier temporaire de l'upload
+            rm -rf /home/NekasoVM/app/target
 
             echo "Starting application..."
-            nohup java -jar /home/NekasoVM/app/app.jar > /home/NekasoVM/app/app.log 2>&1 &
+            cd /home/NekasoVM/app
+            nohup java -jar app.jar > app.log 2>&1 &
 
             echo "Deployment finished ✔"
