@@ -68,26 +68,30 @@ jobs:
 
             echo "Starting application..."
             cd /home/NekasoVM/app
-            nohup java -jar app.jar > app.log 2>&1 &
+            # Le '< /dev/null' force le détachement complet de la session SSH
+            nohup java -jar app.jar > app.log 2>&1 < /dev/null &
 
             echo "Waiting for application to respond (Health Check)..."
             success=false
             
-            # Boucle de vérification : 12 essais espacés de 5 secondes = 60 secondes max
-            for i in {1..12}; do
-              # Tente d'accéder à la racine de l'application (ajuster le port 8080 si nécessaire)
-              if curl -s --fail http://localhost:8080 > /dev/null; then
-                echo "Application lives! Backend started successfully ✔"
+            # Boucle compatible avec tous les shells (sh et bash)
+            for i in 1 2 3 4 5 6 7 8 9 10 11 12; do
+              # On récupère le code HTTP sans faire échouer le script, même si c'est un 404 ou 401
+              status_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 || echo "000")
+              
+              # Si le code est différent de 000, cela signifie que Spring Boot est debout et répond !
+              if [ "$status_code" != "000" ]; then
+                echo "Application is up and responding! (HTTP Status: $status_code) ✔"
                 success=true
                 break
               fi
-              echo "Application not ready yet, retrying in 5 seconds... ($i/12)"
+              
+              echo "Application not ready yet (Port closed), retrying in 5 seconds... ($i/12)"
               sleep 5
             done
 
-            # Si après 1 minute l'application ne répond pas, on affiche les logs et on quitte en erreur
             if [ "$success" = false ]; then
-              echo "❌ Error: Application failed to start within 60 seconds."
+              echo "❌ Error: Application failed to respond on port 8080 within 60 seconds."
               echo "=== LAST 50 LINES OF APP.LOG ==="
               tail -n 50 app.log
               exit 1
