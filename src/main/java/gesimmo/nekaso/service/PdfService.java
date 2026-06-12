@@ -1,6 +1,6 @@
 package gesimmo.nekaso.service;
 
-import org.springframework.stereotype.Service;
+
 
 import gesimmo.nekaso.entity.ContratBail;
 import gesimmo.nekaso.entity.Quittance;
