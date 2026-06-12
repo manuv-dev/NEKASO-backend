@@ -44,7 +44,7 @@ jobs:
           source: "target/nekaso-0.0.1-SNAPSHOT.jar"
           target: "/home/NekasoVM/app/"
 
-      # 6. Deploy & restart backend (CORRIGÉ)
+      # 6. Deploy, restart & verify backend
       - name: Restart Spring Boot
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -53,13 +53,10 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
             echo "Stopping existing app..."
-            # On cible EXCLUSIVEMENT le processus Java avec le nom exact du fichier exécuté
-            pkill -f 'java -jar app.jar' || true
+            pkill -f '[j]ava -jar app.jar' || true
             
-            # On laisse le temps au processus de se fermer proprement
             sleep 5
             
-            # On active le mode strict pour la suite
             set -e
 
             echo "Cleaning old jar..."
@@ -67,12 +64,33 @@ jobs:
 
             echo "Moving new jar..."
             mv /home/NekasoVM/app/target/nekaso-0.0.1-SNAPSHOT.jar /home/NekasoVM/app/app.jar
-            
-            # Nettoyage du dossier temporaire de l'upload
             rm -rf /home/NekasoVM/app/target
 
             echo "Starting application..."
             cd /home/NekasoVM/app
             nohup java -jar app.jar > app.log 2>&1 &
 
-            echo "Deployment finished ✔"
+            echo "Waiting for application to respond (Health Check)..."
+            success=false
+            
+            # Boucle de vérification : 12 essais espacés de 5 secondes = 60 secondes max
+            for i in {1..12}; do
+              # Tente d'accéder à la racine de l'application (ajuster le port 8080 si nécessaire)
+              if curl -s --fail http://localhost:8080 > /dev/null; then
+                echo "Application lives! Backend started successfully ✔"
+                success=true
+                break
+              fi
+              echo "Application not ready yet, retrying in 5 seconds... ($i/12)"
+              sleep 5
+            done
+
+            # Si après 1 minute l'application ne répond pas, on affiche les logs et on quitte en erreur
+            if [ "$success" = false ]; then
+              echo "❌ Error: Application failed to start within 60 seconds."
+              echo "=== LAST 50 LINES OF APP.LOG ==="
+              tail -n 50 app.log
+              exit 1
+            fi
+
+            echo "Deployment finished successfully ✔"
