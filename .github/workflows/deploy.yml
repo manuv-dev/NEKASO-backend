@@ -45,7 +45,6 @@ jobs:
           target: "/home/NekasoVM/app/"
 
       # 6. Deploy & restart backend (CORRIGÉ)
-      -# 6. Deploy & restart backend
       - name: Restart Spring Boot
         uses: appleboy/ssh-action@v1.0.3
         with:
