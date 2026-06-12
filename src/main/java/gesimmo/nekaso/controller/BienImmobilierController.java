@@ -29,7 +29,10 @@ public class BienImmobilierController {
         this.bienService = bienService;
         this.bienImmobilierMapper = bienImmobilierMapper;
     }
-
+ @GetMapping("/test")
+    public ResponseEntity<String> testEndpoint() {
+        return new ResponseEntity<>("API is working!", HttpStatus.OK);
+    }
  @GetMapping("/gestionnaire")
     public ResponseEntity<PageResponse<BienImmobilierResponseDTOGes>> getAllBiens(
             @RequestParam(defaultValue = "") String statut,
