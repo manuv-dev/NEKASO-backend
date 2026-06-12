@@ -45,6 +45,7 @@ jobs:
           target: "/home/NekasoVM/app/"
 
       # 6. Deploy & restart backend (CORRIGÉ)
+      -# 6. Deploy & restart backend
       - name: Restart Spring Boot
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -52,9 +53,9 @@ jobs:
           username: NekasoVM
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
-            # On stoppe l'app sans faire échouer le script si elle n'est pas lancée
             echo "Stopping existing app..."
-            pkill -f nekaso || true
+            # On cible EXCLUSIVEMENT le processus Java avec le nom exact du fichier exécuté
+            pkill -f 'java -jar app.jar' || true
             
             # On laisse le temps au processus de se fermer proprement
             sleep 5
@@ -66,7 +67,6 @@ jobs:
             rm -f /home/NekasoVM/app/app.jar
 
             echo "Moving new jar..."
-            # Note : le scp place le fichier dans /home/NekasoVM/app/target/
             mv /home/NekasoVM/app/target/nekaso-0.0.1-SNAPSHOT.jar /home/NekasoVM/app/app.jar
             
             # Nettoyage du dossier temporaire de l'upload
