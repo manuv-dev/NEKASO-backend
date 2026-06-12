@@ -29,7 +29,7 @@ public class BienImmobilierController {
         this.bienService = bienService;
         this.bienImmobilierMapper = bienImmobilierMapper;
     }
- @GetMapping("/tests")
+ @GetMapping("/test")
     public String testEndpoint() {
         return  "Endpoint de test pour les biens immobiliers fonctionne correctement !";
     }
