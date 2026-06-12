@@ -31,7 +31,7 @@ public class BienImmobilierController {
     }
  @GetMapping("/test")
     public ResponseEntity<String> testEndpoint() {
-        return new ResponseEntity<>("API is working!", HttpStatus.OK);
+        return  ResponseEntity.ok("Hello, World!"); 
     }
  @GetMapping("/gestionnaire")
     public ResponseEntity<PageResponse<BienImmobilierResponseDTOGes>> getAllBiens(
