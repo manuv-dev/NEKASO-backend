@@ -53,7 +53,7 @@ public class DemandeLocationController {
         return ResponseEntity.ok("Statut de la demande de location mis à jour avec succès.");
     }
 
-    @GetMapping("/locataire/{id_Locataire}/Statut/{statut}")
+    @GetMapping("/locataire/{id_Locataire}")
     public ResponseEntity<PageResponse<DemandeLocationDTO>> getAllDemandesLocation(
             @PathVariable(required = true) Long id_Locataire,
             @RequestParam(defaultValue = "") String statut,
