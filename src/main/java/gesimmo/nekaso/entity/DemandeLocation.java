@@ -6,6 +6,8 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import gesimmo.nekaso.entity.enums.StatutDemande;   
+
 @Entity
 @Table(name = "demande_location")
 @Data
@@ -17,9 +19,11 @@ public class DemandeLocation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String statut;
-
-    private LocalDate dateDemande = LocalDate.now();
+    @Enumerated(EnumType.STRING)
+    private StatutDemande  statut;
+   
+    @Column(name = "datedemande")
+    private LocalDateTime dateDemande;
 
     @ManyToOne
     @JoinColumn(name = "locataire_id")

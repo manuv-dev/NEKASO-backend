@@ -31,3 +31,6 @@ GET {{baseUrl}}/api/visites/mes_demandes/1
 ###
 GET {{baseUrl}}/api/visites/biens_disponibles?page=0&size=3
 
+###
+
+GET {{baseUrl}}/api/demandes/locataire/1?statut=EN_ATTENTE

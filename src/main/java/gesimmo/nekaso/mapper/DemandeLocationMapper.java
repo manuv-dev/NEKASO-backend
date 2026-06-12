@@ -26,7 +26,7 @@ public class DemandeLocationMapper {
             .id(demandeLocation.getId())
             .locataireId(demandeLocation.getLocataire().getId())
             .bienId(demandeLocation.getBien().getId())
-            .dateDemande(dateMapper.formatLocalDate(demandeLocation.getDateDemande(), "yyyy-MM-dd"))
+            .dateDemande(dateMapper.formatLocalDateTime(demandeLocation.getDateDemande(), "yyyy-MM-dd HH:mm:ss"))
             .statut(demandeLocation.getStatut().toString())
             .build();
 
@@ -37,7 +37,7 @@ public class DemandeLocationMapper {
             .id(demandeLocation.getId())
             .locataireId(demandeLocation.getLocataire().getId())
             .bienId(demandeLocation.getBien().getId())
-            .dateDemande(dateMapper.formatLocalDate(demandeLocation.getDateDemande(), "yyyy-MM-dd"))
+            .dateDemande(dateMapper.formatLocalDateTime(demandeLocation.getDateDemande(), "yyyy-MM-dd HH:mm:ss"))
             .statut(demandeLocation.getStatut().toString())
             .build();
     }

@@ -59,7 +59,7 @@ public class DemandeLocationServiceImpl implements DemandeLocationService {
             DemandeLocation demandelocation = DemandeLocation.builder()
                     .locataire(locataire)
                     .bien(bien)
-                    .statut("EN_ATTENTE")
+                    .statut(StatutDemande.EN_ATTENTE)
                     .build();
 
             demandeRepo.save(demandelocation);
@@ -73,8 +73,8 @@ public class DemandeLocationServiceImpl implements DemandeLocationService {
         DemandeLocation demande = demandeRepo.findById(demandeId)
                 .orElseThrow(() -> new RuntimeException("Demande de location non trouvée"));
 
-        if (demande.getStatut() != null && demande.getStatut().equals("EN_ATTENTE")) {
-            demande.setStatut("REFUSEE");
+        if (demande.getStatut() != null && demande.getStatut().equals(StatutDemande.EN_ATTENTE)) {
+            demande.setStatut(StatutDemande.REFUSEE);
             demandeRepo.save(demande);
         } else {
             throw new RuntimeException("Cette demande ne peut pas être refusée");
@@ -86,8 +86,8 @@ public class DemandeLocationServiceImpl implements DemandeLocationService {
         DemandeLocation demande = demandeRepo.findById(demandeId)
                 .orElseThrow(() -> new RuntimeException("Demande de location non trouvée"));
 
-        if (demande.getStatut() != null && demande.getStatut().equals("EN_ATTENTE")) {
-            demande.setStatut("ACCEPTEE");
+        if (demande.getStatut() != null && demande.getStatut().equals(StatutDemande.EN_ATTENTE)) {
+            demande.setStatut(StatutDemande.ACCEPTEE);
             demandeRepo.save(demande);
         } else {
             throw new RuntimeException("Cette demande ne peut pas être acceptée");
@@ -99,8 +99,8 @@ public class DemandeLocationServiceImpl implements DemandeLocationService {
         DemandeLocation demande = demandeRepo.findById(demandeId)
                 .orElseThrow(() -> new RuntimeException("Demande de location non trouvée"));
 
-        if (demande.getStatut() != null && demande.getStatut().equals("EN_ATTENTE")) {
-            demande.setStatut("ANNULEE");
+        if (demande.getStatut() != null && demande.getStatut().equals(StatutDemande.EN_ATTENTE)) {
+            demande.setStatut(StatutDemande.ANNULEE);
             demandeRepo.save(demande);
         } else {
             throw new RuntimeException("Cette demande ne peut pas être annulée");
