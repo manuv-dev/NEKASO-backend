@@ -13,7 +13,6 @@ import gesimmo.nekaso.repository.LocataireRepository;
 import gesimmo.nekaso.service.ContratService;
 import gesimmo.nekaso.service.DemandeLocationService;
 import gesimmo.nekaso.service.NotificationService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

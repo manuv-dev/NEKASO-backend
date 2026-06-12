@@ -49,7 +49,7 @@ public class DemandeVisiteController {
 				, HttpStatus.CREATED);
 	}
 
-	@GetMapping("mes_demandes/{id_Locataire}")
+	@GetMapping("/mes_demandes/{id_Locataire}")
 
 	public ResponseEntity<PageResponse<DemandeVisiteDTOList>> getAllDemandesVisite(
 			@PathVariable(required = true) Long id_Locataire,

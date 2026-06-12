@@ -2,7 +2,7 @@ package gesimmo.nekaso.repository;
 
 import gesimmo.nekaso.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+
 
 public interface PaiementRepository extends JpaRepository<Paiement, Long> {
     // @Query("SELECT SUM(p.montant) FROM Paiement p WHERE p.contrat.demandeLocation.bienImmobilier.gestionnaire.id = :gestionnaireId AND FUNCTION('TO_CHAR', p.datePaiement, 'YYYY-MM') = :mois")

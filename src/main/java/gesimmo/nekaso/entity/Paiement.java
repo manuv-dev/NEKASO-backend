@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+import gesimmo.nekaso.entity.enums.MethodePaiement;
+import gesimmo.nekaso.entity.enums.Mois;
+
 @Entity
 @Table(name = "paiement")
 @Data
@@ -20,14 +23,15 @@ public class Paiement {
     @Column(nullable = false)
     private Double montant;
 
-    // @Column (nullable = false)
-    // @Enumerated(EnumType.STRING)
-    // private String MethodePaiement;
+    @Column (nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MethodePaiement methodePaiement;
 
-    private LocalDate datePaiement = LocalDate.now();
+    private LocalDate datePaiement;
 
     @Column(nullable = false)
-    private String mois;
+    @Enumerated(EnumType.STRING)
+    private Mois mois;
 
     @Column(nullable = false)
     private String reference;
@@ -35,5 +39,7 @@ public class Paiement {
     @ManyToOne
     @JoinColumn(name = "contrat_id")
     private ContratBail contrat;
+    @OneToOne(mappedBy = "paiement", cascade = CascadeType.ALL)
+    private Quittance quittance;
 
 }

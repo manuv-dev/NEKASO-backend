@@ -56,7 +56,7 @@ public class DemandeLocationController {
     @GetMapping("/locataire/{id_Locataire}/Statut/{statut}")
     public ResponseEntity<PageResponse<DemandeLocationDTO>> getAllDemandesLocation(
             @PathVariable(required = true) Long id_Locataire,
-            @PathVariable(required = true) String statut,
+            @RequestParam(defaultValue = "") String statut,
             @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
             @RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
 

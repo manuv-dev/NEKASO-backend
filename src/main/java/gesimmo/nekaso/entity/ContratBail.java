@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "contrat_bail")
@@ -26,4 +27,9 @@ public class ContratBail {
     @OneToOne
     @JoinColumn(name = "demande_location_id")
     private DemandeLocation demandeLocation;
+    @OneToOne
+    @JoinColumn(name = "paiement_id")   
+    
+    private List<Paiement> listePaiement;
+
 }
