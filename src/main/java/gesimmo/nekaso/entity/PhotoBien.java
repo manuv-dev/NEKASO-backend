@@ -19,7 +19,7 @@ public class PhotoBien {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(name = "urlphoto", nullable = false)
 	private String urlPhoto;
 
 	@Column(nullable = false)

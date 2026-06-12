@@ -36,7 +36,7 @@ public class User {
 
 	private String telephone;
 
-	@Column(nullable = false)
+	@Column(name = "motdepasse", nullable = false)
 	private String motDePasse;
 
 	@Column(nullable = false)
