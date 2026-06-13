@@ -1,0 +1,43 @@
+
+    {
+  "biens": [
+    {
+      "id": 1,
+      "typeBien": "APPARTEMENT",
+      "adresse": "Rue 10 Mermoz, Dakar",
+      "surface": 85,
+      "nombrePieces": 3,
+      "loyer": 350000,
+      "statutBien": "LOUE",
+      "description": "Bel appartement F3 avec terrasse, bien ensoleillé.",
+      "dateAjout": "2024-01-15",
+      "photos": [
+        {
+          "id": 1,
+          "bienId": 1,
+          "urlPhoto": "https://storage.nekaso.com/biens/photo_1.jpg",
+          "dateUpload": "2024-01-15"
+        },
+        {
+          "id": 2,
+          "bienId": 1,
+          "urlPhoto": "https://storage.nekaso.com/biens/photo_2.jpg",
+          "dateUpload": "2024-01-15"
+        }
+      ]
+    },
+
+    {
+      "id": 2,
+      "typeBien": "STUDIO",
+      "adresse": "Avenue Cheikh Anta Diop, Dakar",
+      "surface": 35,
+      "nombrePieces": 1,
+      "loyer": 150000,
+      "statutBien": "DISPONIBLE",
+      "description": "Studio moderne proche université.",
+      "dateAjout": "2024-02-20",
+      "photos": []
+    }
+  ]
+}
