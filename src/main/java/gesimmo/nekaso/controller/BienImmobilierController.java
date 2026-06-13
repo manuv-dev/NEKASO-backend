@@ -60,7 +60,7 @@ public class BienImmobilierController {
         return new ResponseEntity<>(PageResponse.fromPage(bienDto), HttpStatus.OK);
     }
 
-    @GetMapping("/locataire")
+    @GetMapping("/locataire/biens_disponibles")
     public ResponseEntity<PageResponse<BienImmobilierResponseDTOGes>> getAllBiensDisponibles(
             @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
             @RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
