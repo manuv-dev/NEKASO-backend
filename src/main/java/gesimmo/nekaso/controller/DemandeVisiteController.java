@@ -66,8 +66,7 @@ public class DemandeVisiteController {
 	}
     @GetMapping("biens_disponibles")
     public ResponseEntity<PageResponse<BienImmobilierResponseDTOGes>> getAllBiens(
-            @RequestParam(defaultValue = "") String statut,
-            @RequestParam(defaultValue = "") String type,
+           
             @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
             @RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
             
