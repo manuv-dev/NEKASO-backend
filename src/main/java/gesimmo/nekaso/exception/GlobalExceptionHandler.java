@@ -21,12 +21,19 @@ public class GlobalExceptionHandler {
         body(RestResponse.error(ex.getMessage(), HttpStatus.NOT_FOUND));
         
     }
+    @ExceptionHandler(BienNonDisponibleException.class)
+    public ResponseEntity<RestResponse> handleBienNonDisponibleException(BienNonDisponibleException ex) {
+
+        return ResponseEntity.status(400).
+        body(RestResponse.error(ex.getMessage(), HttpStatus.BAD_REQUEST));
+        
+    }
 
     @ExceptionHandler(EntityExistException.class)
     public ResponseEntity<RestResponse> handleEntityExistException(EntityExistException ex) {
 
         return ResponseEntity.status(409).
-        body(RestResponse.error(ex.getMessage(), HttpStatus.CONFLICT));
+        body(RestResponse.error(ex.getMessage(), HttpStatus.CONFLICT ));
         
     }
     @ExceptionHandler(Exception.class)
@@ -38,14 +45,14 @@ public class GlobalExceptionHandler {
         
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<RestResponse> handleMethodArgumentNotValidExceptionEntity(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), error.getDefaultMessage());
-        });
-       return ResponseEntity.status(400).
-        body(RestResponse.error(errors, "des erreurs de validation sont survenues"));
-    }
+    // @ExceptionHandler(MethodArgumentNotValidException.class)
+    // // public ResponseEntity<RestResponse> handleMethodArgumentNotValidExceptionEntity(MethodArgumentNotValidException ex) {
+    // //     Map<String, String> errors = new HashMap<>();
+    // //     ex.getBindingResult().getFieldErrors().forEach(error -> {
+    // //         errors.put(error.getField(), error.getDefaultMessage());
+    // //     });
+    // //    return ResponseEntity.status(400).
+    // //     body(RestResponse.error(errors, "des erreurs de validation sont survenues"));
+    // // }
     
 }

@@ -1,6 +1,6 @@
 package gesimmo.nekaso.service.impl;
 
-import gesimmo.nekaso.dto.DemandeLocationDTO.DemandeLocationCreateDTO;
+
 import gesimmo.nekaso.dto.DemandeLocationDTO.DemandeLocationDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.DemandeLocation;
@@ -56,6 +56,8 @@ public class DemandeLocationServiceImpl implements DemandeLocationService {
             id_Locataire,
             id_Bien
         );
+      
+        
         if (existeDeja) {
             throw new RuntimeException("Vous avez déjà une demande pour ce bien.");
         }

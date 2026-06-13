@@ -29,4 +29,9 @@ public interface BienImmobilierRepository extends JpaRepository<BienImmobilier, 
 
     Page<BienImmobilier> findByStatutBienAndTypeBien(StatutBien statutBien, TypeBien typeBien,Pageable pageable);
      BienImmobilier save(BienImmobilier bienImmobilier);
+
+
+
+
+     
 }

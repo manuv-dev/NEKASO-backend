@@ -13,7 +13,7 @@ public class NekasoApplication {
                 .ignoreIfMissing()
                 .load();
 
-        // 2. Injecter les variables lues dans le système pour que Spring les voie
+       
         dotenv.entries().forEach(entry -> {
             System.setProperty(entry.getKey(), entry.getValue());
         });

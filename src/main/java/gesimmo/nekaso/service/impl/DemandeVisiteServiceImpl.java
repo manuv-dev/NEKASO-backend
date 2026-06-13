@@ -17,7 +17,9 @@ import gesimmo.nekaso.entity.Locataire;
 
 import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.VisiteStatut;
+import gesimmo.nekaso.exception.BienNonDisponibleException;
 import gesimmo.nekaso.exception.EntityExistException;
+import gesimmo.nekaso.exception.EntityNotFoundException;
 import gesimmo.nekaso.exception.ResourceNotFoundException;
 import gesimmo.nekaso.repository.BienImmobilierRepository;
 import gesimmo.nekaso.repository.DemandeVisiteRepository;
@@ -46,20 +48,27 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 	@Transactional
 	public DemandeVisiteCreateResponseDTO createDemandeVisite(Long id_Locataire, Long id_Bien) {
 
+			Locataire locataire = locataireRepository.findById(id_Locataire)
+				.orElseThrow(() -> new EntityNotFoundException("Le locataire avec l'ID " + id_Locataire + " n'a pas été trouvé"));
+		BienImmobilier bien = bienRepository.findById(id_Bien)
+				.orElseThrow(() -> new EntityNotFoundException("Le bien immobilier avec l'ID " + id_Bien + " n'a pas été trouvé"));
+
+
 		boolean existeDeja = demandeVisiteRepository.existsByLocataireIdAndBienImmobilierIdAndStatut(
         id_Locataire, 
         id_Bien, 
         VisiteStatut.EN_ATTENTE
     );
+	
 
     if (existeDeja) {
         throw new EntityExistException("Vous avez déjà une demande en attente pour ce bien.");
     }
-		Locataire locataire = locataireRepository.findById(id_Locataire)
-				.orElseThrow(() -> new ResourceNotFoundException("Le locataire avec l'ID " + id_Locataire + " n'a pas été trouvé"));
-		BienImmobilier bien = bienRepository.findById(id_Bien)
-				.orElseThrow(() -> new ResourceNotFoundException("Le bien immobilier avec l'ID " + id_Bien + " n'a pas été trouvé"));
+	 if(!bien.getStatutBien().equals(StatutBien.DISPONIBLE)) {
+		throw new BienNonDisponibleException("Ce bien n'est pas disponible pour la visite.");
+	}
 
+	
 		 DemandeVisite demandeVisite = DemandeVisite.builder()
 				.locataire(locataire)
 				.bienImmobilier(bien)
@@ -87,7 +96,7 @@ public Page<DemandeVisite> getAllDemandesVisite(Pageable pageable, String statut
 
     // On vérifie si la page est vide APRES avoir fait la requête
     if (!demandesPage.hasContent()) {
-        throw new ResourceNotFoundException("Aucune demande trouvée pour ce locataire (ou ce statut).");
+        throw new EntityNotFoundException("Aucune demande trouvée pour ce locataire (ou ce statut).");
     }
 
     return demandesPage;
@@ -95,7 +104,7 @@ public Page<DemandeVisite> getAllDemandesVisite(Pageable pageable, String statut
 
 	public DemandeVisite annulerDemandeVisite(Long id_Demande) {
 		DemandeVisite demandeVisite = demandeVisiteRepository.findById(id_Demande)
-				.orElseThrow(() -> new ResourceNotFoundException("La demande de visite avec l'ID " + id_Demande + " n'a pas été trouvée"));
+				.orElseThrow(() -> new EntityNotFoundException("La demande de visite avec l'ID " + id_Demande + " n'a pas été trouvée"));
 		demandeVisite.setStatut(VisiteStatut.ANNULEE);
 		return demandeVisiteRepository.save(demandeVisite);
 	}
@@ -107,7 +116,7 @@ public Page<BienImmobilier> getBiensDisponibles(Pageable pageable) {
 
     // 2. On vérifie le contenu
     if (!page.hasContent()) {
-        throw new ResourceNotFoundException("Aucun bien immobilier disponible trouvé.");
+        throw new EntityNotFoundException("Aucun bien immobilier disponible trouvé.");
     }
 
     // 3. On retourne le résultat

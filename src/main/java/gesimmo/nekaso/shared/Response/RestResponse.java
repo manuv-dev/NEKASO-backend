@@ -5,22 +5,23 @@ import org.springframework.http.HttpStatus;
 
 public record RestResponse<T>(
     boolean success,
-    String message,
-    T data,
+
+    T message,
     HttpStatus status,
     LocalDateTime timestamp
 ) {
 
-    public RestResponse(boolean success,HttpStatus status, String message, T data) {
-        this(success, message, data, status, LocalDateTime.now());
+    public RestResponse(boolean success,HttpStatus status, T message) {
+        this(success, message, status, LocalDateTime.now());
     }
-    public static <T> RestResponse<T> success(T data, HttpStatus status ) {
-        return new RestResponse<>(true, "Données récupérés avec succès", data,status, LocalDateTime.now());
+    public static <T> RestResponse<T> success(T message, HttpStatus status ) {
+        return new RestResponse<>(true,message,status, LocalDateTime.now());
     }
-    public static <T> RestResponse<T> error(T data, HttpStatus status ) {
-        return new RestResponse<>(false, "Erreur lors de la récupération des données", data,status, LocalDateTime.now());
+
+    public static <T> RestResponse<T> error(T message, HttpStatus status ) {
+        return new RestResponse<>(false, message,status, LocalDateTime.now());
     }
-    public static <T> RestResponse<T> error(T data,String message ) {
-        return new RestResponse<>(false, message, data, HttpStatus.BAD_REQUEST, LocalDateTime.now());
+    public static <T> RestResponse<T> errors(T message,HttpStatus status ) {
+        return new RestResponse<>(false, message, HttpStatus.BAD_REQUEST, LocalDateTime.now());
     }
 }  
