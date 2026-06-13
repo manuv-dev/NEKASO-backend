@@ -3,6 +3,7 @@ package gesimmo.nekaso.service.impl;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -62,7 +63,7 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 		 DemandeVisite demandeVisite = DemandeVisite.builder()
 				.locataire(locataire)
 				.bienImmobilier(bien)
-				.dateCreation(java.time.LocalDate.now())
+				.dateCreation(LocalDateTime.now())
 				.statut(VisiteStatut.EN_ATTENTE)
 				.build();
 		demandeVisiteRepository.save(demandeVisite);

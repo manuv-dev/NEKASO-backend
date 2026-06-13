@@ -7,6 +7,7 @@ import gesimmo.nekaso.entity.DemandeLocation;
 import gesimmo.nekaso.mapper.BienImmobilierMapper;
 import gesimmo.nekaso.mapper.DemandeLocationMapper;
 import gesimmo.nekaso.service.DemandeLocationService;
+import gesimmo.nekaso.shared.Response.CreationRequestResponse;
 import gesimmo.nekaso.shared.Response.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,11 +29,16 @@ public class DemandeLocationController {
     }
 
     @PostMapping("/locataire/{id_Locataire}/bien/{id_Bien}")
-    public ResponseEntity<DemandeLocationCreateDTO> createDemandeLocation(@PathVariable Long id_Locataire,
+    public ResponseEntity<DemandeLocationDTO> createDemandeLocation(@PathVariable Long id_Locataire,
                                                                           @PathVariable Long id_Bien) {
-        DemandeLocationCreateDTO demandeLocationCreateDTO = demandeLocationService.createDemandeLocation(id_Locataire, id_Bien);
-        return new ResponseEntity<>(demandeLocationCreateDTO,
-                org.springframework.http.HttpStatus.CREATED);
+        DemandeLocationDTO demandeLocationDTO = demandeLocationService.createDemandeLocation(id_Locataire, id_Bien);
+        return ResponseEntity.status(HttpStatus.CREATED).body(demandeLocationDTO);
+
+        // return new ResponseEntity<>(new CreationRequestResponse(
+		// 		createdDemande.id(),
+		// 		"Demande de visite créée avec succès",
+		// 		createdDemande.statut())
+		// 		, HttpStatus.CREATED);
     }
 
     @PatchMapping("/demande/{id_Demande}/refuser")

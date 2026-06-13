@@ -33,4 +33,6 @@ GET {{baseUrl}}/api/visites/biens_disponibles?page=0&size=3
 
 ###
 
-GET {{baseUrl}}/api/demandes/locataire/1?statut=EN_ATTENTE
+GET {{baseUrl}}/api/demandes/locataire/2?statut=EN_ATTENTE
+###
+POST {{baseUrl}}/api/demandes/locataire/2/bien/1

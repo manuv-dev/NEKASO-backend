@@ -1,6 +1,7 @@
 package gesimmo.nekaso.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import gesimmo.nekaso.entity.enums.VisiteStatut;
 
@@ -32,7 +33,7 @@ public class DemandeVisite {
 	@Enumerated(EnumType.STRING)
 	private VisiteStatut statut;
 
-	private LocalDate dateCreation;
+	private LocalDateTime dateCreation;
 
 	@ManyToOne
 	@JoinColumn(name = "locataire_id")

@@ -6,6 +6,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import gesimmo.nekaso.entity.BienImmobilier;
@@ -51,7 +52,7 @@ public class DemandeVisiteMock implements CommandLineRunner {
           DemandeVisite demande = DemandeVisite.builder()
               .locataire(loc)
               .bienImmobilier(bien)
-              .dateCreation(LocalDate.now().minusDays(i))
+              .dateCreation(LocalDateTime.now())
               .statut(VisiteStatut.EN_ATTENTE)
               .build();
 

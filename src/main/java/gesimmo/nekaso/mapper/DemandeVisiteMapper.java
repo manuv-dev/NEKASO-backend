@@ -22,7 +22,7 @@ public class DemandeVisiteMapper {
             .id(demandeVisite.getId())
             .id_Locataire(demandeVisite.getLocataire().getId())
             .id_Bien(demandeVisite.getBienImmobilier().getId())
-            .dateCreation(dateMapper.formatLocalDate(demandeVisite.getDateCreation(), "yyyy-MM-dd"))
+            .dateCreation(dateMapper.formatLocalDateTime(demandeVisite.getDateCreation(), "yyyy-MM-dd HH:mm:ss"))
             .statut(demandeVisite.getStatut().toString())
             .build();
       
@@ -35,7 +35,7 @@ public class DemandeVisiteMapper {
             .id(demandeVisite.getId())
             .id_Locataire(demandeVisite.getLocataire().getId())
             
-            .dateCreation(dateMapper.formatLocalDate(demandeVisite.getDateCreation(), "yyyy-MM-dd"))
+            .dateCreation(dateMapper.formatLocalDateTime(demandeVisite.getDateCreation(), "yyyy-MM-dd HH:mm:ss"))
             .statut(demandeVisite.getStatut().toString())
             .bien(demandeVisite.getBienImmobilier()!=null ? bienImmobilierMapper.toDTO(demandeVisite.getBienImmobilier()) : null)
           

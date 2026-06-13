@@ -1,16 +1,13 @@
 package gesimmo.nekaso.mapper;
 
 import gesimmo.nekaso.dto.DemandeLocationDTO.DemandeLocationDTO;
-import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteCreateResponseDTO;
-import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteDTOList;
+
 import gesimmo.nekaso.entity.DemandeLocation;
-import gesimmo.nekaso.entity.DemandeVisite;
-import gesimmo.nekaso.entity.Locataire;
-import gesimmo.nekaso.entity.BienImmobilier;
+
 import gesimmo.nekaso.shared.mapper.DateMapper;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+
 @Component
 public class DemandeLocationMapper {
     private final BienImmobilierMapper bienImmobilierMapper;
