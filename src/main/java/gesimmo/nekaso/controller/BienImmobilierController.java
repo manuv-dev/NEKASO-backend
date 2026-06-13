@@ -71,7 +71,8 @@ public class BienImmobilierController {
 
         return new ResponseEntity<>(PageResponse.fromPage(bienDto), HttpStatus.OK);
     }
-    @PostMapping(value = "/biens", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BienImmobilierCreateDTO> createBien(
             @RequestPart("bien") BienImmobilierCreateDTO bienDTO,
             @RequestPart(value = "photos", required = true) MultipartFile[] photos) {
