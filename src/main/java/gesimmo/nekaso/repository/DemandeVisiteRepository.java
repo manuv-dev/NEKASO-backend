@@ -14,6 +14,6 @@ public interface DemandeVisiteRepository extends JpaRepository<DemandeVisite, Lo
     Page<DemandeVisite> findByStatutAndLocataireId(VisiteStatut statut, Long locataireId, Pageable pageable);
     Page<DemandeVisite> findByLocataireId(Long locataireId, Pageable pageable);
     DemandeVisite save(DemandeVisite demandeVisite);
-
+    Page<DemandeVisite> findByStatut(VisiteStatut statut, Pageable pageable);
    
 }

@@ -101,7 +101,7 @@ public Page<DemandeVisite> getAllDemandesVisite(Pageable pageable, String statut
 
     return demandesPage;
 }
-
+// @Override
 	public DemandeVisite annulerDemandeVisite(Long id_Demande) {
 		DemandeVisite demandeVisite = demandeVisiteRepository.findById(id_Demande)
 				.orElseThrow(() -> new EntityNotFoundException("La demande de visite avec l'ID " + id_Demande + " n'a pas été trouvée"));
@@ -122,5 +122,25 @@ public Page<BienImmobilier> getBiensDisponibles(Pageable pageable) {
     // 3. On retourne le résultat
     return page;
 }
+@Override
+public Page<DemandeVisite> getAllDemandesVisiteByGestionnaire(Pageable pageable, String statut) {
+	Page<DemandeVisite> demandesPage;
 
+	if (statut == null || statut.isBlank()) {
+		demandesPage = demandeVisiteRepository.findAll(pageable);
+		System.out.println("Statut non fourni, récupération de toutes les demandes de visite.");
+	} else {
+		demandesPage = demandeVisiteRepository.findByStatut(VisiteStatut.valueOf(statut.toUpperCase()), pageable);
+		System.out.println("Récupération des demandes de visite avec le statut : " + statut);
+	}
+
+	if (!demandesPage.hasContent()) {
+		System.out.println("Aucune demande trouvée pour ce gestionnaire (ou ce statut).");
+		throw new EntityNotFoundException("Aucune demande trouvée pour ce gestionnaire (ou ce statut).");
+		
+	}
+
+	return demandesPage;
+
+}
 }

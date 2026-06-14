@@ -64,6 +64,18 @@ public class DemandeVisiteController {
 		return new ResponseEntity<>(PageResponse.fromPage(demandesDto), HttpStatus.OK);
 
 	}
+	@GetMapping("/gestionnaire/demande")
+	public ResponseEntity<PageResponse<DemandeVisiteDTOList>> getAllDemandesVisiteByGestionnaire(
+			@RequestParam(defaultValue = "") String statut,
+			@RequestParam(defaultValue = "${api.pagination.default-page}") int page,
+			@RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
+		Pageable pageable = PageRequest.of(page, size);
+
+		Page<DemandeVisite> demandes = demandeVisiteService.getAllDemandesVisiteByGestionnaire(pageable, statut);
+		Page<DemandeVisiteDTOList> demandesDto = demandes.map(demandeVisiteMapper::toDtoList);
+
+		return new ResponseEntity<>(PageResponse.fromPage(demandesDto), HttpStatus.OK);
+	}
     // @GetMapping("biens_disponibles")
     // public ResponseEntity<PageResponse<BienImmobilierResponseDTOGes>> getAllBiens(
            
