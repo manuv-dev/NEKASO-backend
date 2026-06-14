@@ -25,6 +25,7 @@ import gesimmo.nekaso.repository.BienImmobilierRepository;
 import gesimmo.nekaso.repository.DemandeVisiteRepository;
 import gesimmo.nekaso.repository.LocataireRepository;
 import gesimmo.nekaso.service.DemandeVisiteService;
+import java.util.List;
 
 @Service
 public class DemandeVisiteServiceImpl implements DemandeVisiteService {
@@ -53,11 +54,16 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 		BienImmobilier bien = bienRepository.findById(id_Bien)
 				.orElseThrow(() -> new EntityNotFoundException("Le bien immobilier avec l'ID " + id_Bien + " n'a pas été trouvé"));
 
-
-		boolean existeDeja = demandeVisiteRepository.existsByLocataireIdAndBienImmobilierIdAndStatut(
+		List<VisiteStatut> statutsBloquants = List.of(
+    VisiteStatut.EN_ATTENTE, 
+    VisiteStatut.ANNULEE,
+	VisiteStatut.CONFIRMEE,
+	VisiteStatut.REFUSEE // ou PROGRAMMEE selon ton énumération
+);
+		boolean existeDeja = demandeVisiteRepository.existsByLocataireIdAndBienImmobilierIdAndStatutIn(
         id_Locataire, 
         id_Bien, 
-        VisiteStatut.EN_ATTENTE
+        statutsBloquants
     );
 	
 
