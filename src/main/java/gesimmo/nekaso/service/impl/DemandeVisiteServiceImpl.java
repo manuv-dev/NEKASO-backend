@@ -143,4 +143,24 @@ public Page<DemandeVisite> getAllDemandesVisiteByGestionnaire(Pageable pageable,
 	return demandesPage;
 
 }
+
+@Override
+public DemandeVisiteCreateResponseDTO updateDemandeVisiteStatut(Long id, String statut) {
+	
+	DemandeVisite demandeVisite = demandeVisiteRepository.findById(id)
+			.orElseThrow(() -> new EntityNotFoundException("La demande de visite avec l'ID " + id + " n'a pas été trouvée"));
+
+	// Vérification si le statut fourni est valide
+	VisiteStatut nouveauStatut;
+	try {
+		nouveauStatut = VisiteStatut.valueOf(statut.toUpperCase());
+	} catch (IllegalArgumentException e) {
+		throw new IllegalArgumentException("Statut invalide : " + statut);
+	}
+
+	demandeVisite.setStatut(nouveauStatut);
+	DemandeVisite updatedDemande = demandeVisiteRepository.save(demandeVisite);
+
+	return demandeVisiteMapper.toDto(updatedDemande);
+}
 }

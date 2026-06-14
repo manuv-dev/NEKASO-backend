@@ -17,10 +17,10 @@ GET {{baseUrl}}/api/biens/gestionnaire?statut=LOUE&page=0&size=2
 ###
 GET {{baseUrl}}/api/biens/gestionnaire?type=APPARTEMENT&statut=ARCHIVE
 ###
-GET {{baseUrl}}/api/visites/gestionnaire/demande?page=0&size=14
+GET {{baseUrl}}/api/visites/gestionnaire/demande?page=1&size=5
 
 ###
-PATCH {{baseUrl}}/api/visites/1/approuver
+PATCH {{baseUrl}}/api/visites/gestionnaire/demande/1/statut/CONFIRMEE
 ###
 
 PATCH {{baseUrl}}/api/visites/2/refuser

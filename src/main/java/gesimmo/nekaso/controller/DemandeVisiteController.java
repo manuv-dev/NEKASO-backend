@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,6 +77,16 @@ public class DemandeVisiteController {
 
 		return new ResponseEntity<>(PageResponse.fromPage(demandesDto), HttpStatus.OK);
 	}
+	@PatchMapping("/gestionnaire/demande/{id_Demande}/statut/{statut}")
+	public ResponseEntity<CreationRequestResponse> updateDemandeVisiteStatut(@PathVariable Long id_Demande, @PathVariable String statut) {
+		DemandeVisiteCreateResponseDTO updatedDemande = demandeVisiteService.updateDemandeVisiteStatut(id_Demande, statut);
+		return new ResponseEntity<>(new CreationRequestResponse(
+				updatedDemande.id(),
+				"Statut de la demande de visite mis à jour avec succès",
+				updatedDemande.statut())
+				, HttpStatus.OK);
+
+		}
     // @GetMapping("biens_disponibles")
     // public ResponseEntity<PageResponse<BienImmobilierResponseDTOGes>> getAllBiens(
            

@@ -12,6 +12,7 @@ public interface DemandeVisiteService {
 	Page<DemandeVisite> getAllDemandesVisite(Pageable pageable,String statut,Long id_Locataire);
 	Page<BienImmobilier> getBiensDisponibles(Pageable pageable);
 	Page<DemandeVisite> getAllDemandesVisiteByGestionnaire(Pageable pageable,String statut);
+	DemandeVisiteCreateResponseDTO updateDemandeVisiteStatut(Long id, String statut);
 	// DemandeVisite annulerDemandeVisite(Long id);
 	// DemandeVisite accepterDemandeVisite(Long id);
 
