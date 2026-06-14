@@ -1,19 +1,19 @@
 package gesimmo.nekaso.dto;
 
 import lombok.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import gesimmo.nekaso.entity.Locataire;
+import gesimmo.nekaso.entity.Gestionnaire;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class ContratDTO {
-    private Long id;
-    private LocalDate dateSignature;
-    private Double montantLoyer;
-    private Double montantCaution;
-    private String conditions;
-    private LocalDate dateDebut;
-    private String cheminPDF;
-    private Long demandeLocationId;
-}
+public record ContratDTO (
+        Long id,
+        LocalDateTime dateSignature,
+        Double montantLoyer,
+        Double montantCaution,
+        String conditions,
+        LocalDateTime dateDebut,
+        String cheminPDF,
+        Locataire locataire,
+        Gestionnaire gestionnaire
+) { }

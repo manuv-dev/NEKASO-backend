@@ -2,14 +2,15 @@ package gesimmo.nekaso.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "locataire")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Locataire {
+@SuperBuilder
+public class Locataire extends User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

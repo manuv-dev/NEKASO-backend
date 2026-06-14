@@ -3,7 +3,7 @@
 
 GET {{baseUrl}}/api/biens/tests
 ###
-
+http://localhost:8080/api/demandes/locataire/3?statut=EN_ATTENTE
 ###
 GET {{baseUrl}}/api/auth/
 ###
@@ -25,14 +25,22 @@ PATCH {{baseUrl}}/api/visites/1/approuver
 
 PATCH {{baseUrl}}/api/visites/2/refuser
 ###
-POST {{baseUrl}}/api/visites/locataire/2/bien/4
+POST {{baseUrl}}/api/visites/locataire/1/bien/1
 ###
-GET {{baseUrl}}/api/visites/mes_demandes/2
+GET {{baseUrl}}/api/visites/mes_demandes/1
 ###
 GET {{baseUrl}}/api/visites/biens_disponibles?page=0&size=3
 
 ###
 
-GET {{baseUrl}}/api/demandes/locataire/3?statut=EN_ATTENTE
+GET {{baseUrl}}/api/demandes/locataire/2?statut=EN_ATTENTE
 ###
-POST {{baseUrl}}/api/demandes/locataire/3/bien/1
+POST {{baseUrl}}/api/demandes/locataire/2/bien/1
+
+###
+
+POST {{baseUrl}}/api/contrats/create/{demandeLocationId}/loyer/{montantLoyer}/caution/{montantCaution}/conditions/{conditions}/dateDebut/{dateDebut}
+###
+GET {{baseUrl}}/api/contrats/bien/{bienId}/locataire/{locataireId}
+### 
+GET {{baseUrl}}/api/contrats/download/{contratId}

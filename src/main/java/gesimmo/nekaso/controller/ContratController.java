@@ -1,52 +1,48 @@
 package gesimmo.nekaso.controller;
 
 import gesimmo.nekaso.dto.ContratDTO;
-import gesimmo.nekaso.entity.ContratBail;
 import gesimmo.nekaso.service.ContratService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
 import org.springframework.http.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import org.springframework.web.bind.annotation.*;
+import gesimmo.nekaso.mapper.ContratMapper;
 
 @RestController
 @RequestMapping("/api/contrats")
-@RequiredArgsConstructor
 public class ContratController {
 
     private final ContratService contratService;
-
-    // @PostMapping
-    // public ContratBail creerContrat(@RequestBody ContratDTO dto) {
-    //     return contratService.creerContrat(dto);
-    // }
-    // @GetMapping("/locataire")
-    // public List<ContratBail> getContratsParLocataire(@RequestParam Long locataireId) {
-    //     return contratService.getContratsParLocataire(locataireId);
-    // }
-
-    // @GetMapping("/bien")
-    // public List<ContratBail> getContratsParBien(@RequestParam Long bienId) {
-    //     return contratService.getContratsParBien(bienId);
-    // }
-
-    // @GetMapping("/gestionnaire")
-    // public List<ContratBail> getContratsParGestionnaire(@RequestParam Long gestionnaireId) {
-    //     return contratService.getContratsParGestionnaire(gestionnaireId);
-    // }
-    // Télécharger contrat PDF
-    @GetMapping("/{id}/pdf")
-    public ResponseEntity<byte[]> getContratPdf(@PathVariable Long id) {
-        ContratBail contrat = contratService.getContratById(id);
-        try {
-            byte[] pdf = Files.readAllBytes(Paths.get(contrat.getCheminPDF()));
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=contrat_" + id + ".pdf")
-                    .body(pdf);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    private final ContratMapper contratMapper;
+    public ContratController(ContratService contratService, ContratMapper contratMapper) {
+        this.contratService = contratService;
+        this.contratMapper = contratMapper;
     }
+
+    @PostMapping("/create/{demandeLocationId}/loyer/{montantLoyer}/caution/{montantCaution}/conditions/{conditions}/dateDebut/{dateDebut}")
+    public ResponseEntity<ContratDTO> createContrat(
+            @PathVariable long demandeLocationId,
+            @PathVariable Double montantLoyer,
+            @PathVariable Double montantCaution,
+            @PathVariable String conditions,
+            @PathVariable String dateDebut) {
+
+        java.time.LocalDateTime dateDebutParsed = java.time.LocalDateTime.parse(dateDebut);
+        ContratDTO contratDTO = contratService.createContrat(demandeLocationId, montantLoyer, montantCaution, conditions, dateDebutParsed);
+        return ResponseEntity.status(HttpStatus.CREATED).body(contratDTO);
+    }
+
+    @GetMapping("/download/{contratId}")
+    public ResponseEntity<byte[]> downloadContrat(@PathVariable Long contratId) {
+        byte[] pdfBytes = contratService.telechargerContrat(contratId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment").filename("contrat_" + contratId + ".pdf").build());
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/bien/{bienId}/locataire/{locataireId}")
+    public ResponseEntity<ContratDTO> getContratByBienIdAndLocataireId(@PathVariable Long bienId, @PathVariable Long locataireId) {
+        ContratDTO contratDTO = contratService.getContratByBienIdAndLocataireId(bienId, locataireId);
+        return ResponseEntity.ok(contratDTO);
+    }
+
 }

@@ -4,6 +4,8 @@ import gesimmo.nekaso.dto.ContratDTO;
 import gesimmo.nekaso.entity.ContratBail;
 import gesimmo.nekaso.entity.DemandeLocation;
 import gesimmo.nekaso.entity.User;
+import gesimmo.nekaso.entity.enums.StatutDemande;
+import gesimmo.nekaso.mapper.ContratMapper;
 import gesimmo.nekaso.repository.ContratBailRepository;
 import gesimmo.nekaso.repository.DemandeLocationRepository;
 import gesimmo.nekaso.repository.UserRepository;
@@ -11,8 +13,16 @@ import gesimmo.nekaso.service.ContratService;
 import gesimmo.nekaso.service.PdfService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import gesimmo.nekaso.entity.Locataire;
+import gesimmo.nekaso.entity.Gestionnaire;
 
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -20,54 +30,62 @@ public class ContratServiceImpl implements ContratService {
 
     private final ContratBailRepository contratRepo;
     private final DemandeLocationRepository demandeRepo;
-    private final UserRepository usersRepo;
+    private final UserRepository userRepo;
     private final PdfService pdfService;
+    private final ContratMapper ContratMapper;
 
-    // @Override
-    // public ContratBail creerContrat(ContratDTO dto) {
-    //     DemandeLocation demande = demandeRepo.findById(dto.getDemandeLocationId())
-    //             .orElseThrow(() -> new RuntimeException("Demande introuvable"));
+   @Override
+   public ContratDTO createContrat(long demandeLocationId, Double montantLoyer, Double montantCaution, String conditions, java.time.LocalDateTime dateDebut) {
+        
+        DemandeLocation demande = demandeRepo.findById(demandeLocationId)
+            .orElseThrow(() -> new RuntimeException("Demande de location introuvable"));
+        
+        if (demande.getStatut() != StatutDemande.ACCEPTEE) {
+            throw new RuntimeException("La demande de location doit être acceptée pour créer un contrat");
+        }
+        if (montantLoyer == null || montantCaution == null || conditions == null || dateDebut == null) {
+            throw new IllegalArgumentException("Tous les champs sont obligatoires");
+        }
 
-    //     // Création du contrat
-    //     ContratBail contrat = ContratBail.builder()
-    //             .dateSignature(dto.getDateSignature())
-    //             .dateDebut(dto.getDateDebut())
-    //             .montantLoyer(dto.getMontantLoyer())
-    //             .montantCaution(dto.getMontantCaution())
-    //             .conditions(dto.getConditions())
-    //             .demandeLocation(demande)
-    //             .build();
+        
+        if(demandeRepo.findById(demandeLocationId).isEmpty()) {
+            throw new RuntimeException("Demande de location introuvable");
+        }
+        ContratBail contrat = ContratBail.builder()
+                .demandeLocation(demande)
+                .montantLoyer(montantLoyer)
+                .montantCaution(montantCaution)
+                .conditions(conditions)
+                .dateDebut(dateDebut)
+                .dateSignature(java.time.LocalDateTime.now())
+                .build();
+        
+        Locataire locataire = demande.getLocataire();
+        Gestionnaire gestionnaire = demande.getBien().getGestionnaire();
+        
+        String cheminPDF = pdfService.genererContratPdf(contrat, locataire, gestionnaire);
+        contrat.setCheminPDF(cheminPDF);
 
-    //     contrat = contratRepo.save(contrat);
-
-    //     // Récupérer infos locataire et gestionnaire
-    //     User locataireUser = demande.getLocataire().getUser();
-    //     User gestionnaireUser = demande.getBien().getGestionnaire().getUser();
-
-    //     // Générer PDF et mettre chemin
-    //     String cheminPDF = pdfService.genererContratPdf(contrat, locataireUser, gestionnaireUser);
-    //     contrat.setCheminPDF(cheminPDF);
-
-    //     return contratRepo.save(contrat);
-    // }
-
-    // @Override
-    // public List<ContratBail> getContratsParLocataire(Long locataireId) {
-    //     return contratRepo.findByLocataireId(locataireId);
-    // }
-
-    // @Override
-    // public List<ContratBail> getContratsParBien(Long bienId) {
-    //     return contratRepo.findByBienId(bienId);
-    // }
-
-    // @Override
-    // public List<ContratBail> getContratsParGestionnaire(Long gestionnaireId) {
-    //     return contratRepo.findByGestionnaireId(gestionnaireId);
-    // }
+        ContratBail savedContrat = contratRepo.save(contrat);
+        return ContratMapper.toDto(savedContrat);
+    }
 
     @Override
-    public ContratBail getContratById(Long id) {
-        return contratRepo.findById(id).orElseThrow(() -> new RuntimeException("Contrat introuvable"));
+    public ContratDTO getContratByBienIdAndLocataireId(Long bienId, Long locataireId) {
+        ContratBail contrat = contratRepo.findByBienIdAndLocataireId(bienId, locataireId)
+                .orElseThrow(() -> new RuntimeException("Contrat introuvable pour le bien et le locataire spécifiés"));
+        return ContratMapper.toDto(contrat);
     }
+
+    @Override
+    public byte[] telechargerContrat(Long contratId) {
+        ContratBail contrat = contratRepo.findById(contratId)
+                .orElseThrow(() -> new RuntimeException("Contrat introuvable"));
+        try {
+            return Files.readAllBytes(Paths.get(contrat.getCheminPDF()));
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la lecture du fichier PDF du contrat", e);
+        }
+    }
+
 }

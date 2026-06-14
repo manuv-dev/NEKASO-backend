@@ -8,6 +8,6 @@ import gesimmo.nekaso.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByTelephone(String telephone);
-
     boolean existsByTelephone(String telephone);
+    Optional findById(Long id);
 }

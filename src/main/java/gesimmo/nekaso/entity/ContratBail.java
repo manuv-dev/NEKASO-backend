@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "contrat_bail")
@@ -16,20 +16,21 @@ public class ContratBail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private LocalDate dateSignature;
+    @Column(nullable = false)
+    private LocalDateTime dateSignature;
+    @Column(nullable = false)
     private Double montantLoyer;
+    @Column(nullable = false)
     private Double montantCaution;
+    @Column(nullable = false)
     private String conditions;
-    private LocalDate dateDebut;
+
+    @Column(nullable = false)
+    private LocalDateTime dateDebut;
+    @Column(nullable = false)
     private String cheminPDF;
 
     @OneToOne
     @JoinColumn(name = "demande_location_id")
     private DemandeLocation demandeLocation;
-    @OneToOne
-    @JoinColumn(name = "paiement_id")   
-    
-    private List<Paiement> listePaiement;
-
 }

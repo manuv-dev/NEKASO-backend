@@ -11,11 +11,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "gestionnaire")
 @lombok.Data
-public class Gestionnaire {
+@SuperBuilder
+public class Gestionnaire extends User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

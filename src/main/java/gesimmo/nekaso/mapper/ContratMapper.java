@@ -2,30 +2,26 @@ package gesimmo.nekaso.mapper;
 
 import gesimmo.nekaso.dto.ContratDTO;
 import gesimmo.nekaso.entity.ContratBail;
+import gesimmo.nekaso.entity.Gestionnaire;
+import gesimmo.nekaso.entity.Locataire;
+import gesimmo.nekaso.entity.User;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ContratMapper {
 
-    public static ContratDTO toDTO(ContratBail contrat) {
+    public ContratDTO toDto(ContratBail contratBail) {
         return ContratDTO.builder()
-                .id(contrat.getId())
-                .dateSignature(contrat.getDateSignature())
-                .montantLoyer(contrat.getMontantLoyer())
-                .montantCaution(contrat.getMontantCaution())
-                .conditions(contrat.getConditions())
-                .dateDebut(contrat.getDateDebut())
-                .cheminPDF(contrat.getCheminPDF())
-                .demandeLocationId(contrat.getDemandeLocation().getId())
+                .id(contratBail.getId())
+                .dateSignature(contratBail.getDateSignature())
+                .montantLoyer(contratBail.getMontantLoyer())
+                .montantCaution(contratBail.getMontantCaution())
+                .conditions(contratBail.getConditions())
+                .dateDebut(contratBail.getDateDebut())
+                .cheminPDF(contratBail.getCheminPDF())
+                .locataire(contratBail.getDemandeLocation().getLocataire())
+                .gestionnaire(contratBail.getDemandeLocation().getBien().getGestionnaire())
                 .build();
     }
-    public static ContratBail toEntity(ContratDTO dto) {
-        return ContratBail.builder()
-                .id(dto.getId())
-                .dateSignature(dto.getDateSignature())
-                .montantLoyer(dto.getMontantLoyer())
-                .montantCaution(dto.getMontantCaution())
-                .conditions(dto.getConditions())
-                .dateDebut(dto.getDateDebut())
-                .cheminPDF(dto.getCheminPDF())
-                .build();
-    }
+
 }

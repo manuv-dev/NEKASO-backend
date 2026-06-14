@@ -1,13 +1,11 @@
 package gesimmo.nekaso.service;
 
+import java.time.LocalDateTime;
+
 import gesimmo.nekaso.dto.ContratDTO;
-import gesimmo.nekaso.entity.ContratBail;
-import java.util.List;
 
 public interface ContratService {
-    // ContratBail creerContrat(ContratDTO dto);
-    // List<ContratBail> getContratsParLocataire(Long locataireId);
-    // List<ContratBail> getContratsParBien(Long bienId);
-    // List<ContratBail> getContratsParGestionnaire(Long gestionnaireId);
-    ContratBail getContratById(Long id);
+    ContratDTO createContrat(long demandeLocationId,Double montantLoyer, Double montantCaution, String conditions, LocalDateTime dateDebut);
+    ContratDTO getContratByBienIdAndLocataireId(Long bienId, Long locataireId);
+    byte[] telechargerContrat(Long contratId);
 }

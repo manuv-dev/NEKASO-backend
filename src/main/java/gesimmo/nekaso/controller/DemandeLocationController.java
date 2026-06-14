@@ -7,7 +7,7 @@ import gesimmo.nekaso.entity.DemandeLocation;
 import gesimmo.nekaso.mapper.BienImmobilierMapper;
 import gesimmo.nekaso.mapper.DemandeLocationMapper;
 import gesimmo.nekaso.service.DemandeLocationService;
-
+import gesimmo.nekaso.shared.Response.CreationRequestResponse;
 import gesimmo.nekaso.shared.Response.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

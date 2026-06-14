@@ -7,13 +7,15 @@ import gesimmo.nekaso.entity.Quittance;
 import gesimmo.nekaso.entity.User;
 import gesimmo.nekaso.service.PdfService;
 import org.springframework.stereotype.Service;
+import gesimmo.nekaso.entity.Locataire;
+import gesimmo.nekaso.entity.Gestionnaire;
 
 import java.io.FileOutputStream;
 @Service
 public class PdfServiceImpl implements PdfService {
 
     @Override
-    public String genererContratPdf(ContratBail contrat, User locataireUser, User gestionnaireUser) {
+    public String genererContratPdf(ContratBail contrat, Locataire locataire, Gestionnaire gestionnaire) {
         try {
             String chemin = "contrats/contrat_" + contrat.getId() + ".pdf";
             Document document = new Document(PageSize.A4);
@@ -35,10 +37,10 @@ public class PdfServiceImpl implements PdfService {
             document.add(new Paragraph("\n"));
 
             Font boldFont = new Font(Font.HELVETICA, 12, Font.BOLD);
-            document.add(new Paragraph("Locataire : " + locataireUser.getNom() + " " + locataireUser.getPrenom()
-                    + " (Tel: " + locataireUser.getTelephone() + ")", boldFont));
-            document.add(new Paragraph("Gestionnaire : " + gestionnaireUser.getNom() + " " + gestionnaireUser.getPrenom()
-                    + " (Tel: " + gestionnaireUser.getTelephone() + ")", boldFont));
+            document.add(new Paragraph("Locataire : " + locataire.getNom() + " " + locataire.getPrenom()
+                    + " (Tel: " + locataire.getTelephone() + ")", boldFont));
+            document.add(new Paragraph("Gestionnaire : " + gestionnaire.getNom() + " " + gestionnaire.getPrenom()
+                    + " (Tel: " + gestionnaire.getTelephone() + ")", boldFont));
             document.add(new Paragraph("\n\n"));
 
             document.add(new Paragraph("Signature du locataire : ____________________", normalFont));
@@ -52,7 +54,7 @@ public class PdfServiceImpl implements PdfService {
     }
 
     // @Override
-    // public String genererQuittancePdf(Quittance quittance, User locataireUser, User gestionnaireUser) {
+    // public String genererQuittancePdf(Quittance quittance, Locataire locataire, Gestionnaire gestionnaire) {
     //     try {
     //         String chemin = "quittances/quittance_" + quittance.getId() + ".pdf";
 
@@ -81,10 +83,10 @@ public class PdfServiceImpl implements PdfService {
 
     //         // Infos parties
     //         Font boldFont = new Font(Font.HELVETICA, 12, Font.BOLD);
-    //         document.add(new Paragraph("Locataire : " + locataireUser.getNom() + " " + locataireUser.getPrenom()
-    //                 + " (Tel: " + locataireUser.getTelephone() + ")", boldFont));
-    //         document.add(new Paragraph("Gestionnaire : " + gestionnaireUser.getNom() + " " + gestionnaireUser.getPrenom()
-    //                 + " (Tel: " + gestionnaireUser.getTelephone() + ")", boldFont));
+    //         document.add(new Paragraph("Locataire : " + locataire.getNom() + " " + locataire.getPrenom()
+    //                 + " (Tel: " + locataire.getTelephone() + ")", boldFont));
+    //         document.add(new Paragraph("Gestionnaire : " + gestionnaire.getNom() + " " + gestionnaire.getPrenom()
+    //                 + " (Tel: " + gestionnaire.getTelephone() + ")", boldFont));
     //         document.add(new Paragraph("\n\n"));
 
     //         // Signature
