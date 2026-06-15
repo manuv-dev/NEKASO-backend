@@ -1,4 +1,5 @@
 package gesimmo.nekaso.dto.BienImmbilierDTO;
+import java.util.List;
 import lombok.Builder;
 @Builder
 public record BienImmobilierCreateDTO(
@@ -8,6 +9,8 @@ public record BienImmobilierCreateDTO(
     Double surface,
     Integer nombrePieces,
     Double loyer,
-    String description
+    String description,
+    List<String> photos
 ) {
+
 }

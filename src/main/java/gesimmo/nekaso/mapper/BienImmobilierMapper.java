@@ -25,20 +25,29 @@ public class BienImmobilierMapper {
 		this.dateMapper = dateMapper;
 	}
 	public BienImmobilierCreateDTO toCreateDTO(BienImmobilier bien) {
-		if (bien == null) {
-			return null;
-		}
+    if (bien == null) {
+        return null;
+    }
 
-		return BienImmobilierCreateDTO.builder()
-				.typeBien(bien.getTypeBien() != null ? bien.getTypeBien().name() : null)
-				.adresse(bien.getAdresse())
-				.surface(bien.getSurface())
-				.nombrePieces(bien.getNombrePieces())
-				.loyer(bien.getLoyer())
-				.description(bien.getDescription())
-				.build();
-	}
+    // On extrait uniquement les chaînes de caractères (URL) de tes photos
+    List<String> urlsString = java.util.Collections.emptyList();
+    if (bien.getPhotos() != null) {
+        urlsString = bien.getPhotos().stream()
+                .map(photo -> photo.getUrlPhoto()) // Récupère juste l'URL String
+                .toList();
+    }
 
+    return BienImmobilierCreateDTO.builder()
+            .typeBien(bien.getTypeBien() != null ? bien.getTypeBien().name() : null)
+            .libelle(bien.getLibelle())
+            .adresse(bien.getAdresse())
+            .surface(bien.getSurface())
+            .nombrePieces(bien.getNombrePieces())
+            .loyer(bien.getLoyer())
+            .description(bien.getDescription())
+            .photos(urlsString) 
+            .build();
+}
 	public BienImmobilierResponseDTOGes toDTO(BienImmobilier bien) {
 		if (bien == null) {
 			return null;
@@ -47,6 +56,7 @@ public class BienImmobilierMapper {
 		return BienImmobilierResponseDTOGes.builder()
 				.id(bien.getId())
 				.typeBien(bien.getTypeBien() != null ? bien.getTypeBien().name() : null)
+				.libelle(bien.getLibelle())
 				.adresse(bien.getAdresse())
 				.surface(bien.getSurface())
 				.nombrePieces(bien.getNombrePieces())
@@ -63,6 +73,7 @@ public class BienImmobilierMapper {
 		}else {// Mapper les champs de dto vers une nouvelle instance de BienImmobilier
 			BienImmobilier bien = new BienImmobilier();
 			bien.setTypeBien(dto.typeBien() != null ? TypeBien.valueOf(dto.typeBien().toUpperCase()) : null);
+			bien.setLibelle(dto.libelle());
 			bien.setAdresse(dto.adresse());
 			bien.setSurface(dto.surface());
 			bien.setNombrePieces(dto.nombrePieces());
@@ -80,6 +91,7 @@ public class BienImmobilierMapper {
 		return BienImmobilierResponseDTOLoc.builder()
 				.id(bien.getId())
 				.typeBien(bien.getTypeBien() != null ? bien.getTypeBien().name() : null)
+				.libelle(bien.getLibelle())
 				.adresse(bien.getAdresse())
 				.loyer(bien.getLoyer())
 				.statutBien(bien.getStatutBien() != null ? bien.getStatutBien().name() : null)

@@ -70,13 +70,14 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
 
         return biens;
     }
-
     @Override
     public BienImmobilier createBien(BienImmobilierCreateDTO bienDTO, MultipartFile[] photos) {
         BienImmobilier bien = bienImmobilierMapper.toEntity(bienDTO);
         bien.setStatutBien(StatutBien.DISPONIBLE);
         bien.setDateAjout(LocalDate.now());
         BienImmobilier savedBien = bienImmobilierRepository.save(bien);
+        List<PhotoBien> listeDesPhotos = new ArrayList<>();
+
         if (photos != null) {
             for (MultipartFile photo : photos) {
                 String url = cloudinaryService.uploadImage(photo);
@@ -84,9 +85,13 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
                 photoBien.setUrlPhoto(url);
                 photoBien.setBienImmobilier(savedBien);
                 photoBien.setDateUpload(LocalDate.now());
-                photoBienRepository.save(photoBien);
+                PhotoBien savedPhoto = photoBienRepository.save(photoBien);
+                listeDesPhotos.add(savedPhoto);
             }
         }
+        
+        savedBien.setPhotos(listeDesPhotos); 
+        
         return savedBien;
     }
     @Override
