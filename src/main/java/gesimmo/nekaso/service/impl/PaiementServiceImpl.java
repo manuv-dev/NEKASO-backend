@@ -61,10 +61,10 @@ public class PaiementServiceImpl implements PaiementService {
     }
 
     @Override
-    public List<Paiement> rechercherPaiements(Long gestionnaireId, Long bienId, Long locataireId,
+    public List<Paiement> rechercherPaiements(Long gestionnaireId, Long contratId, Long bienId, Long locataireId,
             LocalDate dateDebut, LocalDate dateFin, String statut, String mois, String typePaiement) {
         return paiementRepository.findAll().stream()
-                .filter(paiement -> filterByLocataireAndContrat(paiement, locataireId, bienId))
+                .filter(paiement -> filterByLocataireAndContrat(paiement, contratId, locataireId, bienId))
                 .filter(paiement -> filterByDateRange(paiement, dateDebut, dateFin))
                 .filter(paiement -> filterByMois(paiement, mois))
                 .filter(paiement -> filterByType(paiement, typePaiement))
@@ -159,8 +159,8 @@ public class PaiementServiceImpl implements PaiementService {
         return String.format("Q-%d-%s", paiementId, emissionDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
     }
 
-    private boolean filterByLocataireAndContrat(Paiement paiement, Long locataireId, Long bienId) {
-        if (locataireId == null && bienId == null) {
+    private boolean filterByLocataireAndContrat(Paiement paiement, Long contratId, Long locataireId, Long bienId) {
+        if (contratId == null && locataireId == null && bienId == null) {
             return true;
         }
 
@@ -169,6 +169,10 @@ public class PaiementServiceImpl implements PaiementService {
         }
 
         ContratBail contrat = paiement.getContrat();
+        if (contratId != null && (contrat == null || !contratId.equals(contrat.getId()))) {
+            return false;
+        }
+
         if (locataireId != null && (contrat.getDemandeLocation().getLocataire() == null
                 || !locataireId.equals(contrat.getDemandeLocation().getLocataire().getId()))) {
             return false;

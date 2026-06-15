@@ -105,7 +105,7 @@ class PaiementServiceImplTest {
 
         when(paiementRepository.findAll()).thenReturn(List.of(paiementExpected, paiementOther));
 
-        List<Paiement> result = paiementService.rechercherPaiements(null, 11L, 7L, null, null, null, null, null);
+        List<Paiement> result = paiementService.rechercherPaiements(null, null, 11L, 7L, null, null, null, null, null);
 
         assertEquals(1, result.size());
         assertTrue(result.contains(paiementExpected));

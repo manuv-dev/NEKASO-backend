@@ -13,6 +13,7 @@ public interface PaiementService {
     Paiement creerPaiement(PaiementDTO dto);
 
     List<Paiement> rechercherPaiements(Long gestionnaireId,
+            Long contratId,
             Long bienId,
             Long locataireId,
             LocalDate dateDebut,
