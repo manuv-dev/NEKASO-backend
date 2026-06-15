@@ -63,7 +63,12 @@ public class PaiementServiceImpl implements PaiementService {
     @Override
     public List<Paiement> rechercherPaiements(Long gestionnaireId, Long bienId, Long locataireId,
             LocalDate dateDebut, LocalDate dateFin, String statut, String mois, String typePaiement) {
-        return paiementRepository.findAll();
+        return paiementRepository.findAll().stream()
+                .filter(paiement -> filterByLocataireAndContrat(paiement, locataireId, bienId))
+                .filter(paiement -> filterByDateRange(paiement, dateDebut, dateFin))
+                .filter(paiement -> filterByMois(paiement, mois))
+                .filter(paiement -> filterByType(paiement, typePaiement))
+                .toList();
     }
 
     @Override
@@ -152,6 +157,58 @@ public class PaiementServiceImpl implements PaiementService {
 
     private String genererNumero(Long paiementId, LocalDate emissionDate) {
         return String.format("Q-%d-%s", paiementId, emissionDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+    }
+
+    private boolean filterByLocataireAndContrat(Paiement paiement, Long locataireId, Long bienId) {
+        if (locataireId == null && bienId == null) {
+            return true;
+        }
+
+        if (paiement.getContrat() == null || paiement.getContrat().getDemandeLocation() == null) {
+            return false;
+        }
+
+        ContratBail contrat = paiement.getContrat();
+        if (locataireId != null && (contrat.getDemandeLocation().getLocataire() == null
+                || !locataireId.equals(contrat.getDemandeLocation().getLocataire().getId()))) {
+            return false;
+        }
+
+        if (bienId != null && (contrat.getDemandeLocation().getBien() == null
+                || !bienId.equals(contrat.getDemandeLocation().getBien().getId()))) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean filterByDateRange(Paiement paiement, LocalDate dateDebut, LocalDate dateFin) {
+        if (dateDebut == null && dateFin == null) {
+            return true;
+        }
+        LocalDate datePaiement = paiement.getDatePaiement();
+        if (dateDebut != null && (datePaiement == null || datePaiement.isBefore(dateDebut))) {
+            return false;
+        }
+        if (dateFin != null && (datePaiement == null || datePaiement.isAfter(dateFin))) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean filterByMois(Paiement paiement, String mois) {
+        if (mois == null || mois.isBlank()) {
+            return true;
+        }
+        return paiement.getMois() != null && paiement.getMois().name().equalsIgnoreCase(mois.trim());
+    }
+
+    private boolean filterByType(Paiement paiement, String typePaiement) {
+        if (typePaiement == null || typePaiement.isBlank()) {
+            return true;
+        }
+        return paiement.getMethodePaiement() != null
+                && paiement.getMethodePaiement().name().equalsIgnoreCase(typePaiement.trim());
     }
 
     private User resolveLocataireUser(ContratBail contrat) {

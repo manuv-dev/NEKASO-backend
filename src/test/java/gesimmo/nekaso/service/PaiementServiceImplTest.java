@@ -1,7 +1,10 @@
 package gesimmo.nekaso.service;
 
 import gesimmo.nekaso.dto.PaiementDTO;
+import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.ContratBail;
+import gesimmo.nekaso.entity.DemandeLocation;
+import gesimmo.nekaso.entity.Locataire;
 import gesimmo.nekaso.entity.Paiement;
 import gesimmo.nekaso.entity.enums.MethodePaiement;
 import gesimmo.nekaso.entity.enums.Mois;
@@ -16,10 +19,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -62,5 +67,47 @@ class PaiementServiceImplTest {
         assertEquals(MethodePaiement.WAVE, paiement.getMethodePaiement());
         assertEquals(Mois.Juin, paiement.getMois());
         assertEquals(contrat, paiement.getContrat());
+    }
+
+    @Test
+    void rechercherPaiements_shouldOnlyReturnPaymentsForRequestedTenantAndContract() {
+        Locataire locataire = new Locataire();
+        locataire.setId(7L);
+
+        BienImmobilier bien = new BienImmobilier();
+        bien.setId(11L);
+
+        DemandeLocation demandeLocation = new DemandeLocation();
+        demandeLocation.setLocataire(locataire);
+        demandeLocation.setBien(bien);
+
+        ContratBail contratExpected = new ContratBail();
+        contratExpected.setId(99L);
+        contratExpected.setDemandeLocation(demandeLocation);
+
+        Paiement paiementExpected = Paiement.builder()
+                .id(1L)
+                .montant(100000.0)
+                .datePaiement(LocalDate.of(2026, 6, 1))
+                .mois(Mois.Juin)
+                .methodePaiement(MethodePaiement.OM)
+                .contrat(contratExpected)
+                .build();
+
+        Paiement paiementOther = Paiement.builder()
+                .id(2L)
+                .montant(200000.0)
+                .datePaiement(LocalDate.of(2026, 6, 2))
+                .mois(Mois.Juin)
+                .methodePaiement(MethodePaiement.OM)
+                .contrat(new ContratBail())
+                .build();
+
+        when(paiementRepository.findAll()).thenReturn(List.of(paiementExpected, paiementOther));
+
+        List<Paiement> result = paiementService.rechercherPaiements(null, 11L, 7L, null, null, null, null, null);
+
+        assertEquals(1, result.size());
+        assertTrue(result.contains(paiementExpected));
     }
 }

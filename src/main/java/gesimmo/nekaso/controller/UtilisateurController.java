@@ -17,18 +17,18 @@ import gesimmo.nekaso.dto.UtilisateurDTO;
 @RequestMapping("/api/utilisateurs")
 public class UtilisateurController {
 
-//    @GetMapping("/me")
-//    public ResponseEntity<UtilisateurDTO> getCurrentUser(Authentication authentication) {
-//        if (authentication == null || !authentication.isAuthenticated()) {
-//            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-//        }
-//
-//        UtilisateurDTO dto = new UtilisateurDTO();
-//        dto.setUsername(authentication.getName());
-//        dto.setRoles(authentication.getAuthorities().stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .collect(Collectors.toSet()));
-//
-//        return ResponseEntity.ok(dto);
-//    }
+    @GetMapping("/me")
+    public ResponseEntity<UtilisateurDTO> getCurrentUser(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        UtilisateurDTO dto = new UtilisateurDTO();
+        dto.setUsername(authentication.getName());
+        dto.setRoles(authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet()));
+
+        return ResponseEntity.ok(dto);
+    }
 }
