@@ -21,9 +21,13 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO authRequest) {
-		AuthResponseDTO response = authService.login(authRequest);
-		return ResponseEntity.ok(response);
+	public ResponseEntity<?> login(@RequestBody AuthRequestDTO authRequest) {
+		try {
+			AuthResponseDTO response = authService.login(authRequest);
+			return ResponseEntity.ok(response);
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.status(401).body(java.util.Map.of("message", e.getMessage()));
+		}
 	}
 
 	@PostMapping("/register")

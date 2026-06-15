@@ -59,6 +59,22 @@ class AuthControllerTest {
     }
 
     @Test
+    void loginShouldReturnUnauthorizedWhenCredentialsAreInvalid() throws Exception {
+        AuthRequestDTO request = new AuthRequestDTO();
+        request.setTelephone("user1");
+        request.setMotDePasse("wrong-password");
+
+        when(authService.login(any(AuthRequestDTO.class)))
+                .thenThrow(new IllegalArgumentException("Telephone ou mot de passe invalide."));
+
+        mockMvc.perform(post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("Telephone ou mot de passe invalide."));
+    }
+
+    @Test
     void registerShouldCreateNewUser() throws Exception {
         AuthRequestDTO request = new AuthRequestDTO();
         request.setTelephone("newuser");

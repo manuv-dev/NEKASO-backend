@@ -18,6 +18,8 @@ import gesimmo.nekaso.repository.LocataireRepository;
 import gesimmo.nekaso.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -34,31 +36,34 @@ public class DataSeeder implements CommandLineRunner {
     private final BienImmobilierRepository bienImmobilierRepository;
     private final GestionnaireRepository gestionnaireRepository;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public void run(String... args) {
+        User locataireUser = userRepository.findByTelephone("775000000")
+                .orElseGet(User::new);
+        locataireUser.setNom("Diallo");
+        locataireUser.setPrenom("Awa");
+        locataireUser.setTelephone("775000000");
+        locataireUser.setMotDePasse(passwordEncoder.encode("password"));
+        locataireUser.setRole(Role.LOCATAIRE);
+        locataireUser.setStatut("ACTIF");
+        userRepository.save(locataireUser);
+
+        User gestionnaireUser = userRepository.findByTelephone("771111111")
+                .orElseGet(User::new);
+        gestionnaireUser.setNom("Kane");
+        gestionnaireUser.setPrenom("Moussa");
+        gestionnaireUser.setTelephone("771111111");
+        gestionnaireUser.setMotDePasse(passwordEncoder.encode("password"));
+        gestionnaireUser.setRole(Role.GESTIONNAIRE);
+        gestionnaireUser.setStatut("ACTIF");
+        userRepository.save(gestionnaireUser);
+
         List<ContratBail> contrats = contratBailRepository.findAll();
         ContratBail contrat = contrats.isEmpty() ? new ContratBail() : contrats.get(0);
 
         if (contrat.getDemandeLocation() == null) {
-            User locataireUser = userRepository.save(User.builder()
-                    .nom("Diallo")
-                    .prenom("Awa")
-                    .telephone("775000000")
-                    .motDePasse("password")
-                    .role(Role.LOCATAIRE)
-                    .statut("ACTIF")
-                    .build());
-
-            User gestionnaireUser = userRepository.save(User.builder()
-                    .nom("Kane")
-                    .prenom("Moussa")
-                    .telephone("771111111")
-                    .motDePasse("password")
-                    .role(Role.GESTIONNAIRE)
-                    .statut("ACTIF")
-                    .build());
-
             Locataire locataire = locataireRepository.save(Locataire.builder()
                     .user(locataireUser)
                     .build());

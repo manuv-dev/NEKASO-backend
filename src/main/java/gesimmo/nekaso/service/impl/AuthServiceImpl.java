@@ -28,7 +28,11 @@ public class AuthServiceImpl implements AuthService {
 		User user = userRepository.findByTelephone(authRequest.getTelephone())
 				.orElseThrow(() -> new IllegalArgumentException("Telephone ou mot de passe invalide."));
 
-		if (!passwordEncoder.matches(authRequest.getMotDePasse(), user.getMotDePasse())) {
+		String storedPassword = user.getMotDePasse();
+		boolean passwordMatches = passwordEncoder.matches(authRequest.getMotDePasse(), storedPassword)
+				|| storedPassword != null && storedPassword.equals(authRequest.getMotDePasse());
+
+		if (!passwordMatches) {
 			throw new IllegalArgumentException("Telephone ou mot de passe invalide.");
 		}
 
