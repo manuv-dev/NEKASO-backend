@@ -42,15 +42,10 @@ public class GlobalExceptionHandler {
         body(RestResponse.error("une erreur est survenue", HttpStatus.INTERNAL_SERVER_ERROR));
         
     }
-
-    // @ExceptionHandler(MethodArgumentNotValidException.class)
-    // // public ResponseEntity<RestResponse> handleMethodArgumentNotValidExceptionEntity(MethodArgumentNotValidException ex) {
-    // //     Map<String, String> errors = new HashMap<>();
-    // //     ex.getBindingResult().getFieldErrors().forEach(error -> {
-    // //         errors.put(error.getField(), error.getDefaultMessage());
-    // //     });
-    // //    return ResponseEntity.status(400).
-    // //     body(RestResponse.error(errors, "des erreurs de validation sont survenues"));
-    // // }
+    @ExceptionHandler(DemandeLocationException.class)
+    public ResponseEntity<RestResponse> handleDemandeLocationException(DemandeLocationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(RestResponse.error(ex.getMessage(), HttpStatus.BAD_REQUEST));
+    }
     
 }

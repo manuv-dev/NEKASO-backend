@@ -3,6 +3,8 @@ package gesimmo.nekaso.controller;
 import java.util.List;
 
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierCreateDTO;
+import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierForm;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,11 +13,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOGes;
 import gesimmo.nekaso.entity.BienImmobilier;
+import gesimmo.nekaso.entity.PhotoBien;
 import gesimmo.nekaso.mapper.BienImmobilierMapper;
 import gesimmo.nekaso.service.BienImmobilierService;
-
 import gesimmo.nekaso.shared.Response.PageResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -73,11 +76,40 @@ public class BienImmobilierController {
     }
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<BienImmobilierCreateDTO> createBien(
-            @RequestPart("bien") BienImmobilierCreateDTO bienDTO,
-            @RequestPart(value = "photos", required = true) MultipartFile[] photos) {
-        BienImmobilier createdBien = bienService.createBien(bienDTO, photos);
-        BienImmobilierCreateDTO responseDTO = bienImmobilierMapper.toCreateDTO(createdBien);
+    @Operation(summary = "Créer un bien immobilier avec plusieurs photos")
+    public ResponseEntity<BienImmobilierCreateDTO> createBien(@ModelAttribute BienImmobilierForm form) {
+            BienImmobilierCreateDTO bienDTO = BienImmobilierCreateDTO.builder()
+                .typeBien(form.getTypeBien())
+                .libelle(form.getLibelle())
+                .adresse(form.getAdresse())
+                .surface(form.getSurface())
+                .nombrePieces(form.getNombrePieces())
+                .loyer(form.getLoyer())
+                .description(form.getDescription())
+                .gestionnaireId(form.getGestionnaireId())
+                .build();
+        MultipartFile[] photosArray = form.getPhotos() != null ? 
+                form.getPhotos().toArray(new MultipartFile[0]) : new MultipartFile[0];
+        BienImmobilier savedBien = bienService.createBien(bienDTO, photosArray);
+        List<String> urlsPhotos = new java.util.ArrayList<>();
+        if (savedBien.getPhotos() != null) {
+            for (PhotoBien photo : savedBien.getPhotos()) {
+                urlsPhotos.add(photo.getUrlPhoto());
+            }
+        }
+
+        BienImmobilierCreateDTO responseDTO = BienImmobilierCreateDTO.builder()
+                .typeBien(savedBien.getTypeBien() != null ? savedBien.getTypeBien().name() : null)
+                .libelle(savedBien.getLibelle()) 
+                .adresse(savedBien.getAdresse())
+                .surface(savedBien.getSurface())
+                .nombrePieces(savedBien.getNombrePieces())
+                .loyer(savedBien.getLoyer())
+                .description(savedBien.getDescription())
+                .photos(urlsPhotos)
+                .build();
+        
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
+
 }

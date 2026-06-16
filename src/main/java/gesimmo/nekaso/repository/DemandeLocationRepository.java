@@ -55,6 +55,5 @@ public interface DemandeLocationRepository extends JpaRepository<DemandeLocation
     Optional<DemandeLocation> findById(Long id);
 
     Page<DemandeLocation> findByBienGestionnaireId(Long idGestionnaire, Pageable pageable);
-
-    Page<DemandeLocation> findByStatutAndBienGestionnaireId(StatutDemande statutDemande, Long idGestionnaire, Pageable pageable);
+    Page<DemandeLocation> findAllByStatut(StatutDemande statutDemande, Pageable pageable);
 }

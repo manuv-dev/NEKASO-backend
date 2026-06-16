@@ -17,11 +17,18 @@ public class ContratBail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "date_signature")
     private LocalDate dateSignature;
+
+    @Column(name = "montant_loyer")
     private Double montantLoyer;
+    @Column(name = "montant_caution")
     private Double montantCaution;
+    @Column(name = "conditions",columnDefinition = "TEXT")
     private String conditions;
-    private LocalDate dateDebut;
+    @Column(name = "date_debut")
+    private String dateDebut;
+    @Column(name = "cheminpdf",columnDefinition = "TEXT")
     private String cheminPDF;
 
     @OneToOne

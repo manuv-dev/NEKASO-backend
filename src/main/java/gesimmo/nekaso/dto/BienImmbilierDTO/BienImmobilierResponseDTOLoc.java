@@ -9,6 +9,7 @@ import lombok.Builder;
 public record BienImmobilierResponseDTOLoc(
     Long id,
     String typeBien,
+    String libelle,
     String adresse,
     Double loyer,
     String statutBien,
