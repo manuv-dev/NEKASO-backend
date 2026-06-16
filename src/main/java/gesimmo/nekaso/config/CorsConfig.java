@@ -12,6 +12,7 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/api/**")
             .allowedOrigins(
                 "http://localhost:5173",
+                "http://64.227.21.125",
                 "https://nekaso-frontend.vercel.app"
             )
             .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
