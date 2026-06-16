@@ -160,7 +160,7 @@ public class PaiementServiceImpl implements PaiementService {
     }
 
     private boolean filterByLocataireAndContrat(Paiement paiement, Long contratId, Long locataireId, Long bienId) {
-        if (contratId == null && locataireId == null && bienId == null) {
+        if (contratId == null && bienId == null) {
             return true;
         }
 
@@ -169,12 +169,7 @@ public class PaiementServiceImpl implements PaiementService {
         }
 
         ContratBail contrat = paiement.getContrat();
-        if (contratId != null && (contrat == null || !contratId.equals(contrat.getId()))) {
-            return false;
-        }
-
-        if (locataireId != null && (contrat.getDemandeLocation().getLocataire() == null
-                || !locataireId.equals(contrat.getDemandeLocation().getLocataire().getId()))) {
+        if (contratId != null && !contratId.equals(contrat.getId())) {
             return false;
         }
 

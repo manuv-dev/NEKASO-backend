@@ -35,10 +35,8 @@ public class PaiementController {
 
     @GetMapping
     public ResponseEntity<List<PaiementResponseDTO>> rechercherPaiements(
-            @RequestParam(required = false) Long gestionnaireId,
             @RequestParam(required = false) Long contratId,
             @RequestParam(required = false) Long bienId,
-            @RequestParam(required = false) Long locataireId,
             @RequestParam(required = false) String dateDebut,
             @RequestParam(required = false) String dateFin,
             @RequestParam(required = false) String statut,
@@ -48,10 +46,10 @@ public class PaiementController {
             LocalDate debut = parseDate(dateDebut);
             LocalDate fin = parseDate(dateFin);
             List<Paiement> paiements = paiementService.rechercherPaiements(
-                    gestionnaireId,
+                    null,
                     contratId,
                     bienId,
-                    locataireId,
+                    null,
                     debut,
                     fin,
                     statut,
