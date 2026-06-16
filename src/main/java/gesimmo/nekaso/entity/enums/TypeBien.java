@@ -5,4 +5,5 @@ public enum TypeBien {
     CHAMBRE,
     LOCAL,
     STUDIO,
+    VILLA
 }
