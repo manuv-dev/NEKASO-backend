@@ -14,6 +14,7 @@ import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOGes;
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOLoc;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.PhotoBien;
+import gesimmo.nekaso.entity.Gestionnaire;	
 
 import gesimmo.nekaso.shared.mapper.DateMapper;
 @Component
@@ -45,7 +46,8 @@ public class BienImmobilierMapper {
             .nombrePieces(bien.getNombrePieces())
             .loyer(bien.getLoyer())
             .description(bien.getDescription())
-            .photos(urlsString) 
+            .gestionnaireId(bien.getGestionnaire() != null ? bien.getGestionnaire().getId() : null)
+            .photos(urlsString)
             .build();
 }
 	public BienImmobilierResponseDTOGes toDTO(BienImmobilier bien) {
@@ -79,6 +81,7 @@ public class BienImmobilierMapper {
 			bien.setNombrePieces(dto.nombrePieces());
 			bien.setLoyer(dto.loyer());
 			bien.setDescription(dto.description());
+			bien.setGestionnaire(dto.gestionnaireId() != null ? new Gestionnaire() : null); 
 			bien.setDateAjout(LocalDate.now());
 			return bien;
 		}

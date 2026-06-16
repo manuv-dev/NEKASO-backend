@@ -10,6 +10,7 @@ public record BienImmobilierCreateDTO(
     Integer nombrePieces,
     Double loyer,
     String description,
+    Long gestionnaireId,
     List<String> photos
 ) {
 

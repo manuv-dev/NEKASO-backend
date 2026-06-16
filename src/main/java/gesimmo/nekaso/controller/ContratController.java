@@ -3,9 +3,12 @@ package gesimmo.nekaso.controller;
 import gesimmo.nekaso.dto.ContratDTO;
 import gesimmo.nekaso.entity.ContratBail;
 import gesimmo.nekaso.service.ContratService;
+import gesimmo.nekaso.shared.Response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,36 +20,36 @@ public class ContratController {
 
     private final ContratService contratService;
 
-    // @PostMapping
-    // public ContratBail creerContrat(@RequestBody ContratDTO dto) {
-    //     return contratService.creerContrat(dto);
-    // }
-    // @GetMapping("/locataire")
-    // public List<ContratBail> getContratsParLocataire(@RequestParam Long locataireId) {
-    //     return contratService.getContratsParLocataire(locataireId);
-    // }
-
-    // @GetMapping("/bien")
-    // public List<ContratBail> getContratsParBien(@RequestParam Long bienId) {
-    //     return contratService.getContratsParBien(bienId);
-    // }
-
-    // @GetMapping("/gestionnaire")
-    // public List<ContratBail> getContratsParGestionnaire(@RequestParam Long gestionnaireId) {
-    //     return contratService.getContratsParGestionnaire(gestionnaireId);
-    // }
-    // Télécharger contrat PDF
-    @GetMapping("/{id}/pdf")
-    public ResponseEntity<byte[]> getContratPdf(@PathVariable Long id) {
-        ContratBail contrat = contratService.getContratById(id);
-        try {
-            byte[] pdf = Files.readAllBytes(Paths.get(contrat.getCheminPDF()));
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=contrat_" + id + ".pdf")
-                    .body(pdf);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    @PostMapping("/create-contrat/demande/{id_DemandeLocation}/{conditions}/{dateDebut}")
+    public ContratDTO creerContrat(@RequestBody ContratDTO dto,
+                                   @PathVariable Long id_DemandeLocation,
+                                   @PathVariable String conditions,
+                                   @PathVariable String dateDebut) {
+        dto.setDemandeLocationId(id_DemandeLocation);
+        dto.setConditions(conditions);
+        dto.setDateDebut(dateDebut);
+        return contratService.creerContrat(dto);
     }
+
+    @GetMapping("/mes-contrats/locataire/{id_Locataire}")
+    public ResponseEntity<PageResponse<ContratDTO>> getContratsParLocataire(
+            @PathVariable Long id_Locataire,
+            @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
+            @RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
+        PageResponse<ContratDTO> contrats = PageResponse.fromPage(contratService.getContratsParLocataire(id_Locataire, PageRequest.of(page, size)));
+
+        return new ResponseEntity<>(contrats, HttpStatus.OK);
+    }
+    @GetMapping("/mes-contrats/gestionnaire/{id_Gestionnaire}")
+public ResponseEntity<PageResponse<ContratDTO>> getContratsParGestionnaire(
+        @PathVariable Long id_Gestionnaire,
+        @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
+        @RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
+    
+    PageResponse<ContratDTO> contrats = PageResponse.fromPage(
+        contratService.getContratsParGestionnaire(id_Gestionnaire, PageRequest.of(page, size))
+    );
+
+    return new ResponseEntity<>(contrats, HttpStatus.OK);
+}
 }

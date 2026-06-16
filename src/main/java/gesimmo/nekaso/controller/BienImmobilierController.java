@@ -86,6 +86,7 @@ public class BienImmobilierController {
                 .nombrePieces(form.getNombrePieces())
                 .loyer(form.getLoyer())
                 .description(form.getDescription())
+                .gestionnaireId(form.getGestionnaireId())
                 .build();
         MultipartFile[] photosArray = form.getPhotos() != null ? 
                 form.getPhotos().toArray(new MultipartFile[0]) : new MultipartFile[0];

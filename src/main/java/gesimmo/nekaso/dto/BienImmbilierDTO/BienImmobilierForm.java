@@ -15,5 +15,6 @@ public class BienImmobilierForm {
     private Integer nombrePieces;
     private Double loyer;
     private String description;
+    private Long gestionnaireId;
     private List<MultipartFile> photos;
 }

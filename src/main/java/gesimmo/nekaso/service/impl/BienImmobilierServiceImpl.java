@@ -12,17 +12,22 @@ import org.springframework.web.multipart.MultipartFile;
 
 import gesimmo.nekaso.dto.BienImmobilierDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
+import gesimmo.nekaso.entity.Gestionnaire;
 import gesimmo.nekaso.entity.PhotoBien;
-
+import gesimmo.nekaso.entity.User;
 import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.TypeBien;
 import gesimmo.nekaso.repository.BienImmobilierRepository;
 import gesimmo.nekaso.repository.PhotoBienRepository;
 import gesimmo.nekaso.service.BienImmobilierService;
 import gesimmo.nekaso.service.CloudinaryService;
+
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import gesimmo.nekaso.mapper.BienImmobilierMapper;
+import gesimmo.nekaso.repository.UserRepository;
+import gesimmo.nekaso.repository.GestionnaireRepository;
 
 @Service
 public class BienImmobilierServiceImpl implements BienImmobilierService {
@@ -30,16 +35,22 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
     private final PhotoBienRepository photoBienRepository;
     private final CloudinaryService cloudinaryService;
     private final BienImmobilierMapper bienImmobilierMapper;
+    private final UserRepository userRep;
+    private final GestionnaireRepository gestionnaireRepository;
 
     public BienImmobilierServiceImpl(
             BienImmobilierRepository bienImmobilierRepository,
             PhotoBienRepository photoBienRepository,
             CloudinaryService cloudinaryService,
-            BienImmobilierMapper bienImmobilierMapper) {
+            BienImmobilierMapper bienImmobilierMapper,
+            UserRepository userRep,
+            GestionnaireRepository gestionnaireRepository) {
         this.bienImmobilierRepository = bienImmobilierRepository;
         this.photoBienRepository = photoBienRepository;
         this.cloudinaryService = cloudinaryService;
         this.bienImmobilierMapper = bienImmobilierMapper;
+        this.userRep = userRep;
+        this.gestionnaireRepository = gestionnaireRepository;
 
     }
 
@@ -73,6 +84,17 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
     @Override
     public BienImmobilier createBien(BienImmobilierCreateDTO bienDTO, MultipartFile[] photos) {
         BienImmobilier bien = bienImmobilierMapper.toEntity(bienDTO);
+        if (bienDTO.gestionnaireId() != null) {
+            Optional<Gestionnaire> gestionnaireOpt = gestionnaireRepository.findById(bienDTO.gestionnaireId());
+            if (gestionnaireOpt.isPresent()) {
+                Gestionnaire gestionnaire = gestionnaireOpt.get();
+                bien.setGestionnaire(gestionnaire);
+            } else {
+                throw new RuntimeException("Gestionnaire non trouvé.");
+            }
+        } else {
+            throw new RuntimeException("Impossible de créer un bien sans lui assigner un gestionnaire.");
+        }
         bien.setStatutBien(StatutBien.DISPONIBLE);
         bien.setDateAjout(LocalDate.now());
         BienImmobilier savedBien = bienImmobilierRepository.save(bien);
