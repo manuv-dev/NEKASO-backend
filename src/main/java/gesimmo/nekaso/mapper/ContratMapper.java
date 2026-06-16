@@ -1,11 +1,15 @@
 package gesimmo.nekaso.mapper;
 
+import org.hibernate.validator.constraints.CodePointLength;
+import org.springframework.stereotype.Component;
+
 import gesimmo.nekaso.dto.ContratDTO;
 import gesimmo.nekaso.entity.ContratBail;
 
+@Component
 public class ContratMapper {
 
-    public static ContratDTO toDTO(ContratBail contrat) {
+    public ContratDTO toDTO(ContratBail contrat) {
         return ContratDTO.builder()
                 .id(contrat.getId())
                 .dateSignature(contrat.getDateSignature())

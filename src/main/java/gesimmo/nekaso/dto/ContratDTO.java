@@ -13,7 +13,7 @@ public class ContratDTO {
     private Double montantLoyer;
     private Double montantCaution;
     private String conditions;
-    private LocalDate dateDebut;
+    private String dateDebut;
     private String cheminPDF;
     private Long demandeLocationId;
 }

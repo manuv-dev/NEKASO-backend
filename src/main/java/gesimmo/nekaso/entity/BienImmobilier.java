@@ -20,6 +20,7 @@ public class BienImmobilier {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TypeBien typeBien;
+    @Column(nullable = false)
     private String libelle;
 
     @Column(nullable = false)

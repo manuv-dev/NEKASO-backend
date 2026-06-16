@@ -7,6 +7,6 @@ import gesimmo.nekaso.entity.Quittance;
 import gesimmo.nekaso.entity.User;
 
 public interface PdfService {
-    String genererContratPdf(ContratBail contrat, User locataireUser, User gestionnaireUser);
-    // String genererQuittancePdf(Quittance quittance, User locataireUser, User gestionnaireUser);
+    byte[] genererContratPdf(ContratBail contrat, User locataireUser, User gestionnaireUser, String typeBien, String libelle);
+    // byte[] genererQuittancePdf(Quittance quittance, User locataireUser, User gestionnaireUser);
 }

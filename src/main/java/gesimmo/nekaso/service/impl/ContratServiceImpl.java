@@ -4,15 +4,26 @@ import gesimmo.nekaso.dto.ContratDTO;
 import gesimmo.nekaso.entity.ContratBail;
 import gesimmo.nekaso.entity.DemandeLocation;
 import gesimmo.nekaso.entity.User;
+import gesimmo.nekaso.entity.enums.StatutBien;
+import gesimmo.nekaso.entity.enums.StatutDemande;
 import gesimmo.nekaso.repository.ContratBailRepository;
 import gesimmo.nekaso.repository.DemandeLocationRepository;
 import gesimmo.nekaso.repository.UserRepository;
 import gesimmo.nekaso.service.ContratService;
 import gesimmo.nekaso.service.PdfService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import gesimmo.nekaso.mapper.ContratMapper;
+import gesimmo.nekaso.service.CloudinaryService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import gesimmo.nekaso.service.DemandeLocationService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,52 +33,99 @@ public class ContratServiceImpl implements ContratService {
     private final DemandeLocationRepository demandeRepo;
     private final UserRepository usersRepo;
     private final PdfService pdfService;
+    private final ContratMapper contratMapper;
+    private final CloudinaryService cloudinaryService;
 
-    // @Override
-    // public ContratBail creerContrat(ContratDTO dto) {
-    //     DemandeLocation demande = demandeRepo.findById(dto.getDemandeLocationId())
-    //             .orElseThrow(() -> new RuntimeException("Demande introuvable"));
+    @Override
+    @Transactional // Recommandé car on effectue plusieurs opérations en base de données
+    public ContratDTO creerContrat(ContratDTO dto) {
+        // 1. Récupération et vérification de la demande
+        DemandeLocation demande = demandeRepo.findById(dto.getDemandeLocationId())
+                .orElseThrow(() -> new RuntimeException("Demande introuvable"));
 
-    //     // Création du contrat
-    //     ContratBail contrat = ContratBail.builder()
-    //             .dateSignature(dto.getDateSignature())
-    //             .dateDebut(dto.getDateDebut())
-    //             .montantLoyer(dto.getMontantLoyer())
-    //             .montantCaution(dto.getMontantCaution())
-    //             .conditions(dto.getConditions())
-    //             .demandeLocation(demande)
-    //             .build();
+        if (demande.getStatut() == null || demande.getStatut() != StatutDemande.ACCEPTEE) {
+            throw new RuntimeException("La demande de location n'est pas acceptée. Impossible de créer le contrat.");
+        }
 
-    //     contrat = contratRepo.save(contrat);
+        // 2. Sécurisation : Vérification de la présence des utilisateurs (évite les NullPointerException)
+        if (demande.getLocataire() == null || demande.getLocataire().getUser() == null) {
+            throw new RuntimeException("Données du locataire incomplètes pour générer le contrat.");
+        }
+        if (demande.getBien() == null || demande.getBien().getGestionnaire() == null || demande.getBien().getGestionnaire().getUser() == null) {
+            throw new RuntimeException("Le bien immobilier n'a pas de gestionnaire assigné.");
+        }
 
-    //     // Récupérer infos locataire et gestionnaire
-    //     User locataireUser = demande.getLocataire().getUser();
-    //     User gestionnaireUser = demande.getBien().getGestionnaire().getUser();
+        Double loyer = demande.getBien().getLoyer();
+        Double Caution = loyer * 2; 
+        ContratBail contrat = ContratBail.builder()
+                .dateSignature(dto.getDateSignature())
+                .dateDebut(dto.getDateDebut())
+                .montantLoyer(loyer)
+                .montantCaution(Caution)
+                .conditions(dto.getConditions())
+                .demandeLocation(demande)
+                .build();
 
-    //     // Générer PDF et mettre chemin
-    //     String cheminPDF = pdfService.genererContratPdf(contrat, locataireUser, gestionnaireUser);
-    //     contrat.setCheminPDF(cheminPDF);
+        // 4. Première sauvegarde pour générer l'ID du contrat en base de données
+        contrat = contratRepo.save(contrat);
 
-    //     return contratRepo.save(contrat);
-    // }
+        //changer le staut du bien
+        demande.getBien().setStatutBien(StatutBien.LOUE);
+        //convertir le type de bien en string pour le PDF
+        String typeBien;
+        switch (demande.getBien().getTypeBien()) {
+            case APPARTEMENT -> typeBien = "Appartement";
+            case CHAMBRE -> typeBien = "Chambre";
+            case LOCAL -> typeBien = "Local commercial";
+            case STUDIO -> typeBien = "Studio";
+            default -> typeBien = "Type inconnu";
+        }
 
-    // @Override
-    // public List<ContratBail> getContratsParLocataire(Long locataireId) {
-    //     return contratRepo.findByLocataireId(locataireId);
-    // }
+        String libelle = demande.getBien().getLibelle() ;
+        // 5. Récupération des utilisateurs pour le PDF
+        User locataireUser = demande.getLocataire().getUser();
+        User gestionnaireUser = demande.getBien().getGestionnaire().getUser();
 
-    // @Override
-    // public List<ContratBail> getContratsParBien(Long bienId) {
-    //     return contratRepo.findByBienId(bienId);
-    // }
+        // 6. Génération du PDF en mémoire vive (byte[]) au lieu d'un fichier local
+        byte[] pdfBytes = pdfService.genererContratPdf(contrat, locataireUser, gestionnaireUser, typeBien, libelle);
 
-    // @Override
-    // public List<ContratBail> getContratsParGestionnaire(Long gestionnaireId) {
-    //     return contratRepo.findByGestionnaireId(gestionnaireId);
-    // }
+        // 7. Envoi du fichier sur Cloudinary et récupération du lien URL public HTTPS
+        String nomFichierUnique = "contrat_bail_" + contrat.getId();
+        String urlCloudinaryPdf = cloudinaryService.uploadPdf(pdfBytes, nomFichierUnique);
 
+        // 8. Mise à jour de l'entité avec l'URL Cloudinary et sauvegarde finale
+        contrat.setCheminPDF(urlCloudinaryPdf);
+        contrat = contratRepo.save(contrat);
+
+        // 9. Retour du DTO contenant l'URL cloud
+        return contratMapper.toDTO(contrat);
+    }
     @Override
     public ContratBail getContratById(Long id) {
         return contratRepo.findById(id).orElseThrow(() -> new RuntimeException("Contrat introuvable"));
     }
+
+    @Override
+    public Page<ContratDTO> getContratsParLocataire(Long locataireId, Pageable pageable) {
+
+        Page<ContratBail> contrats = contratRepo.findByLocataireId(locataireId, pageable);
+        
+        if (contrats.isEmpty()) {
+            throw new RuntimeException("Aucun contrat trouvé pour ce locataire");
+        }
+        
+        return contrats.map(contratMapper::toDTO);
+    }
+
+    @Override
+public Page<ContratDTO> getContratsParGestionnaire(Long gestionnaireId, Pageable pageable) {
+    // 1. Récupération des contrats du gestionnaire directement depuis la BDD
+    Page<ContratBail> contrats = contratRepo.findByGestionnaireId(gestionnaireId, pageable);
+    
+    if (contrats.isEmpty()) {
+        throw new RuntimeException("Aucun contrat trouvé pour ce gestionnaire");
+    }
+    
+    return contrats.map(contratMapper::toDTO);
+}
 }
