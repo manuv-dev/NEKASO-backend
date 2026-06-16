@@ -24,22 +24,23 @@ public class Paiement {
     private Double montant;
 
     @Column (nullable = false)
-    @Enumerated(EnumType.STRING)
-    private MethodePaiement methodePaiement;
+    private String methodePaiement;
 
+    @Column(nullable = false)
     private LocalDate datePaiement;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Mois mois;
+    private String mois;
 
     @Column(nullable = false)
     private String reference;
 
+    @Column(name = "quittance")
+    private String quittance;
+    
     @ManyToOne
     @JoinColumn(name = "contrat_id")
     private ContratBail contrat;
-    @OneToOne(mappedBy = "paiement", cascade = CascadeType.ALL)
-    private Quittance quittance;
+
 
 }

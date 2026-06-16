@@ -14,6 +14,7 @@ public class PaiementDTO {
     private LocalDate datePaiement;
     private String mois;
     private String reference;
-    private String MethodePaiement;
+    private String methodePaiement;
     private Long contratId;
+    private String quittance;
 }

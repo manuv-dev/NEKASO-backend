@@ -33,36 +33,22 @@ public class CloudinaryServiceImpl implements CloudinaryService {
             throw new RuntimeException("Erreur lors de l'upload de l'image : " + e.getMessage(), e);
         }
     }
-// @Override
-//     public String uploadPdf(byte[] pdfBytes, String nomFichier) {
-//         try {
-//             Map params = ObjectUtils.asMap(
-//                 "resource_type", "raw",
-//                 "public_id", "contrats/" + nomFichier + ".pdf"
-//             );
+    @Override
+    public String uploadPdf(byte[] pdfBytes, String nomFichier) {
+        try {
+            Map params = ObjectUtils.asMap(
+                "resource_type", "raw",
+                "type", "upload", // Dit à Cloudinary que le fichier est public et accessible par URL
+                "public_id", "contrats/" + nomFichier,
+                "format", "pdf"
+            );
             
-//             Map uploadResult = cloudinary.uploader().upload(pdfBytes, params);
-//             return uploadResult.get("secure_url").toString();
-//         } catch (Exception e) {
-//             throw new RuntimeException("Échec de l'envoi du PDF sur Cloudinary", e);
-//         }
-//     }
-@Override
-public String uploadPdf(byte[] pdfBytes, String nomFichier) {
-    try {
-        Map params = ObjectUtils.asMap(
-            "resource_type", "raw",
-            "type", "upload", // Dit à Cloudinary que le fichier est public et accessible par URL
-            "public_id", "contrats/" + nomFichier,
-            "format", "pdf"
-        );
-        
-        Map uploadResult = cloudinary.uploader().upload(pdfBytes, params);
-        return uploadResult.get("secure_url").toString();
-    } catch (Exception e) {
-        throw new RuntimeException("Échec de l'envoi du PDF sur Cloudinary", e);
+            Map uploadResult = cloudinary.uploader().upload(pdfBytes, params);
+            return uploadResult.get("secure_url").toString();
+        } catch (Exception e) {
+            throw new RuntimeException("Échec de l'envoi du PDF sur Cloudinary", e);
+        }
     }
-}
 
 
     @Override

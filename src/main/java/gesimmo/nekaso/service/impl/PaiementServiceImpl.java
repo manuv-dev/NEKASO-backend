@@ -1,184 +1,101 @@
 package gesimmo.nekaso.service.impl;
 
 import gesimmo.nekaso.dto.PaiementDTO;
-import gesimmo.nekaso.dto.QuittanceDTO;
-import gesimmo.nekaso.dto.QuittanceAffichageDTO;
-import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.ContratBail;
+import gesimmo.nekaso.entity.DemandeLocation;
 import gesimmo.nekaso.entity.Paiement;
-import gesimmo.nekaso.entity.Quittance;
-import gesimmo.nekaso.repository.BienImmobilierRepository;
 import gesimmo.nekaso.repository.ContratBailRepository;
-import gesimmo.nekaso.repository.DemandeLocationRepository;
 import gesimmo.nekaso.repository.PaiementRepository;
-import gesimmo.nekaso.repository.QuittanceRepository;
 import gesimmo.nekaso.service.PaiementService;
-import jakarta.persistence.EntityManager;
+import gesimmo.nekaso.service.PdfService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import gesimmo.nekaso.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import gesimmo.nekaso.service.CloudinaryService;
+
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import gesimmo.nekaso.mapper.PaiementMapper;
 
 @Service
 @RequiredArgsConstructor
 public class PaiementServiceImpl implements PaiementService {
-//
-//    private final PaiementRepository paiementRepository;
-//    private final QuittanceRepository quittanceRepository;
-//    private final ContratBailRepository contratBailRepository;
-//    private final BienImmobilierRepository bienImmobilierRepository;
-//    private final DemandeLocationRepository demandeLocationRepository;
-//    private final EntityManager entityManager;
-//
-//    @Override
-//    @Transactional
-//    public Paiement creerPaiement(PaiementDTO dto) {
-//        LocalDate datePaiement = dto.getDatePaiement() != null ? dto.getDatePaiement() : LocalDate.now();
-//        String mois = datePaiement.format(DateTimeFormatter.ofPattern("yyyy-MM"));
-//
-//        Paiement paiement = Paiement.builder()
-//                .montant(dto.getMontant())
-//                .MethodePaiement(dto.getMethodePaiement())
-//                .datePaiement(datePaiement)
-//                .reference(dto.getReference())
-//                .mois(mois)
-//                .build();
-//
-//        if (dto.getContratId() != null) {
-//            ContratBail contrat = contratBailRepository.findById(dto.getContratId())
-//                    .orElseThrow(() -> new IllegalArgumentException("Contrat introuvable"));
-//            paiement.setContrat(contrat);
-//        }
-//
-//        return paiementRepository.save(paiement);
-//    }
-//
-//    @Override
-//    public List<Paiement> rechercherPaiements(Long gestionnaireId,
-//            Long bienId,
-//            Long locataireId,
-//            LocalDate datePaiement,
-//            String statut,
-//            String mois,
-//            String typePaiement) {
-//        Specification<Paiement> spec = (root, query, cb) -> {
-//            List<jakarta.persistence.criteria.Predicate> predicates = new ArrayList<>();
-//
-//            if (gestionnaireId != null) {
-//                jakarta.persistence.criteria.Join<Object, Object> bienJoin = root.join("bien");
-//                jakarta.persistence.criteria.Join<Object, Object> gestionnaireJoin = bienJoin.join("gestionnaire");
-//                predicates.add(cb.equal(gestionnaireJoin.get("id"), gestionnaireId));
-//            }
-//            if (bienId != null) {
-//                predicates.add(cb.equal(root.get("bien").get("id"), bienId));
-//            }
-//            if (locataireId != null) {
-//                predicates.add(cb.equal(root.get("locataire").get("id"), locataireId));
-//            }
-//            if (statut != null && !statut.isBlank()) {
-//                predicates.add(cb.equal(root.get("statut"), statut));
-//            }
-//            if (typePaiement != null && !typePaiement.isBlank()) {
-//                predicates.add(cb.equal(root.get("typePaiement"), typePaiement));
-//            }
-//            if (mois != null && !mois.isBlank()) {
-//                predicates.add(cb.equal(root.get("mois"), mois));
-//            }
-//            if (dateDebut != null && dateFin != null) {
-//                predicates.add(cb.between(root.get("datePaiement"), dateDebut, dateFin));
-//            } else if (dateDebut != null) {
-//                predicates.add(cb.greaterThanOrEqualTo(root.get("datePaiement"), dateDebut));
-//            } else if (dateFin != null) {
-//                predicates.add(cb.lessThanOrEqualTo(root.get("datePaiement"), dateFin));
-//            }
-//
-//            return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
-//        };
-//        return paiementRepository.findAll(spec);
-//    }
-//
-//    @Override
-//    @Transactional
-//    public Quittance creerQuittance(Long paiementId, QuittanceDTO dto) {
-//        Paiement paiement = paiementRepository.findById(paiementId)
-//                .orElseThrow(() -> new IllegalArgumentException("Paiement introuvable"));
-//
-//        Optional<Quittance> existing = quittanceRepository.findByPaiement_Id(paiementId);
-//        if (existing.isPresent()) {
-//            throw new IllegalArgumentException("Une quittance existe déjà pour ce paiement.");
-//        }
-//
-//        LocalDate emissionDate = dto.getDateEmission() != null ? dto.getDateEmission() : LocalDate.now();
-//        String numero = dto.getNumero() != null ? dto.getNumero() : genererNumero(paiementId, emissionDate);
-//
-//        Quittance quittance = Quittance.builder()
-//                .numero(numero)
-//                .dateEmission(emissionDate)
-//                .cheminPDF(dto.getCheminPDF())
-//                .montant(paiement.getMontant())
-//                .paiement(paiement)
-//                .build();
-//
-//        return quittanceRepository.save(quittance);
-//    }
-//
-//    @Override
-//    public Quittance getQuittanceParPaiement(Long paiementId) {
-//        return quittanceRepository.findByPaiement_Id(paiementId).orElse(null);
-//    }
-//
-//    @Override
-//    public List<QuittanceAffichageDTO> getQuittancesParLocataire(Long locataireId, Long bienId) {
-//        List<Quittance> quittances;
-//        if (bienId != null) {
-//            quittances = quittanceRepository.findByLocataireAndBien(locataireId, bienId);
-//        } else {
-//            quittances = quittanceRepository.findByLocataire(locataireId);
-//        }
-//        return quittances.stream().map(this::mapToAffichageDTO).toList();
-//    }
-//
-//    @Override
-//    public List<QuittanceAffichageDTO> getQuittancesParBien(Long bienId, Long locataireId) {
-//        List<Quittance> quittances;
-//        if (locataireId != null) {
-//            quittances = quittanceRepository.findByBienAndLocataire(bienId, locataireId);
-//        } else {
-//            quittances = quittanceRepository.findByBien(bienId);
-//        }
-//        return quittances.stream().map(this::mapToAffichageDTO).toList();
-//    }
-//
-//    private QuittanceAffichageDTO mapToAffichageDTO(Quittance quittance) {
-//        Paiement paiement = quittance.getPaiement();
-//        BienImmobilier bien = paiement.getBien();
-//        ContratBail contrat = paiement.getContrat();
-//
-//        return QuittanceAffichageDTO.builder()
-//                .id(quittance.getId())
-//                .numero(quittance.getNumero())
-//                .montantPaye(paiement.getMontant())
-//                .periode(paiement.getMois())
-//                .datePaiement(paiement.getDatePaiement())
-//                .dateEmission(quittance.getDateEmission())
-//                .cheminPDF(quittance.getCheminPDF())
-//                .bienId(bien != null ? bien.getId() : null)
-//                .bienAdresse(bien != null ? bien.getAdresse() : null)
-//                .bienType(bien != null ? bien.getTypeBien().toString() : null)
-//                .bienLoyer(bien != null ? bien.getLoyer() : null)
-//                .contratId(contrat != null ? contrat.getId() : null)
-//                .contratDateDebut(contrat != null ? contrat.getDateDebut() : null)
-//                .contratMontantLoyer(contrat != null ? contrat.getMontantLoyer() : null)
-//                .build();
-//    }
-//
-//    private String genererNumero(Long paiementId, LocalDate emissionDate) {
-//        return String.format("Q-%d-%s", paiementId, emissionDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-//    }
+    
+    private final PaiementRepository paiementRepository;
+    private final ContratBailRepository contratBailRepository;
+    private final PdfService pdfService;
+    private final CloudinaryService cloudinaryService;
+    private final PaiementMapper paiementMapper;
+
+
+    @Transactional
+    public PaiementDTO CreatePaiement(PaiementDTO dto) {
+        
+            ContratBail contrat = contratBailRepository.findById(dto.getContratId())
+                    .orElseThrow(() -> new RuntimeException("Contrat introuvable."));
+
+            if (dto.getMethodePaiement()== null){
+                 throw new RuntimeException("La méthode de paiement ne doit pas être null.");
+            }
+            if (dto.getMois()== null){
+                 throw new RuntimeException("Le mois de paiement ne doit pas être null.");
+            }
+            Paiement paiement = Paiement.builder()           
+                    .montant(contrat.getDemandeLocation().getBien().getLoyer())
+                    .datePaiement(LocalDate.now())
+                    .mois(dto.getMois())
+                    .reference("PAY-" + System.currentTimeMillis()) 
+                    .methodePaiement(dto.getMethodePaiement())
+                    .build();
+            
+            paiement.setContrat(contrat);
+            Paiement savedPaiement = paiementRepository.save(paiement);
+
+            String typeBien;
+            switch (paiement.getContrat().getDemandeLocation().getBien().getTypeBien()) {
+                case APPARTEMENT -> typeBien = "Appartement";
+                case CHAMBRE -> typeBien = "Chambre";
+                case LOCAL -> typeBien = "Local commercial";
+                case STUDIO -> typeBien = "Studio";
+                default -> typeBien = "Type inconnu";
+            }
+
+            String libelle = paiement.getContrat().getDemandeLocation().getBien().getLibelle() ;
+
+            User locataireUser = paiement.getContrat().getDemandeLocation().getLocataire().getUser();
+            User gestionnaireUser = paiement.getContrat().getDemandeLocation().getBien().getGestionnaire().getUser();
+            
+            byte[] pdfBytes = pdfService.genererQuittancePdf(paiement, locataireUser, gestionnaireUser, typeBien, libelle);
+
+            // 7. Envoi du fichier sur Cloudinary et récupération du lien URL public HTTPS
+            String nomFichierUnique = "Quittance_" + paiement.getId() + paiement.getDatePaiement();
+            String urlCloudinaryPdf = cloudinaryService.uploadPdf(pdfBytes, nomFichierUnique);
+
+            savedPaiement.setQuittance(urlCloudinaryPdf);
+
+            paiement = paiementRepository.save(savedPaiement);
+
+            return paiementMapper.toDTO(paiement);
+
+        }
+
+        @Override
+public Page<PaiementDTO> getPaiementByContratId(Long id, Pageable pageable) {
+
+    if (!contratBailRepository.existsById(id)) {
+        throw new RuntimeException("Le contrat n'existe pas");
+    }
+
+    Page<Paiement> paiements = paiementRepository.findByContratId(id, pageable);
+
+    return paiements.map(paiementMapper::toDTO);
 }
+
+    }
+
+

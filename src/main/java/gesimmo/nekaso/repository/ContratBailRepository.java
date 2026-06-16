@@ -9,10 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ContratBailRepository extends JpaRepository<ContratBail, Long> {
     ContratBail save(ContratBail contratBail);
     Page<ContratBail> findAll(Pageable pageable);
+    Optional<ContratBail> findById(Long id);
     @Query("SELECT c FROM ContratBail c WHERE c.demandeLocation.bien.gestionnaire.id = :gestionnaireId")
     Page<ContratBail> findByGestionnaireId(@Param("gestionnaireId") Long gestionnaireId, Pageable pageable);
     @Query("SELECT c FROM ContratBail c WHERE c.demandeLocation.locataire.id = :locataireId")

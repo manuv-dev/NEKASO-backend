@@ -1,81 +1,42 @@
 package gesimmo.nekaso.controller;
-
 import gesimmo.nekaso.dto.PaiementDTO;
-import gesimmo.nekaso.dto.QuittanceDTO;
-import gesimmo.nekaso.entity.Paiement;
-import gesimmo.nekaso.entity.Quittance;
 import gesimmo.nekaso.service.PaiementService;
+import gesimmo.nekaso.shared.Response.PageResponse;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/paiements")
 @RequiredArgsConstructor
 public class PaiementController {
-//
-//    private final PaiementService paiementService;
-//
-//    @PostMapping
-//    public ResponseEntity<?> creerPaiement(@RequestBody PaiementDTO dto) {
-//        try {
-//            Paiement paiement = paiementService.creerPaiement(dto);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(paiement);
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<List<Paiement>> rechercherPaiements(
-//            @RequestParam(required = false) Long gestionnaireId,
-//            @RequestParam(required = false) Long bienId,
-//            @RequestParam(required = false) Long locataireId,
-//            @RequestParam(required = false) String dateDebut,
-//            @RequestParam(required = false) String dateFin,
-//            @RequestParam(required = false) String statut,
-//            @RequestParam(required = false) String mois,
-//            @RequestParam(required = false) String typePaiement) {
-//        try {
-//            LocalDate debut = parseDate(dateDebut);
-//            LocalDate fin = parseDate(dateFin);
-//            List<Paiement> paiements = paiementService.rechercherPaiements(
-//                    gestionnaireId,
-//                    bienId,
-//                    locataireId,
-//                    debut,
-//                    fin,
-//                    statut,
-//                    mois,
-//                    typePaiement);
-//            return ResponseEntity.ok(paiements);
-//        } catch (DateTimeParseException e) {
-//            return ResponseEntity.badRequest().body(null);
-//        }
-//    }
-//
-//    @PostMapping("/{paiementId}/quittance")
-//    public ResponseEntity<?> creerQuittance(@PathVariable Long paiementId, @RequestBody QuittanceDTO dto) {
-//        try {
-//            Quittance quittance = paiementService.creerQuittance(paiementId, dto);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(quittance);
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//    }
-//
-//    @GetMapping("/{paiementId}/quittance")
-//    public ResponseEntity<?> getQuittance(@PathVariable Long paiementId) {
-//        Quittance quittance = paiementService.getQuittanceParPaiement(paiementId);
-//        return quittance != null ? ResponseEntity.ok(quittance) : ResponseEntity.notFound().build();
-//    }
-//
-//    private LocalDate parseDate(String value) {
-//        return value == null || value.isBlank() ? null : LocalDate.parse(value);
-//    }
+
+    private final PaiementService paiementService;
+
+    @PostMapping("/create/{idContrat}/{mois}/{methodePaiement}")
+    public PaiementDTO creerContrat(@RequestBody PaiementDTO dto,
+                                   @PathVariable Long idContrat,
+                                   @PathVariable String mois,
+                                   @PathVariable String methodePaiement) {
+
+        dto.setContratId(idContrat);
+        dto.setMois(mois);
+        dto.setMethodePaiement(methodePaiement);
+        return paiementService.CreatePaiement(dto);
+    }
+
+    @GetMapping("/historiques-paiements/contrat/{contratId}")
+    public ResponseEntity<PageResponse<PaiementDTO>> getHistoryPaiementByContrat(
+        @PathVariable Long contratId,
+        @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
+        @RequestParam(defaultValue = "${api.pagination.default-size}") int size){
+
+    PageResponse<PaiementDTO> paiements = PageResponse.fromPage(paiementService.getPaiementByContratId(contratId, PageRequest.of(page, size)));
+        
+        return new ResponseEntity<>(paiements, HttpStatus.OK);
+    }
 }
