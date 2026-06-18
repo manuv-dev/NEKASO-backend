@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOGes;
+
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteCreateResponseDTO;
 
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteDTOList;
-import gesimmo.nekaso.entity.BienImmobilier;
+
 import gesimmo.nekaso.entity.DemandeVisite;
 import gesimmo.nekaso.mapper.DemandeVisiteMapper;
 import gesimmo.nekaso.mapper.BienImmobilierMapper;

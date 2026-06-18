@@ -1,16 +1,13 @@
 package gesimmo.nekaso.service.impl;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierCreateDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import gesimmo.nekaso.dto.BienImmobilierDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.Gestionnaire;
 import gesimmo.nekaso.entity.PhotoBien;

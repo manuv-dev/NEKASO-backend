@@ -7,7 +7,6 @@ import java.util.List;
 import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.TypeBien;
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
 @Table(name = "bien_immobilier")

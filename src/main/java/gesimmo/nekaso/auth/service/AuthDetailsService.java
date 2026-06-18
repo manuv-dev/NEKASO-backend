@@ -17,9 +17,9 @@ public class AuthDetailsService implements UserDetailsService  {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String numeroString) throws UsernameNotFoundException {
-        return userRepository.findByTelephone(numeroString)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with telephone: " + numeroString));
+    public UserDetails loadUserByUsername(String numero) throws UsernameNotFoundException {
+        return userRepository.findByTelephone(numero)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with telephone: " + numero));
     }
 
 

@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component;
 import gesimmo.nekaso.auth.entity.Role;
 import gesimmo.nekaso.auth.entity.RoleType;
 import gesimmo.nekaso.entity.Gestionnaire;
-import gesimmo.nekaso.entity.Locataire;
 import gesimmo.nekaso.repository.GestionnaireRepository;
-import gesimmo.nekaso.repository.LocataireRepository;
 import gesimmo.nekaso.repository.RoleRepository;
 import gesimmo.nekaso.repository.UserRepository;
 

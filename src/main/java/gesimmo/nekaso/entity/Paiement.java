@@ -5,9 +5,6 @@ import lombok.*;
 
 import java.time.LocalDate;
 
-import gesimmo.nekaso.entity.enums.MethodePaiement;
-import gesimmo.nekaso.entity.enums.Mois;
-
 @Entity
 @Table(name = "paiement")
 @Data

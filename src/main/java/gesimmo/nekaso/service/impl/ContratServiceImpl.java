@@ -18,13 +18,7 @@ import org.springframework.stereotype.Service;
 import gesimmo.nekaso.mapper.ContratMapper;
 import gesimmo.nekaso.service.CloudinaryService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import gesimmo.nekaso.service.DemandeLocationService;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
