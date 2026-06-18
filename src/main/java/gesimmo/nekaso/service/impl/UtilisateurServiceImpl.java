@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import gesimmo.nekaso.entity.User;
+import gesimmo.nekaso.auth.entity.User;
 import gesimmo.nekaso.repository.UserRepository;
 import gesimmo.nekaso.service.UtilisateurService;
 

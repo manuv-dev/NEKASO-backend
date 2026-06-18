@@ -1,17 +1,15 @@
 package gesimmo.nekaso.controller;
 
 import gesimmo.nekaso.dto.ContratDTO;
-import gesimmo.nekaso.entity.ContratBail;
+
 import gesimmo.nekaso.service.ContratService;
 import gesimmo.nekaso.shared.Response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/api/contrats")
