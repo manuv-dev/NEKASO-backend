@@ -1,58 +1,56 @@
 package gesimmo.nekaso.repository.mock;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import gesimmo.nekaso.auth.entity.Role;
+import gesimmo.nekaso.auth.entity.RoleType;
 import gesimmo.nekaso.entity.Locataire;
-import gesimmo.nekaso.entity.User;
-import gesimmo.nekaso.entity.enums.Role;
+
 import gesimmo.nekaso.repository.LocataireRepository;
+import gesimmo.nekaso.repository.RoleRepository;
 import gesimmo.nekaso.repository.UserRepository;
 
 @Component
-@Order(2)
+@Order(3)
 public class LocataireMock implements CommandLineRunner {
 
 	private final LocataireRepository locataireRepository;
 	private final UserRepository userRepository;
 	private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	private final RoleRepository roleRepository;
 
-	public LocataireMock(LocataireRepository locataireRepository, UserRepository userRepository) {
+	public LocataireMock(LocataireRepository locataireRepository, UserRepository userRepository, RoleRepository roleRepository) {
 		this.locataireRepository = locataireRepository;
 		this.userRepository = userRepository;
+		this.roleRepository = roleRepository;
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
+		if(roleRepository.findByRole(RoleType.LOCATAIRE).isEmpty()) {
+		var role = new Role();
+		role.setRole(RoleType.LOCATAIRE);
+		roleRepository.save(role);
+		}
+
 		if (locataireRepository.count() == 0) {
-			User user1 = createUser("Doe", "John", "123456789", "password");
-			User user2 = createUser("Smith", "Jane", "987654321", "password");
-			User user3 = createUser("Johnson", "Bob", "555444333", "password");
-
+			var locataireRole = roleRepository.findByRole(RoleType.LOCATAIRE).orElseThrow(() -> new RuntimeException("Role not found"));
 			Locataire locataire1 = new Locataire();
-			locataire1.setUser(user1);
+			locataire1.setNom("Doe");
+			locataire1.setPrenom("John");
+			locataire1.setTelephone("123456789");
+			locataire1.setMotDePasse(passwordEncoder.encode("password"));
+			locataire1.setRoles(new HashSet<>(Set.of(locataireRole)));
 			locataireRepository.save(locataire1);
-
-			Locataire locataire2 = new Locataire();
-			locataire2.setUser(user2);
-			locataireRepository.save(locataire2);
-
-			Locataire locataire3 = new Locataire();
-			locataire3.setUser(user3);
-			locataireRepository.save(locataire3);
 		}
 	}
 
-	private User createUser(String nom, String prenom, String telephone, String motDePasse) {
-		User user = new User();
-		user.setNom(nom);
-		user.setPrenom(prenom);
-		user.setTelephone(telephone);
-		user.setMotDePasse(passwordEncoder.encode(motDePasse));
-		user.setRole(Role.LOCATAIRE);
-		user.setStatut("ACTIF");
-		return userRepository.save(user);
+
 	}
-}
+

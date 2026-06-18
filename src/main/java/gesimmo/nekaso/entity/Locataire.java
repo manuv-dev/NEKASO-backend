@@ -1,5 +1,8 @@
 package gesimmo.nekaso.entity;
 
+import java.util.List;
+
+import gesimmo.nekaso.auth.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,14 +11,14 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Locataire {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@PrimaryKeyJoinColumn(name = "user_id")
+public class Locataire extends User {
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+
+    @OneToMany(mappedBy = "locataire")
+    private List<DemandeVisite> demandevistes;
+    @OneToMany(mappedBy = "locataire")
+    private List<ContratBail> contratLocations;
+  
 }

@@ -42,7 +42,10 @@ public class ContratBail {
     private DemandeLocation demandeLocation;
     @OneToOne
     @JoinColumn(name = "paiement_id")   
-    
     private List<Paiement> listePaiement;
+
+    @ManyToOne
+    @JoinColumn(name = "locataire_id")
+    private Locataire locataire;
 
 }

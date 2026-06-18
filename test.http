@@ -40,3 +40,12 @@ POST {{baseUrl}}/api/demandes/locataire/3/bien/1
 ###
 POST {{baseUrl}}/api/biens/create
 ###
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "telephone": "778492734",
+  "motDePasse": "password"
+ 
+}

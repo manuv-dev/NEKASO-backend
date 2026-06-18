@@ -3,8 +3,10 @@ package gesimmo.nekaso.service.impl;
 import com.lowagie.text.*;
 
 import gesimmo.nekaso.entity.ContratBail;
+import gesimmo.nekaso.entity.Gestionnaire;
+import gesimmo.nekaso.entity.Locataire;
 import gesimmo.nekaso.entity.Paiement;
-import gesimmo.nekaso.entity.User;
+
 import gesimmo.nekaso.service.PdfService;
 import org.springframework.stereotype.Service;
 import com.lowagie.text.pdf.*;
@@ -17,7 +19,7 @@ import java.time.LocalDate;
 public class PdfServiceImpl implements PdfService {
 
     @Override
-    public byte[] genererContratPdf(ContratBail contrat, User locataireUser, User gestionnaireUser, String typeBien, String libelle) {
+    public byte[] genererContratPdf(ContratBail contrat, Locataire locataireUser, Gestionnaire gestionnaireUser, String typeBien, String libelle) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             
@@ -183,7 +185,7 @@ public class PdfServiceImpl implements PdfService {
     }
 
     @Override
-    public byte[] genererQuittancePdf(Paiement paiement, User locataireUser, User gestionnaireUser, String typeBien, String libelle) {
+    public byte[] genererQuittancePdf(Paiement paiement, Locataire locataireUser, Gestionnaire gestionnaireUser, String typeBien, String libelle) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             

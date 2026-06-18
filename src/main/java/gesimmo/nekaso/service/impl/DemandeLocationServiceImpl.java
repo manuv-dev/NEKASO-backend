@@ -17,7 +17,7 @@ import gesimmo.nekaso.repository.DemandeLocationRepository;
 import gesimmo.nekaso.repository.LocataireRepository;
 import gesimmo.nekaso.service.ContratService;
 import gesimmo.nekaso.service.DemandeLocationService;
-import gesimmo.nekaso.service.NotificationService;
+
 
 import java.time.LocalDateTime;
 
@@ -31,14 +31,14 @@ public class DemandeLocationServiceImpl implements DemandeLocationService {
     private final DemandeLocationRepository demandeRepo;
     private  final DemandeLocationMapper demandeLocationMapper;
     private final ContratService contratService;
-    private final NotificationService notificationService;
+  
     private final LocataireRepository locataireRepository;
     private final ContratBailRepository contratBailRepository;
     private final BienImmobilierRepository bienRepository;
 
     public DemandeLocationServiceImpl(DemandeLocationRepository demandeRepo
             , ContratService contratService
-            , NotificationService notificationService
+            
             , LocataireRepository locataireRepository
             , ContratBailRepository contratBailRepository
             , BienImmobilierRepository bienRepository
@@ -46,7 +46,7 @@ public class DemandeLocationServiceImpl implements DemandeLocationService {
             ) {
         this.demandeRepo = demandeRepo;
         this.contratService = contratService;
-        this.notificationService = notificationService;
+     
         this.locataireRepository = locataireRepository;
         this.contratBailRepository = contratBailRepository;
         this.bienRepository = bienRepository;

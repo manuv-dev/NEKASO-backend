@@ -14,7 +14,7 @@ import gesimmo.nekaso.dto.BienImmobilierDTO;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.Gestionnaire;
 import gesimmo.nekaso.entity.PhotoBien;
-import gesimmo.nekaso.entity.User;
+
 import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.TypeBien;
 import gesimmo.nekaso.repository.BienImmobilierRepository;

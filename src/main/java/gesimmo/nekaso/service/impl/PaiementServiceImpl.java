@@ -2,7 +2,9 @@ package gesimmo.nekaso.service.impl;
 
 import gesimmo.nekaso.dto.PaiementDTO;
 import gesimmo.nekaso.entity.ContratBail;
-import gesimmo.nekaso.entity.DemandeLocation;
+
+import gesimmo.nekaso.entity.Gestionnaire;
+import gesimmo.nekaso.entity.Locataire;
 import gesimmo.nekaso.entity.Paiement;
 import gesimmo.nekaso.repository.ContratBailRepository;
 import gesimmo.nekaso.repository.PaiementRepository;
@@ -11,7 +13,7 @@ import gesimmo.nekaso.service.PdfService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import gesimmo.nekaso.entity.User;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,7 +21,7 @@ import gesimmo.nekaso.service.CloudinaryService;
 
 
 import java.time.LocalDate;
-import java.util.Optional;
+
 import gesimmo.nekaso.mapper.PaiementMapper;
 
 @Service
@@ -67,8 +69,8 @@ public class PaiementServiceImpl implements PaiementService {
 
             String libelle = paiement.getContrat().getDemandeLocation().getBien().getLibelle() ;
 
-            User locataireUser = paiement.getContrat().getDemandeLocation().getLocataire().getUser();
-            User gestionnaireUser = paiement.getContrat().getDemandeLocation().getBien().getGestionnaire().getUser();
+            Locataire locataireUser = paiement.getContrat().getDemandeLocation().getLocataire();
+            Gestionnaire gestionnaireUser = paiement.getContrat().getDemandeLocation().getBien().getGestionnaire() ;
             
             byte[] pdfBytes = pdfService.genererQuittancePdf(paiement, locataireUser, gestionnaireUser, typeBien, libelle);
 

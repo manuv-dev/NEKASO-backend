@@ -3,7 +3,8 @@ package gesimmo.nekaso.service.impl;
 import gesimmo.nekaso.dto.ContratDTO;
 import gesimmo.nekaso.entity.ContratBail;
 import gesimmo.nekaso.entity.DemandeLocation;
-import gesimmo.nekaso.entity.User;
+import gesimmo.nekaso.entity.Gestionnaire;
+import gesimmo.nekaso.entity.Locataire;
 import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.StatutContrat;
 import gesimmo.nekaso.entity.enums.StatutDemande;
@@ -48,10 +49,11 @@ public class ContratServiceImpl implements ContratService {
             throw new RuntimeException("La demande de location n'est pas acceptée. Impossible de créer le contrat.");
         }
 
-        if (demande.getLocataire() == null || demande.getLocataire().getUser() == null) {
+        // 2. Sécurisation : Vérification de la présence des utilisateurs (évite les NullPointerException)
+        if (demande.getLocataire() == null || demande.getLocataire().getId() == null) {
             throw new RuntimeException("Données du locataire incomplètes pour générer le contrat.");
         }
-        if (demande.getBien() == null || demande.getBien().getGestionnaire() == null || demande.getBien().getGestionnaire().getUser() == null) {
+        if (demande.getBien() == null || demande.getBien().getGestionnaire() == null || demande.getBien().getGestionnaire().getId() == null) {
             throw new RuntimeException("Le bien immobilier n'a pas de gestionnaire assigné.");
         }
 
@@ -83,8 +85,8 @@ public class ContratServiceImpl implements ContratService {
 
         String libelle = demande.getBien().getLibelle() ;
         // 5. Récupération des utilisateurs pour le PDF
-        User locataireUser = demande.getLocataire().getUser();
-        User gestionnaireUser = demande.getBien().getGestionnaire().getUser();
+        Locataire locataireUser = demande.getLocataire();
+        Gestionnaire gestionnaireUser = demande.getBien().getGestionnaire();
 
         // 6. Génération du PDF en mémoire vive (byte[]) au lieu d'un fichier local
         byte[] pdfBytes = pdfService.genererContratPdf(contrat, locataireUser, gestionnaireUser, typeBien, libelle);

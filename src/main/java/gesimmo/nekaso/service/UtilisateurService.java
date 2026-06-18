@@ -1,7 +1,9 @@
 package gesimmo.nekaso.service;
 
 import java.util.Optional;
-import gesimmo.nekaso.entity.User;
+
+import gesimmo.nekaso.auth.entity.User;
+
 
 public interface UtilisateurService {
     Optional<User> findByTelephone(String telephone);
