@@ -14,7 +14,7 @@ import gesimmo.nekaso.auth.dto.RegisterRequestDto;
 import gesimmo.nekaso.auth.dto.RegisterResponseDto;
 import gesimmo.nekaso.shared.Response.RestResponse;
 import jakarta.validation.Valid;
-import gesimmo.nekaso.auth.service.AuthSevice;
+import gesimmo.nekaso.auth.service.AuthServices;
 
 
 
@@ -22,9 +22,9 @@ import gesimmo.nekaso.auth.service.AuthSevice;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     private final UserDetailsService authService;
-    private final AuthSevice service;
+  private final AuthServices service;
 
-    public AuthController(UserDetailsService authService, gesimmo.nekaso.auth.service.AuthSevice service) {
+    public AuthController(UserDetailsService authService, AuthServices service) {
         this.authService = authService;
         this.service = service;
     }

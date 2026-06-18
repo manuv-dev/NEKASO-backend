@@ -1,7 +1,7 @@
 package gesimmo.nekaso.auth.service;
 
 
-import java.util.Set;
+    import java.util.Set;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,12 +20,12 @@ import gesimmo.nekaso.exception.EntityNotFoundException;
 import gesimmo.nekaso.repository.RoleRepository;
 import gesimmo.nekaso.repository.UserRepository;
 @Service
-public class AuthSevice {
+public class AuthServices {  
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider ;
     private final RoleRepository roleRepository;
-    public AuthSevice(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider, RoleRepository roleRepository) {
+    public AuthServices(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -66,3 +66,4 @@ public class AuthSevice {
         return new RegisterResponseDto(true, "Inscription réussie.", registerRequest.telephone(), null, null);
     }
 }
+
