@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import gesimmo.nekaso.entity.enums.StatutContrat;
+
 
 @Entity
 @Table(name = "contrat_bail")
@@ -30,6 +32,10 @@ public class ContratBail {
     private String dateDebut;
     @Column(name = "cheminpdf",columnDefinition = "TEXT")
     private String cheminPDF;
+    
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatutContrat statutContrat;
 
     @OneToOne
     @JoinColumn(name = "demande_location_id")

@@ -7,6 +7,7 @@ import gesimmo.nekaso.entity.DemandeLocation;
 import gesimmo.nekaso.entity.Locataire;
 import gesimmo.nekaso.entity.enums.StatutDemande;
 import gesimmo.nekaso.exception.BienNonDisponibleException;
+import gesimmo.nekaso.exception.DemandeLocationException;
 import gesimmo.nekaso.exception.EntityNotFoundException;
 import gesimmo.nekaso.exception.ResourceNotFoundException;
 import gesimmo.nekaso.mapper.DemandeLocationMapper;
@@ -51,22 +52,23 @@ public class DemandeLocationServiceImpl implements DemandeLocationService {
         this.bienRepository = bienRepository;
         this.demandeLocationMapper = demandeLocationMapper; 
     }
+        @Override
+        public DemandeLocationDTO createDemandeLocation(Long id_Locataire, Long id_Bien) {
 
-    @Override
-    public DemandeLocationDTO createDemandeLocation(Long id_Locataire, Long id_Bien) {
-        boolean existeDeja = demandeRepo.existsByLocataireIdAndBienImmobilierIdAndStatut(
-            id_Locataire,
-            id_Bien
-        );
-      
-        
-        if (existeDeja) {
-            throw new RuntimeException("Vous avez déjà une demande pour ce bien.");
-        }
+            boolean existeDeja = demandeRepo.existsByLocataireIdAndBienImmobilierIdAndStatut(
+                id_Locataire,
+                id_Bien
+            );
+
+            if (existeDeja) {
+                throw new DemandeLocationException("Vous avez déjà une demande en attente pour ce bien.");
+            }
+            
             Locataire locataire = locataireRepository.findById(id_Locataire)
-                    .orElseThrow(() -> new ResourceNotFoundException("Le locataire avec l'ID " + id_Locataire + " n'a pas été trouvé"));
+                    .orElseThrow(() -> new DemandeLocationException("Le locataire avec l'ID " + id_Locataire + " n'a pas été trouvé"));
+                    
             BienImmobilier bien = bienRepository.findById(id_Bien)
-                    .orElseThrow(() -> new ResourceNotFoundException("Le bien immobilier avec l'ID " + id_Bien + " n'a pas été trouvé"));
+                    .orElseThrow(() -> new DemandeLocationException("Le bien immobilier avec l'ID " + id_Bien + " n'a pas été trouvé"));
 
             DemandeLocation demandelocation = DemandeLocation.builder()
                     .locataire(locataire)
@@ -77,87 +79,97 @@ public class DemandeLocationServiceImpl implements DemandeLocationService {
 
             demandeRepo.save(demandelocation);
 
-     
-
             return demandeLocationMapper.toDto(demandelocation);
-    }
-    @Override
+        }
+
+        @Override
     public DemandeLocationDTO changerStatutDemandeLocation(Long demandeId, String nouveauStatut) {
+
         DemandeLocation demande = demandeRepo.findById(demandeId)
-                .orElseThrow(() -> new EntityNotFoundException("Demande de location non trouvée"));
+                .orElseThrow(() -> new ResourceNotFoundException("Demande de location avec l'ID " + demandeId + " non trouvée"));
+
         StatutDemande statutDem;
         try {
             statutDem = StatutDemande.valueOf(nouveauStatut.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Statut invalide : " + nouveauStatut);
-        }
 
-        if (demande.getStatut() == null) {
-            throw new BienNonDisponibleException("Le statut actuel de la demande est null, impossible de changer le statut.");
+            throw new IllegalArgumentException("Le statut fourni n'existe pas : " + nouveauStatut);
         }
 
         StatutDemande statutActuel = demande.getStatut();
+        if (statutActuel == null) {
+            throw new DemandeLocationException("Le statut actuel de la demande est corrompu (null). Impossible de le modifier.");
+        }
+
         if (statutActuel == statutDem) {
-            if (statutActuel == StatutDemande.REFUSEE) {
-                throw new BienNonDisponibleException("La demande a déjà été refusée.");
-            }
-            if (statutActuel == StatutDemande.ACCEPTEE) {
-                throw new BienNonDisponibleException("La demande a déjà été acceptée.");
-            }
-            if (statutActuel == StatutDemande.ANNULEE) {
-                throw new BienNonDisponibleException("La demande a déjà été annulée.");
-            }
-            if (statutActuel == StatutDemande.EN_ATTENTE) {
-                throw new BienNonDisponibleException("La demande est déjà en attente.");
-            }
+            throw new DemandeLocationException("La demande est déjà au statut : " + statutActuel);
         }
-        if (statutActuel == StatutDemande.EN_ATTENTE && statutDem == StatutDemande.REFUSEE) {
-            demande.setStatut(statutDem);
-            demandeRepo.save(demande);
-        } 
-        else if (statutActuel == StatutDemande.EN_ATTENTE && statutDem == StatutDemande.ACCEPTEE) {
-            demande.setStatut(statutDem);
-            demandeRepo.save(demande);
-        } 
-        else if ((statutActuel == StatutDemande.ACCEPTEE || statutActuel == StatutDemande.EN_ATTENTE) && statutDem == StatutDemande.ANNULEE) {
-            demande.setStatut(statutDem);
-            demandeRepo.save(demande);
-        } 
-        else {
-            throw new BienNonDisponibleException("Changement de statut non autorisé. Le statut actuel est : " + statutActuel);
+
+        boolean transitionAutorisee = false;
+
+        if (statutActuel == StatutDemande.EN_ATTENTE) {
+
+            transitionAutorisee = true;
+        } else if (statutActuel == StatutDemande.ACCEPTEE && statutDem == StatutDemande.ANNULEE) {
+            transitionAutorisee = true;
         }
+
+        if (transitionAutorisee) {
+            demande.setStatut(statutDem);
+            demandeRepo.save(demande);
+        } else {
+            throw new DemandeLocationException("Changement de statut non autorisé. Impossible de passer de " + statutActuel + " à " + statutDem);
+        }
+
         return demandeLocationMapper.toDto(demande);
     }
 
     // @Override
     // public DemandeLocationDTO changerStatutDemandeLocation(Long demandeId, String nouveauStatut) {
     //     DemandeLocation demande = demandeRepo.findById(demandeId)
-    //             .orElseThrow(() -> new RuntimeException("Demande de location non trouvée"));
-    //     // Validation du nouveau statut
+    //             .orElseThrow(() -> new EntityNotFoundException("Demande de location non trouvée"));
     //     StatutDemande statutDem;
     //     try {
     //         statutDem = StatutDemande.valueOf(nouveauStatut.toUpperCase());
     //     } catch (IllegalArgumentException e) {
-    //         throw new RuntimeException("Statut invalide : " + nouveauStatut);
+    //         throw new IllegalArgumentException("Statut invalide : " + nouveauStatut);
     //     }
-    //     if(demande.getStatut() == null){
-    //         throw new RuntimeException("Le statut actuel de la demande est null, impossible de changer le statut.");
-    //     }else if(demande.getStatut() == StatutDemande.EN_ATTENTE && statutDem == StatutDemande.REFUSEE){
-    //         demande.setStatut(statutDem);
-    //         demandeRepo.save(demande);
-    //         throw new RuntimeException("La demande a été refusée avec succès.");
-    //     } else if(demande.getStatut() == StatutDemande.EN_ATTENTE && statutDem == StatutDemande.ACCEPTEE){
-    //         demande.setStatut(statutDem);
-    //         demandeRepo.save(demande);
-    //         throw new RuntimeException("La demande a été acceptée avec succès.");
-    //     }else if(demande.getStatut() == StatutDemande.ACCEPTEE || demande.getStatut() == StatutDemande.EN_ATTENTE && statutDem == StatutDemande.ANNULEE){
-    //         demande.setStatut(statutDem);
-    //         demandeRepo.save(demande);
-    //         throw new RuntimeException("La demande a été annulée avec succès.");
-    //     }else {
-    //         throw new RuntimeException("Changement de statut non autorisé. Le statut actuel est : " + demande.getStatut());
+
+    //     if (demande.getStatut() == null) {
+    //         throw new BienNonDisponibleException("Le statut actuel de la demande est null, impossible de changer le statut.");
     //     }
-        
+
+    //     StatutDemande statutActuel = demande.getStatut();
+    //     if (statutActuel == statutDem) {
+    //         if (statutActuel == StatutDemande.REFUSEE) {
+    //             throw new BienNonDisponibleException("La demande a déjà été refusée.");
+    //         }
+    //         if (statutActuel == StatutDemande.ACCEPTEE) {
+    //             throw new BienNonDisponibleException("La demande a déjà été acceptée.");
+    //         }
+    //         if (statutActuel == StatutDemande.ANNULEE) {
+    //             throw new BienNonDisponibleException("La demande a déjà été annulée.");
+    //         }
+    //         if (statutActuel == StatutDemande.EN_ATTENTE) {
+    //             throw new BienNonDisponibleException("La demande est déjà en attente.");
+    //         }
+    //     }
+    //     if (statutActuel == StatutDemande.EN_ATTENTE && statutDem == StatutDemande.REFUSEE) {
+    //         demande.setStatut(statutDem);
+    //         demandeRepo.save(demande);
+    //     } 
+    //     else if (statutActuel == StatutDemande.EN_ATTENTE && statutDem == StatutDemande.ACCEPTEE) {
+    //         demande.setStatut(statutDem);
+    //         demandeRepo.save(demande);
+    //     } 
+    //     else if ((statutActuel == StatutDemande.ACCEPTEE || statutActuel == StatutDemande.EN_ATTENTE) && statutDem == StatutDemande.ANNULEE) {
+    //         demande.setStatut(statutDem);
+    //         demandeRepo.save(demande);
+    //     } 
+    //     else {
+    //         throw new BienNonDisponibleException("Changement de statut non autorisé. Le statut actuel est : " + statutActuel);
+    //     }
+    //     return demandeLocationMapper.toDto(demande);
     // }
 
         @Override
@@ -173,7 +185,7 @@ public class DemandeLocationServiceImpl implements DemandeLocationService {
             return demandesPage;
         }
 
-        @Deprecated
+        @Override
         public Page<DemandeLocation> getAllDemandesLocation(Pageable pageable, String statut) {
             Page<DemandeLocation> demandesPage;
             if (statut == null || statut.isBlank()) {

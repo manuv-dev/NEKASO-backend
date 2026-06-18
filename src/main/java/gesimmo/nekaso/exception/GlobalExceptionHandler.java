@@ -44,8 +44,9 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(DemandeLocationException.class)
     public ResponseEntity<RestResponse> handleDemandeLocationException(DemandeLocationException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(RestResponse.error(ex.getMessage(), HttpStatus.BAD_REQUEST));
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(RestResponse.error(ex.getMessage(), HttpStatus.CONFLICT));
     }
+
     
 }

@@ -6,6 +6,7 @@ import gesimmo.nekaso.entity.DemandeLocation;
 import gesimmo.nekaso.entity.Gestionnaire;
 import gesimmo.nekaso.entity.Locataire;
 import gesimmo.nekaso.entity.enums.StatutBien;
+import gesimmo.nekaso.entity.enums.StatutContrat;
 import gesimmo.nekaso.entity.enums.StatutDemande;
 import gesimmo.nekaso.repository.ContratBailRepository;
 import gesimmo.nekaso.repository.DemandeLocationRepository;
@@ -32,9 +33,9 @@ public class ContratServiceImpl implements ContratService {
     private final CloudinaryService cloudinaryService;
 
     @Override
-    @Transactional // Recommandé car on effectue plusieurs opérations en base de données
+    @Transactional
     public ContratDTO creerContrat(ContratDTO dto) {
-        // 1. Récupération et vérification de la demande
+
         DemandeLocation demande = demandeRepo.findById(dto.getDemandeLocationId())
                 .orElseThrow(() -> new RuntimeException("Demande introuvable"));
 
@@ -58,15 +59,15 @@ public class ContratServiceImpl implements ContratService {
                 .montantLoyer(loyer)
                 .montantCaution(Caution)
                 .conditions(dto.getConditions())
+                .statutContrat(StatutContrat.ACTIF)
                 .demandeLocation(demande)
                 .build();
 
-        // 4. Première sauvegarde pour générer l'ID du contrat en base de données
+
         contrat = contratRepo.save(contrat);
 
-        //changer le staut du bien
         demande.getBien().setStatutBien(StatutBien.LOUE);
-        //convertir le type de bien en string pour le PDF
+
         String typeBien;
         switch (demande.getBien().getTypeBien()) {
             case APPARTEMENT -> typeBien = "Appartement";
@@ -113,14 +114,14 @@ public class ContratServiceImpl implements ContratService {
     }
 
     @Override
-public Page<ContratDTO> getContratsParGestionnaire(Long gestionnaireId, Pageable pageable) {
-    // 1. Récupération des contrats du gestionnaire directement depuis la BDD
-    Page<ContratBail> contrats = contratRepo.findByGestionnaireId(gestionnaireId, pageable);
-    
-    if (contrats.isEmpty()) {
-        throw new RuntimeException("Aucun contrat trouvé pour ce gestionnaire");
+    public Page<ContratDTO> getContratsParGestionnaire(Long gestionnaireId, Pageable pageable) {
+        // 1. Récupération des contrats du gestionnaire directement depuis la BDD
+        Page<ContratBail> contrats = contratRepo.findByGestionnaireId(gestionnaireId, pageable);
+        
+        if (contrats.isEmpty()) {
+            throw new RuntimeException("Aucun contrat trouvé pour ce gestionnaire");
+        }
+        
+        return contrats.map(contratMapper::toDTO);
     }
-    
-    return contrats.map(contratMapper::toDTO);
-}
 }
