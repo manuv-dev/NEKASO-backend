@@ -3,6 +3,8 @@ package gesimmo.nekaso.dto;
 import lombok.*;
 import java.time.LocalDate;
 
+import gesimmo.nekaso.entity.enums.StatutContrat;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,5 +17,6 @@ public class ContratDTO {
     private String conditions;
     private String dateDebut;
     private String cheminPDF;
+    private StatutContrat statutContrat;
     private Long demandeLocationId;
 }
