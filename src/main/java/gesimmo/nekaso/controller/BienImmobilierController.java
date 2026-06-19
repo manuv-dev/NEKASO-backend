@@ -11,16 +11,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import io.swagger.v3.oas.annotations.Operation;
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOGes;
+import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierUpdateForm;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.PhotoBien;
 import gesimmo.nekaso.mapper.BienImmobilierMapper;
 import gesimmo.nekaso.service.BienImmobilierService;
 import gesimmo.nekaso.shared.Response.PageResponse;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 @RestController
 @RequestMapping("/api/biens")
@@ -76,40 +82,34 @@ public class BienImmobilierController {
     }
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Créer un bien immobilier avec plusieurs photos")
     public ResponseEntity<BienImmobilierCreateDTO> createBien(@ModelAttribute BienImmobilierForm form) {
-            BienImmobilierCreateDTO bienDTO = BienImmobilierCreateDTO.builder()
-                .typeBien(form.getTypeBien())
-                .libelle(form.getLibelle())
-                .adresse(form.getAdresse())
-                .surface(form.getSurface())
-                .nombrePieces(form.getNombrePieces())
-                .loyer(form.getLoyer())
-                .description(form.getDescription())
-                .gestionnaireId(form.getGestionnaireId())
-                .build();
         MultipartFile[] photosArray = form.getPhotos() != null ? 
                 form.getPhotos().toArray(new MultipartFile[0]) : new MultipartFile[0];
-        BienImmobilier savedBien = bienService.createBien(bienDTO, photosArray);
-        List<String> urlsPhotos = new java.util.ArrayList<>();
-        if (savedBien.getPhotos() != null) {
-            for (PhotoBien photo : savedBien.getPhotos()) {
-                urlsPhotos.add(photo.getUrlPhoto());
-            }
-        }
-
-        BienImmobilierCreateDTO responseDTO = BienImmobilierCreateDTO.builder()
-                .typeBien(savedBien.getTypeBien() != null ? savedBien.getTypeBien().name() : null)
-                .libelle(savedBien.getLibelle()) 
-                .adresse(savedBien.getAdresse())
-                .surface(savedBien.getSurface())
-                .nombrePieces(savedBien.getNombrePieces())
-                .loyer(savedBien.getLoyer())
-                .description(savedBien.getDescription())
-                .photos(urlsPhotos)
-                .build();
+        
+        BienImmobilierCreateDTO responseDTO = bienService.createBien(form, photosArray);
         
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        // Permet à Spring de convertir proprement les chaînes vides reçues sur les fichiers en "null"
+        binder.registerCustomEditor(MultipartFile.class, new ByteArrayMultipartFileEditor());
+    }
+    @PatchMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BienImmobilierCreateDTO> updateBien(
+            @PathVariable Long id,
+            @ModelAttribute BienImmobilierUpdateForm form) { // 👈 Tout est groupé ici proprement
+        
+        // Extraction et filtrage de sécurité des photos du formulaire
+        MultipartFile[] photosArray = new MultipartFile[0];
+        if (form.getPhotos() != null) {
+            photosArray = form.getPhotos().stream()
+                    .filter(p -> p != null && !p.isEmpty() && p.getOriginalFilename() != null && !p.getOriginalFilename().isEmpty())
+                    .toArray(MultipartFile[]::new);
+        }
+
+        BienImmobilierCreateDTO responseDTO = bienService.updateBien(id, form, photosArray);
+        return ResponseEntity.ok(responseDTO);
+    }
 }

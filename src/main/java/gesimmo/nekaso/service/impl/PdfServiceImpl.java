@@ -130,14 +130,17 @@ public class PdfServiceImpl implements PdfService {
             pDetails.add(new Chunk(dateDebut + "\n", bodyNormal));
             
             pDetails.add(new Chunk("• Montant du Loyer Mensuel : ", bodyBold));
-            pDetails.add(new Chunk(contrat.getMontantLoyer() + " FCFA\n", bodyBold)); // Loyer mis en gras
+            pDetails.add(new Chunk(contrat.getMontantLoyer() + " FCFA\n", bodyBold)); 
             
             pDetails.add(new Chunk("• Dépôt de Garantie (Caution) : ", bodyBold));
             pDetails.add(new Chunk(contrat.getMontantCaution() + " FCFA\n", bodyNormal));
+
+            // 👇 AJOUT DEMANDÉ : Intégration propre de l'échéance mensuelle
+            pDetails.add(new Chunk("• Échéance de Paiement : ", bodyBold));
+            pDetails.add(new Chunk("Chaque " + contrat.getJourEcheanceLoyer() + " du mois\n", bodyNormal));
             
             pDetails.setSpacingAfter(20);
             document.add(pDetails);
-
             // ----------------------------------------------------
             // SECTION 3 : CHARGES ET CONDITIONS PARTICULIÈRES
             // ----------------------------------------------------
@@ -156,21 +159,38 @@ public class PdfServiceImpl implements PdfService {
             
             document.add(new Paragraph("\n\n"));
 
-            // ----------------------------------------------------
-            // SECTION 4 : SIGNATURES
+           // ----------------------------------------------------
+            // SECTION 4 : SIGNATURES DYNAMIQUES
             // ----------------------------------------------------
             PdfPTable signatureTable = new PdfPTable(2);
             signatureTable.setWidthPercentage(100);
-            signatureTable.setSpacingBefore(20);
+            signatureTable.setSpacingBefore(30); // Un peu plus d'espace pour respirer
 
-            PdfPCell cellBailleur = new PdfPCell(new Paragraph("Signature du Bailleur / Gestionnaire\n\n\n\n_________________________", bodyBold));
+            // Préparation des chaînes de texte avec les noms dynamiques
+            String nomGestionnaire = gestionnaireUser.getPrenom() + " " + gestionnaireUser.getNom().toUpperCase();
+            String nomLocataire = locataireUser.getPrenom() + " " + locataireUser.getNom().toUpperCase();
+
+            // Bloc de gauche : Le Bailleur / Gestionnaire
+            Paragraph pSignBailleur = new Paragraph();
+            pSignBailleur.add(new Chunk("Signature du Bailleur / Gestionnaire\n", bodyBold));
+            pSignBailleur.add(new Chunk("Lu et approuvé\n\n\n\n\n", bodyNormalItalic)); // Espace pour signer
+            pSignBailleur.add(new Chunk(nomGestionnaire, bodyBold)); // Nom affiché sous la signature
+            
+            PdfPCell cellBailleur = new PdfPCell(pSignBailleur);
             cellBailleur.setBorder(Rectangle.NO_BORDER);
             cellBailleur.setHorizontalAlignment(Element.ALIGN_CENTER);
 
-            PdfPCell cellLocataire = new PdfPCell(new Paragraph("Signature du Preneur / Locataire\n\n\n\n_________________________", bodyBold));
+            // Bloc de droite : Le Preneur / Locataire
+            Paragraph pSignLocataire = new Paragraph();
+            pSignLocataire.add(new Chunk("Signature du Preneur / Locataire\n", bodyBold));
+            pSignLocataire.add(new Chunk("Lu et approuvé\n\n\n\n\n", bodyNormalItalic)); // Espace pour signer
+            pSignLocataire.add(new Chunk(nomLocataire, bodyBold)); // Nom affiché sous la signature
+
+            PdfPCell cellLocataire = new PdfPCell(pSignLocataire);
             cellLocataire.setBorder(Rectangle.NO_BORDER);
             cellLocataire.setHorizontalAlignment(Element.ALIGN_CENTER);
 
+            // Ajout des cellules au tableau
             signatureTable.addCell(cellBailleur);
             signatureTable.addCell(cellLocataire);
 
