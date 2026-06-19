@@ -20,6 +20,7 @@ import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteCreateResponseDTO;
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteDTOList;
 
 import gesimmo.nekaso.entity.DemandeVisite;
+import gesimmo.nekaso.entity.Gestionnaire;
 import gesimmo.nekaso.entity.Locataire;
 import gesimmo.nekaso.mapper.DemandeVisiteMapper;
 import gesimmo.nekaso.mapper.BienImmobilierMapper;
@@ -35,16 +36,21 @@ public class DemandeVisiteController {
 	private final DemandeVisiteMapper demandeVisiteMapper;
 	private final BienImmobilierMapper bienImmobilierMapper;
 	
+	
+	
 
 	public DemandeVisiteController(DemandeVisiteService demandeVisiteService, DemandeVisiteMapper demandeVisiteMapper, BienImmobilierMapper bienImmobilierMapper) {
 		this.demandeVisiteService = demandeVisiteService;
 		this.demandeVisiteMapper = demandeVisiteMapper;
 		this.bienImmobilierMapper = bienImmobilierMapper;
+		
 	}
 
-	@PostMapping("/locataire/{id_Locataire}/bien/{id_Bien}")
-	public ResponseEntity<CreationRequestResponse> createDemandeVisite(@PathVariable Long id_Locataire,
-			@PathVariable Long id_Bien) {
+	@PostMapping("/locataire/bien/{id_Bien}")
+	public ResponseEntity<CreationRequestResponse> createDemandeVisite(
+			@PathVariable Long id_Bien, Authentication authentication) {
+		Locataire locataire = (Locataire) authentication.getPrincipal();
+		Long id_Locataire = locataire.getId();
 		DemandeVisiteCreateResponseDTO createdDemande = demandeVisiteService.createDemandeVisite(id_Locataire, id_Bien);
 		return new ResponseEntity<>(new CreationRequestResponse(
 				createdDemande.id(),
@@ -59,8 +65,8 @@ public class DemandeVisiteController {
 			
 			@RequestParam(defaultValue = "") String statut,
 			@RequestParam(defaultValue = "${api.pagination.default-page}") int page,
-			@RequestParam(defaultValue = "${api.pagination.default-size}") int size,
-		Authentication authentication) {
+			@RequestParam(defaultValue = "${api.pagination.default-size}") int size,Authentication authentication
+		) {
 			
 			Locataire locataire = (Locataire) authentication.getPrincipal();
 			Long id_Locataire = locataire.getId();
@@ -77,8 +83,11 @@ public class DemandeVisiteController {
 	public ResponseEntity<PageResponse<DemandeVisiteDTOList>> getAllDemandesVisiteByGestionnaire(
 			@RequestParam(defaultValue = "") String statut,
 			@RequestParam(defaultValue = "${api.pagination.default-page}") int page,
-			@RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
-		Pageable pageable = PageRequest.of(page, size);
+			@RequestParam(defaultValue = "${api.pagination.default-size}") int size,Authentication authentication
+		) {
+			Gestionnaire gestionnaire = (Gestionnaire) authentication.getPrincipal();
+			Long id_Gestionnaire = gestionnaire.getId();
+			Pageable pageable = PageRequest.of(page, size);
 
 		Page<DemandeVisite> demandes = demandeVisiteService.getAllDemandesVisiteByGestionnaire(pageable, statut);
 		Page<DemandeVisiteDTOList> demandesDto = demandes.map(demandeVisiteMapper::toDtoList);
