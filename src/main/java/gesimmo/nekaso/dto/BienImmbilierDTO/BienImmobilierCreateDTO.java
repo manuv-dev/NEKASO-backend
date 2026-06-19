@@ -6,6 +6,7 @@ public record BienImmobilierCreateDTO(
     String typeBien,
     String libelle,
     String adresse,
+    String statutBien,
     Double surface,
     Integer nombrePieces,
     Double loyer,

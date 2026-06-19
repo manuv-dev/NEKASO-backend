@@ -6,16 +6,12 @@ import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.DemandeLocation;
 import gesimmo.nekaso.entity.Locataire;
 import gesimmo.nekaso.entity.enums.StatutDemande;
-import gesimmo.nekaso.exception.BienNonDisponibleException;
 import gesimmo.nekaso.exception.DemandeLocationException;
-import gesimmo.nekaso.exception.EntityNotFoundException;
 import gesimmo.nekaso.exception.ResourceNotFoundException;
 import gesimmo.nekaso.mapper.DemandeLocationMapper;
 import gesimmo.nekaso.repository.BienImmobilierRepository;
-import gesimmo.nekaso.repository.ContratBailRepository;
 import gesimmo.nekaso.repository.DemandeLocationRepository;
 import gesimmo.nekaso.repository.LocataireRepository;
-import gesimmo.nekaso.service.ContratService;
 import gesimmo.nekaso.service.DemandeLocationService;
 
 
@@ -30,25 +26,20 @@ public class DemandeLocationServiceImpl implements DemandeLocationService {
 
     private final DemandeLocationRepository demandeRepo;
     private  final DemandeLocationMapper demandeLocationMapper;
-    private final ContratService contratService;
   
     private final LocataireRepository locataireRepository;
-    private final ContratBailRepository contratBailRepository;
     private final BienImmobilierRepository bienRepository;
 
     public DemandeLocationServiceImpl(DemandeLocationRepository demandeRepo
-            , ContratService contratService
+            
             
             , LocataireRepository locataireRepository
-            , ContratBailRepository contratBailRepository
             , BienImmobilierRepository bienRepository
             , DemandeLocationMapper demandeLocationMapper
             ) {
         this.demandeRepo = demandeRepo;
-        this.contratService = contratService;
      
         this.locataireRepository = locataireRepository;
-        this.contratBailRepository = contratBailRepository;
         this.bienRepository = bienRepository;
         this.demandeLocationMapper = demandeLocationMapper; 
     }
@@ -123,54 +114,6 @@ public class DemandeLocationServiceImpl implements DemandeLocationService {
 
         return demandeLocationMapper.toDto(demande);
     }
-
-    // @Override
-    // public DemandeLocationDTO changerStatutDemandeLocation(Long demandeId, String nouveauStatut) {
-    //     DemandeLocation demande = demandeRepo.findById(demandeId)
-    //             .orElseThrow(() -> new EntityNotFoundException("Demande de location non trouvée"));
-    //     StatutDemande statutDem;
-    //     try {
-    //         statutDem = StatutDemande.valueOf(nouveauStatut.toUpperCase());
-    //     } catch (IllegalArgumentException e) {
-    //         throw new IllegalArgumentException("Statut invalide : " + nouveauStatut);
-    //     }
-
-    //     if (demande.getStatut() == null) {
-    //         throw new BienNonDisponibleException("Le statut actuel de la demande est null, impossible de changer le statut.");
-    //     }
-
-    //     StatutDemande statutActuel = demande.getStatut();
-    //     if (statutActuel == statutDem) {
-    //         if (statutActuel == StatutDemande.REFUSEE) {
-    //             throw new BienNonDisponibleException("La demande a déjà été refusée.");
-    //         }
-    //         if (statutActuel == StatutDemande.ACCEPTEE) {
-    //             throw new BienNonDisponibleException("La demande a déjà été acceptée.");
-    //         }
-    //         if (statutActuel == StatutDemande.ANNULEE) {
-    //             throw new BienNonDisponibleException("La demande a déjà été annulée.");
-    //         }
-    //         if (statutActuel == StatutDemande.EN_ATTENTE) {
-    //             throw new BienNonDisponibleException("La demande est déjà en attente.");
-    //         }
-    //     }
-    //     if (statutActuel == StatutDemande.EN_ATTENTE && statutDem == StatutDemande.REFUSEE) {
-    //         demande.setStatut(statutDem);
-    //         demandeRepo.save(demande);
-    //     } 
-    //     else if (statutActuel == StatutDemande.EN_ATTENTE && statutDem == StatutDemande.ACCEPTEE) {
-    //         demande.setStatut(statutDem);
-    //         demandeRepo.save(demande);
-    //     } 
-    //     else if ((statutActuel == StatutDemande.ACCEPTEE || statutActuel == StatutDemande.EN_ATTENTE) && statutDem == StatutDemande.ANNULEE) {
-    //         demande.setStatut(statutDem);
-    //         demandeRepo.save(demande);
-    //     } 
-    //     else {
-    //         throw new BienNonDisponibleException("Changement de statut non autorisé. Le statut actuel est : " + statutActuel);
-    //     }
-    //     return demandeLocationMapper.toDto(demande);
-    // }
 
         @Override
         public Page<DemandeLocation> getAllDemandesLocation(Pageable pageable, String statut, Long id_Locataire) {

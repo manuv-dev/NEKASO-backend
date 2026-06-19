@@ -21,13 +21,11 @@ import gesimmo.nekaso.repository.UserRepository;
 public class LocataireMock implements CommandLineRunner {
 
 	private final LocataireRepository locataireRepository;
-	private final UserRepository userRepository;
 	private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	private final RoleRepository roleRepository;
 
 	public LocataireMock(LocataireRepository locataireRepository, UserRepository userRepository, RoleRepository roleRepository) {
 		this.locataireRepository = locataireRepository;
-		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 	}
 

@@ -105,16 +105,5 @@ public class DemandeVisiteController {
 				, HttpStatus.OK);
 
 		}
-    // @GetMapping("biens_disponibles")
-    // public ResponseEntity<PageResponse<BienImmobilierResponseDTOGes>> getAllBiens(
-           
-    //         @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
-    //         @RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
-            
-    //         Pageable pageable = PageRequest.of(page, size);
-    //         Page<BienImmobilier> bienPage = demandeVisiteService.getBiensDisponibles(pageable);
-    //         Page<BienImmobilierResponseDTOGes> bienDto=bienPage.map(bienImmobilierMapper::toDTO);
 
-    //    return new ResponseEntity<>(PageResponse.fromPage(bienDto), HttpStatus.OK);
-    // }
 }

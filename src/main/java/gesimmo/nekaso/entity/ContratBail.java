@@ -2,11 +2,9 @@ package gesimmo.nekaso.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
 import java.util.List;
 import gesimmo.nekaso.entity.enums.StatutContrat;
-
 
 @Entity
 @Table(name = "contrat_bail")
@@ -19,33 +17,39 @@ public class ContratBail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "date_signature")
+    @Column(name = "date_signature", nullable = false)
     private LocalDate dateSignature;
 
-    @Column(name = "montant_loyer")
+    @Column(name = "date_debut", nullable = false)
+    private LocalDate dateDebut; 
+
+    @Column(name = "jour_echeance_loyer", nullable = false)
+    private Integer jourEcheanceLoyer; 
+
+    @Column(name = "montant_loyer", nullable = false)
     private Double montantLoyer;
-    @Column(name = "montant_caution")
+
+    @Column(name = "montant_caution", nullable = false)
     private Double montantCaution;
-    @Column(name = "conditions",columnDefinition = "TEXT")
+
+    @Column(name = "conditions", columnDefinition = "TEXT")
     private String conditions;
-    @Column(name = "date_debut")
-    private String dateDebut;
-    @Column(name = "cheminpdf",columnDefinition = "TEXT")
-    private String cheminPDF;
+
+    @Column(name = "cheminpdf", columnDefinition = "TEXT")
+    private String cheminPDF; 
     
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private StatutContrat statutContrat;
 
     @OneToOne
-    @JoinColumn(name = "demande_location_id")
-    private DemandeLocation demandeLocation;
-    @OneToOne
-    @JoinColumn(name = "paiement_id")   
-    private List<Paiement> listePaiement;
+    @JoinColumn(name = "pre_contrat_id", nullable = false)
+    private PreContrat preContrat;
 
     @ManyToOne
-    @JoinColumn(name = "locataire_id")
+    @JoinColumn(name = "locataire_id", nullable = false)
     private Locataire locataire;
 
+    @OneToMany(mappedBy = "contrat", cascade = CascadeType.ALL)   
+    private List<Paiement> listePaiement;
 }
