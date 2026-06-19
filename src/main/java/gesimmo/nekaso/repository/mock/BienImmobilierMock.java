@@ -1,7 +1,7 @@
 package gesimmo.nekaso.repository.mock;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 
 import gesimmo.nekaso.entity.enums.StatutBien;
 import org.springframework.boot.CommandLineRunner;

@@ -87,6 +87,16 @@ public class DemandeVisiteController {
 				, HttpStatus.OK);
 
 		}
+	@PatchMapping("/gestionnaire/demande/{id_Demande}/confirmer/bien/{idBien}/agent/{idAgent}")
+	public ResponseEntity<CreationRequestResponse> confirmerDemandeVisite(@PathVariable Long id_Demande, @PathVariable Long idBien, @PathVariable Long idAgent) {
+		DemandeVisiteCreateResponseDTO updatedDemande = demandeVisiteService.confirmerDemandeVisite( id_Demande, idBien, idAgent);
+		return new ResponseEntity<>(new CreationRequestResponse(
+				updatedDemande.id(),
+				"Statut de la demande de visite mis à jour avec succès",
+				updatedDemande.statut())
+				, HttpStatus.OK);
+
+		}
     // @GetMapping("biens_disponibles")
     // public ResponseEntity<PageResponse<BienImmobilierResponseDTOGes>> getAllBiens(
            

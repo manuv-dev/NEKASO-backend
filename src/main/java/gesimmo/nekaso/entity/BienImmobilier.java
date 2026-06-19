@@ -51,4 +51,7 @@ public class BienImmobilier {
     @JoinColumn(name = "gestionnaire_id")
     private Gestionnaire gestionnaire;
 
+    @OneToMany(mappedBy = "bienImmobilier", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DemandeVisite> demandesVisite = new ArrayList<>();
+
 }

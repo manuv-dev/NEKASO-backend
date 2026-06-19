@@ -10,7 +10,9 @@ import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.TypeBien;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface BienImmobilierRepository extends JpaRepository<BienImmobilier, Long> {
     @Query("SELECT b FROM BienImmobilier b " +
             "WHERE (:libelle IS NULL OR b.libelle = :libelle) " +

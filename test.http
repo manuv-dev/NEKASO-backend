@@ -1,5 +1,6 @@
 
 @baseUrl = http://localhost:8080
+@token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNzgxODc5NDQ4LCJleHAiOjE3ODE4Nzk1MzR9.jr5sXUN8NkywvFTxOns7nRTqas9STxI3tDjRKwfhbwtuNAcYPCbqpDCpb7dGh11z9UtYDWYTRffpWNUKPM39RQ
 
 GET {{baseUrl}}/api/biens/tests
 ###
@@ -8,6 +9,8 @@ GET {{baseUrl}}/api/biens/tests
 # GET {{baseUrl}}/api/auth/
 # ###
 GET {{baseUrl}}/api/biens/gestionnaire?page=1&size=2
+Content-Type: application/json
+Authorization: Bearer {{token}}
 ###
 
 GET {{baseUrl}}/api/biens/gestionnaire?type=APPARTEMENT&page=0&size=2
@@ -17,14 +20,15 @@ GET {{baseUrl}}/api/biens/gestionnaire?statut=LOUE&page=0&size=2
 ###
 GET {{baseUrl}}/api/biens/gestionnaire?type=APPARTEMENT&statut=ARCHIVE
 ###
-GET {{baseUrl}}/api/visites/gestionnaire/demande?page=1&size=5
+GET {{baseUrl}}/api/visites/gestionnaire/demande?page=0&size=10
+Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ###
-PATCH {{baseUrl}}/api/visites/gestionnaire/demande/1/statut/CONFIRMEE
-###
 
-# PATCH {{baseUrl}}/api/visites/2/refuser
-# ###
+PATCH {{baseUrl}}/api/visites/gestionnaire/demande/1/confirmer/bien/1/agent/1
+
+ ###
 POST {{baseUrl}}/api/visites/locataire/3/bien/3
 ###
 GET {{baseUrl}}/api/visites/mes_demandes/1
@@ -45,7 +49,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "telephone": "778492734",
+  "telephone": "1234567890",
   "motDePasse": "password"
  
 }

@@ -1,7 +1,9 @@
 package gesimmo.nekaso.entity;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
+
+
 
 import gesimmo.nekaso.entity.enums.VisiteStatut;
 
@@ -13,14 +15,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "demande_visite")
-@lombok.Data
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -42,4 +46,9 @@ public class DemandeVisite {
 	@ManyToOne
 	@JoinColumn(name = "bien_id")
 	private BienImmobilier bienImmobilier;
+
+	 @ManyToOne                          
+    @JoinColumn(name = "agent_id")                     
+    private AgentImmobilier agent;
+
 }
