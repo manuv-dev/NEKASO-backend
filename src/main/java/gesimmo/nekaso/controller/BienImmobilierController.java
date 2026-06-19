@@ -38,10 +38,7 @@ public class BienImmobilierController {
         this.bienService = bienService;
         this.bienImmobilierMapper = bienImmobilierMapper;
     }
- @GetMapping("/test")
-    public String testEndpoint() {
-        return  "Endpoint de test pour les biens immobiliers fonctionne correctement !";
-    }
+
  @GetMapping("/gestionnaire")
     public ResponseEntity<PageResponse<BienImmobilierResponseDTOGes>> getAllBiens(
             @RequestParam(defaultValue = "") String statut,

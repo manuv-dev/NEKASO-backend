@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import gesimmo.nekaso.auth.jwtToken.JwtAuthentificationFilter;
 import gesimmo.nekaso.auth.jwtToken.JwtTokenProvider;
 
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
@@ -38,10 +39,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth->auth
             .requestMatchers("/api/v1/auth/**").permitAll()
+            .requestMatchers("/api/biens/locataire/biens_disponibles/**").permitAll()
              .requestMatchers(
         "/h2-console/**",
         "/swagger-ui/**",
