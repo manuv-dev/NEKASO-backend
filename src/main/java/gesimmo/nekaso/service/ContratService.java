@@ -2,13 +2,13 @@ package gesimmo.nekaso.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import gesimmo.nekaso.dto.ContratDTO;
-import gesimmo.nekaso.entity.ContratBail;
-import java.util.List;
+
+import gesimmo.nekaso.dto.ContratDTO.ContratBailRequestDTO;
+import gesimmo.nekaso.dto.ContratDTO.ContratBailResponseDTO;
 
 public interface ContratService {
-    ContratDTO creerContrat(ContratDTO dto);
-    Page<ContratDTO> getContratsParLocataire(Long locataireId, Pageable pageable);
-    Page<ContratDTO> getContratsParGestionnaire(Long gestionnaireId, Pageable pageable);
-    ContratBail getContratById(Long id);
+    ContratBailResponseDTO creerContrat(ContratBailRequestDTO dto);
+    Page<ContratBailResponseDTO> getContratsPourLocataire(Long locataireId, Pageable pageable);
+    
+    Page<ContratBailResponseDTO> getContratsPourGestionnaire(Long gestionnaireId, Pageable pageable);
 }

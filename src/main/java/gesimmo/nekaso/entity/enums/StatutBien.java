@@ -4,5 +4,7 @@ public enum StatutBien {
     LOUE,
     DISPONIBLE,
     RESERVE,
-    ARCHIVE
+    ARCHIVE,
+    DEFECTUEUX,
+    EN_REPARATION
 }

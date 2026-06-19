@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierCreateDTO;
+import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierForm;
 import gesimmo.nekaso.entity.enums.TypeBien;
 import org.springframework.stereotype.Component;
 
@@ -26,30 +27,30 @@ public class BienImmobilierMapper {
 		this.dateMapper = dateMapper;
 	}
 	public BienImmobilierCreateDTO toCreateDTO(BienImmobilier bien) {
-    if (bien == null) {
-        return null;
-    }
+		if (bien == null) {
+			return null;
+		}
 
-    // On extrait uniquement les chaînes de caractères (URL) de tes photos
-    List<String> urlsString = java.util.Collections.emptyList();
-    if (bien.getPhotos() != null) {
-        urlsString = bien.getPhotos().stream()
-                .map(photo -> photo.getUrlPhoto()) // Récupère juste l'URL String
-                .toList();
-    }
+		List<String> urlsString = java.util.Collections.emptyList();
+		if (bien.getPhotos() != null) {
+			urlsString = bien.getPhotos().stream()
+					.map(photo -> photo.getUrlPhoto()) // Récupère juste l'URL String
+					.toList();
+		}
 
-    return BienImmobilierCreateDTO.builder()
-            .typeBien(bien.getTypeBien() != null ? bien.getTypeBien().name() : null)
-            .libelle(bien.getLibelle())
-            .adresse(bien.getAdresse())
-            .surface(bien.getSurface())
-            .nombrePieces(bien.getNombrePieces())
-            .loyer(bien.getLoyer())
-            .description(bien.getDescription())
-            .gestionnaireId(bien.getGestionnaire() != null ? bien.getGestionnaire().getId() : null)
-            .photos(urlsString)
-            .build();
-}
+		return BienImmobilierCreateDTO.builder()
+				.typeBien(bien.getTypeBien() != null ? bien.getTypeBien().name() : null)
+				.libelle(bien.getLibelle())
+				.adresse(bien.getAdresse())
+				.surface(bien.getSurface())
+				.statutBien(bien.getStatutBien() != null ? bien.getStatutBien().name() : null)
+				.nombrePieces(bien.getNombrePieces())
+				.loyer(bien.getLoyer())
+				.description(bien.getDescription())
+				.gestionnaireId(bien.getGestionnaire() != null ? bien.getGestionnaire().getId() : null)
+				.photos(urlsString)
+				.build();
+	}
 	public BienImmobilierResponseDTOGes toDTO(BienImmobilier bien) {
 		if (bien == null) {
 			return null;
@@ -69,22 +70,30 @@ public class BienImmobilierMapper {
 				.photos(photoListToDTO(bien.getPhotos()))
 				.build();
 	}
-	public BienImmobilier toEntity(BienImmobilierCreateDTO dto) {
-		if (dto == null) {
+	
+		public BienImmobilier toEntity(BienImmobilierForm form) {
+		if (form == null) {
 			return null;
-		}else {// Mapper les champs de dto vers une nouvelle instance de BienImmobilier
-			BienImmobilier bien = new BienImmobilier();
-			bien.setTypeBien(dto.typeBien() != null ? TypeBien.valueOf(dto.typeBien().toUpperCase()) : null);
-			bien.setLibelle(dto.libelle());
-			bien.setAdresse(dto.adresse());
-			bien.setSurface(dto.surface());
-			bien.setNombrePieces(dto.nombrePieces());
-			bien.setLoyer(dto.loyer());
-			bien.setDescription(dto.description());
-			bien.setGestionnaire(dto.gestionnaireId() != null ? new Gestionnaire() : null); 
-			bien.setDateAjout(LocalDate.now());
-			return bien;
 		}
+
+		BienImmobilier bien = new BienImmobilier();
+		
+		if (form.getTypeBien() != null) {
+			try {
+				bien.setTypeBien(TypeBien.valueOf(form.getTypeBien().toUpperCase()));
+			} catch (IllegalArgumentException e) {
+				throw new IllegalArgumentException("Type de bien invalide : " + form.getTypeBien());
+			}
+		}
+
+		bien.setLibelle(form.getLibelle());
+		bien.setAdresse(form.getAdresse());
+		bien.setSurface(form.getSurface());
+		bien.setNombrePieces(form.getNombrePieces());
+		bien.setLoyer(form.getLoyer());
+		bien.setDescription(form.getDescription());
+
+		return bien;
 	}
 	public BienImmobilierResponseDTOLoc toDTOLoc(BienImmobilier bien) {
 		if (bien == null) {

@@ -39,7 +39,7 @@ public class Paiement {
     private String quittance;
     
     @ManyToOne
-    @JoinColumn(name = "contrat_id")
+    @JoinColumn(name = "contrat_bail_id", nullable = false)
     private ContratBail contrat;
 
 

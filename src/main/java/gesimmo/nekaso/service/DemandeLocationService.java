@@ -2,7 +2,6 @@ package gesimmo.nekaso.service;
 
 import gesimmo.nekaso.dto.DemandeLocationDTO.DemandeLocationDTO;
 import gesimmo.nekaso.entity.DemandeLocation;
-import gesimmo.nekaso.entity.enums.StatutDemande;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

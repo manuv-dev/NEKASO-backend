@@ -20,7 +20,6 @@ import gesimmo.nekaso.entity.enums.VisiteStatut;
 import gesimmo.nekaso.exception.BienNonDisponibleException;
 import gesimmo.nekaso.exception.EntityExistException;
 import gesimmo.nekaso.exception.EntityNotFoundException;
-import gesimmo.nekaso.exception.ResourceNotFoundException;
 import gesimmo.nekaso.repository.BienImmobilierRepository;
 import gesimmo.nekaso.repository.DemandeVisiteRepository;
 import gesimmo.nekaso.repository.LocataireRepository;
@@ -100,7 +99,6 @@ public Page<DemandeVisite> getAllDemandesVisite(Pageable pageable, String statut
         );
     }
 
-    // On vérifie si la page est vide APRES avoir fait la requête
     if (!demandesPage.hasContent()) {
         throw new EntityNotFoundException("Aucune demande trouvée pour ce locataire (ou ce statut).");
     }
@@ -117,15 +115,12 @@ public Page<DemandeVisite> getAllDemandesVisite(Pageable pageable, String statut
 
 @Override
 public Page<BienImmobilier> getBiensDisponibles(Pageable pageable) {
-    // 1. On récupère la page directement
     Page<BienImmobilier> page = bienRepository.findByStatutBien(StatutBien.DISPONIBLE, pageable);
 
-    // 2. On vérifie le contenu
     if (!page.hasContent()) {
         throw new EntityNotFoundException("Aucun bien immobilier disponible trouvé.");
     }
 
-    // 3. On retourne le résultat
     return page;
 }
 @Override
@@ -156,7 +151,6 @@ public DemandeVisiteCreateResponseDTO updateDemandeVisiteStatut(Long id, String 
 	DemandeVisite demandeVisite = demandeVisiteRepository.findById(id)
 			.orElseThrow(() -> new EntityNotFoundException("La demande de visite avec l'ID " + id + " n'a pas été trouvée"));
 
-	// Vérification si le statut fourni est valide
 	VisiteStatut nouveauStatut;
 	try {
 		nouveauStatut = VisiteStatut.valueOf(statut.toUpperCase());
