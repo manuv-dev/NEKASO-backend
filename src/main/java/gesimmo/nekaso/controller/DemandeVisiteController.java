@@ -50,7 +50,7 @@ public class DemandeVisiteController {
 				, HttpStatus.CREATED);
 	}
 
-	@GetMapping("/mes_demandes/{id_Locataire}")
+	@GetMapping("/locataire/mes_demandes/{id_Locataire}")
 
 	public ResponseEntity<PageResponse<DemandeVisiteDTOList>> getAllDemandesVisite(
 			@PathVariable(required = true) Long id_Locataire,
@@ -97,16 +97,5 @@ public class DemandeVisiteController {
 				, HttpStatus.OK);
 
 		}
-    // @GetMapping("biens_disponibles")
-    // public ResponseEntity<PageResponse<BienImmobilierResponseDTOGes>> getAllBiens(
-           
-    //         @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
-    //         @RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
-            
-    //         Pageable pageable = PageRequest.of(page, size);
-    //         Page<BienImmobilier> bienPage = demandeVisiteService.getBiensDisponibles(pageable);
-    //         Page<BienImmobilierResponseDTOGes> bienDto=bienPage.map(bienImmobilierMapper::toDTO);
 
-    //    return new ResponseEntity<>(PageResponse.fromPage(bienDto), HttpStatus.OK);
-    // }
 }

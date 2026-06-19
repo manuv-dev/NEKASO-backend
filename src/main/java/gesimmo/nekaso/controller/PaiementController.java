@@ -17,7 +17,7 @@ public class PaiementController {
 
     private final PaiementService paiementService;
 
-    @PostMapping("/create/{idContrat}/{mois}/{methodePaiement}")
+    @PostMapping("/gestionnaire/create/{idContrat}/{mois}/{methodePaiement}")
     public PaiementDTO creerContrat(@RequestBody PaiementDTO dto,
                                    @PathVariable Long idContrat,
                                    @PathVariable String mois,

@@ -18,7 +18,7 @@ public class ContratBailController {
 
     private final ContratBailService contratBailService;
 
-    @PostMapping("/creer")
+    @PostMapping("/gestionnaire/creer")
     @Operation(summary = "Éditer un contrat de bail définitif et générer son PDF à partir d'un pré-contrat validé")
     public ResponseEntity<ContratBailResponseDTO> creerContrat(@RequestBody ContratBailRequestDTO requestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED)

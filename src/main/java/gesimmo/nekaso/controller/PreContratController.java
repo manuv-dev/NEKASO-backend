@@ -20,7 +20,7 @@ public class PreContratController {
 
     private final PreContratService preContratService;
 
-    @PostMapping("/create")
+    @PostMapping("/gestionnaire/create")
     public ResponseEntity<PreContratResponseDTO> create(@RequestBody PreContratRequestDTO dto) {
         return new ResponseEntity<>(preContratService.createPreContrat(dto), HttpStatus.CREATED);
     }
@@ -38,17 +38,17 @@ public class PreContratController {
         return ResponseEntity.ok(preContratService.getPreContratsByLocataire(locataireId, pageable));
     }
 
-    @PatchMapping("/{id}/valider")
+    @PatchMapping("/statut/{id}/valider")
     public ResponseEntity<PreContratResponseDTO> valider(@PathVariable Long id) {
         return ResponseEntity.ok(preContratService.validerPreContrat(id));
     }
 
-    @PatchMapping("/{id}/invalider")
+    @PatchMapping("/statut/{id}/invalider")
     public ResponseEntity<PreContratResponseDTO> invalider(@PathVariable Long id) {
         return ResponseEntity.ok(preContratService.invaliderPreContrat(id));
     }
 
-    @PatchMapping("/{id}/modifier")
+    @PatchMapping("/statut/{id}/modifier")
     public ResponseEntity<PreContratResponseDTO> modifier(
             @PathVariable Long id, 
             @RequestBody PreContratUpdateRequestDTO dto) {

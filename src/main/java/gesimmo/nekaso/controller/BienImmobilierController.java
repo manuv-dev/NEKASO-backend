@@ -57,7 +57,7 @@ public class BienImmobilierController {
        return new ResponseEntity<>(PageResponse.fromPage(bienDto), HttpStatus.OK);
     }
 
-    @GetMapping("/{gestionnaireId}")
+    @GetMapping("/gestionnaire/{gestionnaireId}")
     public ResponseEntity<PageResponse<BienImmobilierResponseDTOGes>> getBiensByGestionnaireId(
             @PathVariable Long gestionnaireId,
             @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
@@ -96,7 +96,7 @@ public class BienImmobilierController {
         // Permet à Spring de convertir proprement les chaînes vides reçues sur les fichiers en "null"
         binder.registerCustomEditor(MultipartFile.class, new ByteArrayMultipartFileEditor());
     }
-    @PatchMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/gestionnaire/update-bien/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BienImmobilierCreateDTO> updateBien(
             @PathVariable Long id,
             @ModelAttribute BienImmobilierUpdateForm form) { // 👈 Tout est groupé ici proprement

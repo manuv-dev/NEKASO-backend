@@ -58,21 +58,6 @@ public class DemandeLocationController {
 
     }
 
-    // @GetMapping("/gestionnaire/{id_Gestionnaire}")
-    // public ResponseEntity<PageResponse<DemandeLocationDTO>> getAllDemandesLocationByGestionnaireBienid(
-    //         @PathVariable(required = true) Long id_Gestionnaire,
-    //         @RequestParam(defaultValue = "") String statut,
-    //         @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
-    //         @RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
-
-    //     Pageable pageable = PageRequest.of(page, size);
-    //     Page <DemandeLocation> demandesPage = demandeLocationService.getAllDemandesLocationByGestionnaireBienid(pageable,statut,id_Gestionnaire);
-    //     Page<DemandeLocationDTO> demandeDTO= demandesPage.map(demandeLocationMapper::toDtoList);
-
-    //     return new ResponseEntity<>(PageResponse.fromPage(demandeDTO), HttpStatus.OK);
-
-    // }
-
      @GetMapping("/demandes-locations")
     public ResponseEntity<PageResponse<DemandeLocationDTO>> getAllDemandesLocation(
             @RequestParam(defaultValue = "") String statut,
