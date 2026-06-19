@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteCreateResponseDTO;
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteDTOList;
 
 import gesimmo.nekaso.entity.DemandeVisite;
+import gesimmo.nekaso.entity.Locataire;
 import gesimmo.nekaso.mapper.DemandeVisiteMapper;
 import gesimmo.nekaso.mapper.BienImmobilierMapper;
 import gesimmo.nekaso.service.DemandeVisiteService;
@@ -32,6 +34,7 @@ public class DemandeVisiteController {
 	private final DemandeVisiteService demandeVisiteService;
 	private final DemandeVisiteMapper demandeVisiteMapper;
 	private final BienImmobilierMapper bienImmobilierMapper;
+	
 
 	public DemandeVisiteController(DemandeVisiteService demandeVisiteService, DemandeVisiteMapper demandeVisiteMapper, BienImmobilierMapper bienImmobilierMapper) {
 		this.demandeVisiteService = demandeVisiteService;
@@ -50,13 +53,18 @@ public class DemandeVisiteController {
 				, HttpStatus.CREATED);
 	}
 
-	@GetMapping("/mes_demandes/{id_Locataire}")
+	@GetMapping("/locataire/mes_demandes")
 
 	public ResponseEntity<PageResponse<DemandeVisiteDTOList>> getAllDemandesVisite(
-			@PathVariable(required = true) Long id_Locataire,
+			
 			@RequestParam(defaultValue = "") String statut,
 			@RequestParam(defaultValue = "${api.pagination.default-page}") int page,
-			@RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
+			@RequestParam(defaultValue = "${api.pagination.default-size}") int size,
+		Authentication authentication) {
+			
+			Locataire locataire = (Locataire) authentication.getPrincipal();
+			Long id_Locataire = locataire.getId();
+
 		Pageable pageable = PageRequest.of(page, size);
 
 		Page<DemandeVisite> demandes = demandeVisiteService.getAllDemandesVisite(pageable, statut, id_Locataire);
