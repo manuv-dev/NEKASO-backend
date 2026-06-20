@@ -3,8 +3,7 @@ package gesimmo.nekaso.entity;
 
 import java.time.LocalDateTime;
 
-
-
+import gesimmo.nekaso.entity.enums.ClotureVisite;
 import gesimmo.nekaso.entity.enums.VisiteStatut;
 
 import jakarta.persistence.Entity;
@@ -50,5 +49,9 @@ public class DemandeVisite {
 	 @ManyToOne                          
     @JoinColumn(name = "agent_id")                     
     private AgentImmobilier agent;
+
+	@Enumerated(EnumType.STRING)
+	private ClotureVisite clotureVisite;
+
 
 }

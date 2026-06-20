@@ -1,11 +1,14 @@
 package gesimmo.nekaso.service.impl;
 
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import gesimmo.nekaso.dto.AgentImmoDTO.AgentImmoCreateDto;
 import gesimmo.nekaso.dto.AgentImmoDTO.AgentImmoCreateRequestDto;
 import gesimmo.nekaso.dto.AgentImmoDTO.AgentImmocreateResponseDto;
+import gesimmo.nekaso.dto.AgentImmoDTO.AgentListDto;
 import gesimmo.nekaso.entity.AgentImmobilier;
 import gesimmo.nekaso.entity.DemandeVisite;
 import gesimmo.nekaso.entity.Gestionnaire;
@@ -56,6 +59,12 @@ public AgentImmocreateResponseDto createAgentImmo(AgentImmoCreateRequestDto agen
         saved.getTelephone()
     );
 }
+    public Page<AgentImmobilier> getAllAgents(Pageable pageable,Long idGestionnaire){
+        Page<AgentImmobilier> agentsPage = agentImmobilierRepository.findByGestionnaire_Id(idGestionnaire, pageable);
+        return agentsPage;
+    }
+
+    }
 
 //     public AgentImmobilierServiceImpl(AgentImmobilierRepository agentImmobilierRepository, DemandeVisiteRepository demandeVisiteRepository) {
 //         this.agentImmobilierRepository = agentImmobilierRepository;
@@ -78,4 +87,4 @@ public AgentImmocreateResponseDto createAgentImmo(AgentImmoCreateRequestDto agen
 
 
     
-}
+
