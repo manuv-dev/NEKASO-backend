@@ -1,11 +1,7 @@
 package gesimmo.nekaso.service;
 
-import gesimmo.nekaso.dto.*;
-
-import java.util.List;
+import gesimmo.nekaso.dto.DashboardResponseDTO;
 
 public interface DashboardService {
-    // DashboardDTO getDashboardGestionnaire(Long gestionnaireId);
-    // List<RevenueMensuelDTO> getRevenus6DerniersMois(Long gestionnaireId);
-    // List<RepartitionBienDTO> getRepartitionBiens(Long gestionnaireId);
+    DashboardResponseDTO getGestionnaireDashboard(Long gestionnaireId);
 }
