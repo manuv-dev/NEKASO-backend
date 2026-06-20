@@ -59,7 +59,7 @@ public class SecurityConfig {
     .requestMatchers("/api/biens/locataire/**").hasRole("LOCATAIRE")
     .requestMatchers("/api/visites/gestionnaire/**").hasRole("GESTIONNAIRE")
     .requestMatchers("/api/visites/locataire/**").hasRole("LOCATAIRE")
-    .requestMatchers("/api/demandes/gestionnaire/**").hasRole("GESTIONNAIRE")
+    .requestMatchers("/api/demandes/gestionnaire/**","/api/agents/gestionnaire/**").hasRole("GESTIONNAIRE")
     
             
             .anyRequest().authenticated())

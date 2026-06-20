@@ -21,4 +21,7 @@ public class Gestionnaire extends User {
 
 	@OneToMany(mappedBy = "gestionnaire")
 	private List<BienImmobilier> biens = new ArrayList<>();
+
+	@OneToMany(mappedBy = "gestionnaire")
+	private List<AgentImmobilier> agents = new ArrayList<>();
 }

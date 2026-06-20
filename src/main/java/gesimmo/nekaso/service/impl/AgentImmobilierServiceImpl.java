@@ -2,16 +2,56 @@ package gesimmo.nekaso.service.impl;
 
 import org.springframework.stereotype.Service;
 
+import gesimmo.nekaso.dto.AgentImmoDTO.AgentImmoCreateDto;
+import gesimmo.nekaso.dto.AgentImmoDTO.AgentImmoCreateRequestDto;
+import gesimmo.nekaso.dto.AgentImmoDTO.AgentImmocreateResponseDto;
 import gesimmo.nekaso.entity.AgentImmobilier;
 import gesimmo.nekaso.entity.DemandeVisite;
+import gesimmo.nekaso.entity.Gestionnaire;
+import gesimmo.nekaso.exception.EntityExistException;
 import gesimmo.nekaso.repository.AgentImmobilierRepository;
 import gesimmo.nekaso.repository.DemandeVisiteRepository;
+import gesimmo.nekaso.repository.GestionnaireRepository;
 import gesimmo.nekaso.service.AgentImmobilierService;
 
 @Service
 public class AgentImmobilierServiceImpl implements AgentImmobilierService {
-//     private final AgentImmobilierRepository agentImmobilierRepository;
+
+    
+    private final AgentImmobilierRepository agentImmobilierRepository;
+    private final GestionnaireRepository gestionnaireRepository;
 //    private final DemandeVisiteRepository demandeVisiteRepository;
+
+    public AgentImmobilierServiceImpl(AgentImmobilierRepository agentImmobilierRepository, GestionnaireRepository gestionnaireRepository) {
+        this.agentImmobilierRepository = agentImmobilierRepository;
+        this.gestionnaireRepository = gestionnaireRepository;
+    }
+
+@Override
+public AgentImmocreateResponseDto createDemandeVisite(AgentImmoCreateRequestDto agentImmoCreateRequest) {
+    
+
+    agentImmobilierRepository.findByTelephone(agentImmoCreateRequest.telephone())
+            .ifPresent(agent -> {
+                throw new EntityExistException("Un agent immobilier avec ce numéro existe déjà.");
+            });
+
+    Gestionnaire gestionnaire = gestionnaireRepository.findById(agentImmoCreateRequest.Idgestionnaire())
+            .orElseThrow(() -> new RuntimeException("Gestionnaire avec ID " + agentImmoCreateRequest.Idgestionnaire() + " non trouvé"));    
+    AgentImmobilier agentImmobilier = new AgentImmobilier();
+    agentImmobilier.setNom(agentImmoCreateRequest.nom());
+    agentImmobilier.setPrenom(agentImmoCreateRequest.prenom());
+    agentImmobilier.setTelephone(agentImmoCreateRequest.telephone());
+    agentImmobilier.setGestionnaire(gestionnaire);
+
+    AgentImmobilier saved = agentImmobilierRepository.save(agentImmobilier); // ← manquant
+
+    return new AgentImmocreateResponseDto(
+        saved.getNom(),
+        saved.getPrenom(),
+        saved.getTelephone()
+    );
+}
 
 //     public AgentImmobilierServiceImpl(AgentImmobilierRepository agentImmobilierRepository, DemandeVisiteRepository demandeVisiteRepository) {
 //         this.agentImmobilierRepository = agentImmobilierRepository;
@@ -31,5 +71,7 @@ public class AgentImmobilierServiceImpl implements AgentImmobilierService {
 //         return demandeVisiteRepository.save(demandeVisite);
        
 //     }
+
+
     
 }

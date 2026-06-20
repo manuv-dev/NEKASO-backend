@@ -10,5 +10,5 @@ import gesimmo.nekaso.entity.AgentImmobilier;
 @Repository
 public interface AgentImmobilierRepository extends JpaRepository<AgentImmobilier, Long> {
     Optional<AgentImmobilier> findById(Long id);
-    
+    Optional<AgentImmobilier> findByTelephone(String telephone);
 }

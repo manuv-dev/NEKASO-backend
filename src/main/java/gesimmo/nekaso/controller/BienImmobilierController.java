@@ -21,7 +21,7 @@ import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOGes;
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierUpdateForm;
 import gesimmo.nekaso.entity.BienImmobilier;
-import gesimmo.nekaso.entity.PhotoBien;
+
 import gesimmo.nekaso.mapper.BienImmobilierMapper;
 import gesimmo.nekaso.service.BienImmobilierService;
 import gesimmo.nekaso.shared.Response.PageResponse;
