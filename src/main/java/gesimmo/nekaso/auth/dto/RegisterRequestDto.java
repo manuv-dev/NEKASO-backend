@@ -2,23 +2,32 @@ package gesimmo.nekaso.auth.dto;
 
 
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
 @Builder
 public record RegisterRequestDto(
 
-    String telephone,
-    String motDePasse,
-    String prenom,
-    String nom
-) {
-    // Un constructeur d'utilité pratique pour créer rapidement une réponse de succès
-    // public static RegisterResponseDto success(String message  , List<String> roles) {
-    //     return new RegisterResponseDto(true, message , roles, LocalDate.now());
-    // }
+      @NotBlank(message = "Le numéro est obligatoire")
+    @Pattern(
+        regexp = "^(77|78|70|76)[0-9]{7}$",
+        message = "Le numéro doit commencer par 77, 78, 70 ou 76 et contenir 9 chiffres"
+    )
+     String telephone,
 
-    // // Un constructeur d'utilité pour les cas d'échec (ex: email déjà existant)
-    // public static RegisterResponseDto error(String message) {
-    //     return new RegisterResponseDto(false, message, null, null, null, LocalDate.now());
-    // }
+    @NotBlank(message = "Le mot de passe est obligatoire")
+    @Size(min = 8, message = "Le mot de passe doit contenir au moins 8 caractères")
+    @Pattern(
+        regexp = "^(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).+$",
+        message = "Le mot de passe doit contenir au moins une majuscule et un caractère spécial"
+    )
+     String motDePasse,
+    @NotBlank(message = "Le prénom est obligatoire")
+     String prenom,
+    @NotBlank(message = "Le nom est obligatoire")
+     String nom
+) {
+  
 }

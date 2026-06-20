@@ -43,8 +43,8 @@ public class GestionnaireMock implements CommandLineRunner {
 			Gestionnaire gestionnaire1 = new Gestionnaire();
 			gestionnaire1.setNom("Traore");
 			gestionnaire1.setPrenom("John");
-			gestionnaire1.setTelephone("1234567890");
-			gestionnaire1.setMotDePasse(passwordEncoder.encode("password"));
+			gestionnaire1.setTelephone("778492734");
+			gestionnaire1.setMotDePasse(passwordEncoder.encode("Password-12"));
 			gestionnaire1.setRoles(new HashSet<>(Set.of(gestionnaireRole)));
 			gestionnaireRepository.save(gestionnaire1);
 		}
