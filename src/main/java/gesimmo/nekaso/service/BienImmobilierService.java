@@ -20,5 +20,5 @@ public interface BienImmobilierService {
     BienImmobilierCreateDTO createBien(BienImmobilierForm form, MultipartFile[] photos, Authentication authentication);
     public Page<BienImmobilier> getBiensByGestionnaireId(Long gestionnaireId, Pageable pageable);
     public Page<BienImmobilier> getAllBienImmobilierDisponble(Pageable pageable);
-    public BienImmobilierCreateDTO updateBien(Long id, BienImmobilierUpdateForm form, MultipartFile[] photos);
+    public BienImmobilierCreateDTO updateBien(Long id, BienImmobilierUpdateForm form, MultipartFile[] photos, Authentication authentication);
 }

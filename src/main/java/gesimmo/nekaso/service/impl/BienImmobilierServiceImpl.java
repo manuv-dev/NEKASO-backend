@@ -138,7 +138,7 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
 
     @Override
     @Transactional
-    public BienImmobilierCreateDTO updateBien(Long id, BienImmobilierUpdateForm form, MultipartFile[] photos) {
+    public BienImmobilierCreateDTO updateBien(Long id, BienImmobilierUpdateForm form, MultipartFile[] photos, Authentication authentication) {
 
         BienImmobilier bienExistant = bienImmobilierRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Bien immobilier non trouvé avec l'ID : " + id));
@@ -176,7 +176,7 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
         if (form.getNombrePieces() != null) bienExistant.setNombrePieces(form.getNombrePieces());
         if (form.getLoyer() != null) bienExistant.setLoyer(form.getLoyer());
 
-        Gestionnaire gestionnaire = (Gestionnaire) form.getAuthentication().getPrincipal();
+        Gestionnaire gestionnaire = (Gestionnaire) authentication.getPrincipal();
 		Long gestionnaireId = gestionnaire.getId();
         if (gestionnaireId != null) {
             Gestionnaire gestionnaire1 = gestionnaireRepository.findById(gestionnaireId)

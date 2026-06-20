@@ -94,7 +94,7 @@ public class BienImmobilierController {
     @PostMapping(value = "/gestionnaire/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 public ResponseEntity<BienImmobilierCreateDTO> createBien(
         @ModelAttribute BienImmobilierForm form,
-        Authentication authentication) {  // ← injecté par Spring Security
+        Authentication authentication) { 
     
     MultipartFile[] photosArray = form.getPhotos() != null ? 
             form.getPhotos().toArray(new MultipartFile[0]) : new MultipartFile[0];
@@ -112,7 +112,8 @@ public ResponseEntity<BienImmobilierCreateDTO> createBien(
     @PatchMapping(value = "/gestionnaire/update-bien/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BienImmobilierCreateDTO> updateBien(
             @PathVariable Long id,
-            @ModelAttribute BienImmobilierUpdateForm form) { 
+            @ModelAttribute BienImmobilierUpdateForm form,
+            Authentication authentication) { 
         
         // Extraction et filtrage de sécurité des photos du formulaire
         MultipartFile[] photosArray = new MultipartFile[0];
@@ -122,7 +123,7 @@ public ResponseEntity<BienImmobilierCreateDTO> createBien(
                     .toArray(MultipartFile[]::new);
         }
 
-        BienImmobilierCreateDTO responseDTO = bienService.updateBien(id, form, photosArray);
+        BienImmobilierCreateDTO responseDTO = bienService.updateBien(id, form, photosArray, authentication);
         return ResponseEntity.ok(responseDTO);
     }
 }
