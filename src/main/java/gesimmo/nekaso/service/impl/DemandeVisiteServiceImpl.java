@@ -9,24 +9,27 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteCreateResponseDTO;
+import gesimmo.nekaso.dto.PreContratDTO.PreContratRequestDTO;
+import gesimmo.nekaso.dto.PreContratDTO.PreContratResponseDTO;
 import gesimmo.nekaso.entity.AgentImmobilier;
 import gesimmo.nekaso.entity.BienImmobilier;
 import gesimmo.nekaso.entity.DemandeVisite;
 import gesimmo.nekaso.mapper.DemandeVisiteMapper;
 import gesimmo.nekaso.entity.Locataire;
-
+import gesimmo.nekaso.entity.enums.ClotureVisite;
 import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.VisiteStatut;
 import gesimmo.nekaso.exception.BienNonDisponibleException;
 import gesimmo.nekaso.exception.EntityExistException;
 import gesimmo.nekaso.exception.EntityNotFoundException;
-
+import gesimmo.nekaso.exception.ResourceNotFoundException;
 import gesimmo.nekaso.repository.AgentImmobilierRepository;
 import gesimmo.nekaso.repository.BienImmobilierRepository;
 import gesimmo.nekaso.repository.DemandeVisiteRepository;
 import gesimmo.nekaso.repository.LocataireRepository;
 import gesimmo.nekaso.service.AgentImmobilierService;
 import gesimmo.nekaso.service.DemandeVisiteService;
+import gesimmo.nekaso.service.PreContratService;
 import jakarta.persistence.EntityExistsException;
 
 import java.util.List;
@@ -38,6 +41,7 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 	private final BienImmobilierRepository bienRepository;
 	private final DemandeVisiteMapper demandeVisiteMapper;
 	private final AgentImmobilierRepository agentImmobilierRepository;
+	private final PreContratService preContratService;
 
 	public DemandeVisiteServiceImpl(
 			DemandeVisiteRepository demandeVisiteRepository,
@@ -45,7 +49,8 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 			LocataireRepository locataireRepository,
 			BienImmobilierRepository bienRepository,
 			DemandeVisiteMapper demandeVisiteMapper,
-			AgentImmobilierRepository agentImmobilierRepository)
+			AgentImmobilierRepository agentImmobilierRepository,
+			PreContratService preContratService)
 
 	{
 		this.demandeVisiteRepository = demandeVisiteRepository;
@@ -54,6 +59,7 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 		this.demandeVisiteMapper = demandeVisiteMapper;
 	
 		this.agentImmobilierRepository = agentImmobilierRepository;
+		this.preContratService = preContratService;
 	}
 
 	@Override
@@ -115,7 +121,7 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 		return demandesPage;
 	}
 
-	// @Override
+	@Override
 	public DemandeVisite annulerDemandeVisite(Long idDemande) {
 
 		DemandeVisite demandeVisite = demandeVisiteRepository.findById(idDemande)
@@ -135,6 +141,39 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 
 		return demandeVisiteRepository.save(demandeVisite);
 	}
+
+// 	public DemandeVisiteCreateResponseDTO cloturerVisite(Long idDemande, ClotureVisite choixCloture) {
+    
+//     DemandeVisite demande = demandeVisiteRepository.findById(idDemande)
+//         .orElseThrow(() -> new ResourceNotFoundException("Demande de visite introuvable"));
+
+    
+//     if (demande.getStatut() != VisiteStatut.CONFIRMEE) {
+//         throw new IllegalStateException("Impossible de clôturer une visite qui n'est pas CONFIRMEE");
+//     }
+
+//     // 3. Mise à jour des statuts
+//     demande.setStatut(VisiteStatut.TERMINEE);
+//     demande.setClotureVisite(choixCloture);
+
+//     // 4. Traitement des choix métiers
+//     if (choixCloture == ClotureVisite.AVEC_CONTRAT) {
+//         // Optionnel : Déclencher ici la pré-création d'un contrat de location
+//         // ex: contratService.creerPreContrat(demande.getLocataire(), demnde.getBienImmobilier());
+// 		PreContratResponseDTO createPreContrat(PreContratRequestDTO dto)
+//     } 
+// 	//else if (choixCloture == ClotureVisite.SANS_CONTRAT) {
+// 	// 	// Optionnel : Déclencher ici une notification ou un suivi particulier
+// 	// 	// ex: notificationService.envoyerNotification(demande.getLocataire(), "Visite clôturée sans contrat");
+// 	// } else {
+// 	// 	throw new IllegalArgumentException("Choix de clôture invalide");
+        
+//     // }
+
+//     // 5. Sauvegarde et retour au format DTO
+//     DemandeVisite demanndeMiseAJour = demandeVisiteRepository.save(demande);
+//     return demandeVisiteMapper.toDto(demanndeMiseAJour);
+// }
 	// // @Override
 	// public DemandeVisite annulerDemandeVisites(Long id_bien) {
 	// BienImmobilier bien = bienRepository.findById(id_bien)
@@ -148,6 +187,39 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 	// demandeVisite.setStatut(VisiteStatut.ANNULEE);
 	// return demandeVisiteRepository.save(demandeVisite);
 	// }
+@Override
+public DemandeVisiteCreateResponseDTO cloturerVisite(Long idDemande, ClotureVisite choixCloture, PreContratRequestDTO preContratDto) {
+    
+    DemandeVisite demande = demandeVisiteRepository.findById(idDemande)
+        .orElseThrow(() -> new ResourceNotFoundException("Demande de visite introuvable"));
+
+    if (demande.getStatut() != VisiteStatut.CONFIRMEE) {
+        throw new IllegalStateException("Impossible de clôturer une visite qui n'est pas CONFIRMEE");
+    }
+
+    // 1. Mise à jour des statuts de la visite
+   
+    demande.setClotureVisite(choixCloture);
+
+    // 2. Traitement du choix métier
+    if (choixCloture == ClotureVisite.AVEC_CONTRAT) {
+        if (preContratDto == null) {
+            throw new IllegalArgumentException("Les données du pré-contrat sont obligatoires pour une clôture avec contrat.");
+        }
+        
+        // On s'assure que l'ID de la demande de visite est bien lié dans le DTO
+        preContratDto.setDemandeVisiteId(idDemande);
+        
+        // Appel du service pour créer le pré-contrat
+        preContratService.createPreContrat(preContratDto);
+		 
+    }
+
+    // 3. Sauvegarde de la visite
+    DemandeVisite demandeMiseAJour = demandeVisiteRepository.save(demande);
+    return demandeVisiteMapper.toDto(demandeMiseAJour);
+}
+
 
 	@Override
 	public Page<BienImmobilier> getBiensDisponibles(Pageable pageable) {
@@ -227,6 +299,7 @@ public DemandeVisiteCreateResponseDTO confirmerDemandeVisite(Long id, Long idBie
 		throw new EntityExistsException("Cette demande est déjà confirmée");
 	}
     demandeAConfirmer.setStatut(VisiteStatut.CONFIRMEE);
+	
     demandeAConfirmer.setAgent(agent);
 
     demandeVisiteRepository.saveAll(bien.getDemandesVisite());

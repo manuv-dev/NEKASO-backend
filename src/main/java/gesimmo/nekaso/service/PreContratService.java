@@ -10,5 +10,5 @@ public interface PreContratService {
     Page<PreContratResponseDTO> getPreContratsByGestionnaire(Long gestionnaireId, Pageable pageable);
     PreContratResponseDTO validerPreContrat(Long id);
     PreContratResponseDTO invaliderPreContrat(Long id);
-    PreContratResponseDTO updatePreContrat(Long id, PreContratUpdateRequestDTO dto);
+    // PreContratResponseDTO updatePreContrat(Long id, PreContratUpdateRequestDTO dto);
 }

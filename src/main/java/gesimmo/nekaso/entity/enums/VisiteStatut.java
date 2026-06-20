@@ -4,5 +4,6 @@ public enum VisiteStatut {
     EN_ATTENTE,
     CONFIRMEE,
     REFUSEE,
-    ANNULEE
+    ANNULEE,
+    TERMINEE
 }

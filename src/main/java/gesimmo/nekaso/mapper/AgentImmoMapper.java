@@ -12,7 +12,8 @@ public class AgentImmoMapper {
         return new AgentListDto(
             agentImmobilier.getNom(),
             agentImmobilier.getPrenom(),
-            agentImmobilier.getTelephone()
+            agentImmobilier.getTelephone(),
+            agentImmobilier.getId()
         );
     }
     

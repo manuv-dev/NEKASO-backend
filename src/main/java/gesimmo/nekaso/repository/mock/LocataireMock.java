@@ -42,7 +42,7 @@
 // 			Locataire locataire1 = new Locataire();
 // 			locataire1.setNom("Doe");
 // 			locataire1.setPrenom("John");
-// 			locataire1.setTelephone("123456789");
+// 			locataire1.setTelephone("778123456");
 // 			locataire1.setMotDePasse(passwordEncoder.encode("password"));
 // 			locataire1.setRoles(new HashSet<>(Set.of(locataireRole)));
 // 			locataireRepository.save(locataire1);

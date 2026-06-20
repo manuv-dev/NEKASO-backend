@@ -1,6 +1,6 @@
 package gesimmo.nekaso.controller;
 
-import gesimmo.nekaso.dto.ContratDTO.ContratBailResponseDTO;
+
 import gesimmo.nekaso.dto.PreContratDTO.PreContratRequestDTO;
 import gesimmo.nekaso.dto.PreContratDTO.PreContratResponseDTO;
 import gesimmo.nekaso.dto.PreContratDTO.PreContratUpdateRequestDTO;
@@ -10,8 +10,7 @@ import gesimmo.nekaso.service.PreContratService;
 import gesimmo.nekaso.shared.Response.PageResponse;
 import lombok.RequiredArgsConstructor;
 
-import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -28,6 +27,7 @@ public class PreContratController {
 
     @PostMapping("/gestionnaire/create")
     public ResponseEntity<PreContratResponseDTO> create(@RequestBody PreContratRequestDTO dto) {
+
         return new ResponseEntity<>(preContratService.createPreContrat(dto), HttpStatus.CREATED);
     }
 
@@ -62,10 +62,10 @@ public class PreContratController {
         return ResponseEntity.ok(preContratService.invaliderPreContrat(id));
     }
 
-    @PatchMapping("/gestionnaire/statut/{id}/modifier")
-    public ResponseEntity<PreContratResponseDTO> modifier(
-            @PathVariable Long id, 
-            @RequestBody PreContratUpdateRequestDTO dto) {
-        return ResponseEntity.ok(preContratService.updatePreContrat(id, dto));
-    }
+    // @PatchMapping("/gestionnaire/statut/{id}/modifier")
+    // public ResponseEntity<PreContratResponseDTO> modifier(
+    //         @PathVariable Long id, 
+    //         @RequestBody PreContratUpdateRequestDTO dto) {
+    //     return ResponseEntity.ok(preContratService.updatePreContrat(id, dto));
+    // }
 }

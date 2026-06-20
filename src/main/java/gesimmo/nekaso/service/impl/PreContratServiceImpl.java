@@ -122,6 +122,11 @@ public class PreContratServiceImpl implements PreContratService {
             bienImmobilierRepository.save(bien);
 
             PreContrat saved = preContratRepository.save(preContrat);
+             DemandeVisite dv = demandeVisiteRepository.findById(dto.getDemandeVisiteId())
+                .orElse(null);
+                dv.setStatut(VisiteStatut.TERMINEE);
+                demandeVisiteRepository.save(dv);
+
             return preContratMapper.toResponseDTO(saved);
         }
 
@@ -182,35 +187,43 @@ public class PreContratServiceImpl implements PreContratService {
         }
 
         preContrat.setStatutPreContrat(StatutPreContrat.INVALIDER);
+         BienImmobilier bien = preContrat.getDemandeLocation() != null 
+                ? preContrat.getDemandeLocation().getBien() 
+                : preContrat.getDemandeVisite().getBienImmobilier();
+
+        if (bien == null) {
+            throw new EntityNotFoundException("Erreur d'intégrité : Aucun bien n'est rattaché à ce pré-contrat.");
+        }
+        bien.setStatutBien(StatutBien.DISPONIBLE);
 
         return preContratMapper.toResponseDTO(preContratRepository.save(preContrat));
     }
 
-    @Override
-    @Transactional
-    public PreContratResponseDTO updatePreContrat(Long id, PreContratUpdateRequestDTO dto) {
+    // @Override
+    // @Transactional
+    // public PreContratResponseDTO updatePreContrat(Long id, PreContratUpdateRequestDTO dto) {
 
-        PreContrat preContrat = preContratRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Impossible de modifier : Pré-contrat introuvable avec l'ID : " + id));
+    //     PreContrat preContrat = preContratRepository.findById(id)
+    //             .orElseThrow(() -> new EntityNotFoundException("Impossible de modifier : Pré-contrat introuvable avec l'ID : " + id));
 
-        StatutPreContrat statutActuel = preContrat.getStatutPreContrat();
-        if (statutActuel != StatutPreContrat.EN_ATTENTE && statutActuel != StatutPreContrat.INVALIDER) {
-            throw new IllegalArgumentException("Modification impossible : Seuls les pré-contrats 'EN_ATTENTE' ou 'INVALIDER' peuvent être modifiés. Statut actuel : " + statutActuel);
-        }
+    //     StatutPreContrat statutActuel = preContrat.getStatutPreContrat();
+    //     if (statutActuel != StatutPreContrat.EN_ATTENTE && statutActuel != StatutPreContrat.INVALIDER) {
+    //         throw new IllegalArgumentException("Modification impossible : Seuls les pré-contrats 'EN_ATTENTE' ou 'INVALIDER' peuvent être modifiés. Statut actuel : " + statutActuel);
+    //     }
 
-        if (dto.getConditions() != null) {
-            preContrat.setConditions(dto.getConditions());
-        }
-        if (dto.getJourEcheancePaiement() != null) {
-            preContrat.setJourEcheancePaiement(dto.getJourEcheancePaiement());
-        }
-        if (dto.getDateDebutPrevu() != null) {
-            preContrat.setDateDebutPrevu(dto.getDateDebutPrevu());
-        }
+    //     if (dto.getConditions() != null) {
+    //         preContrat.setConditions(dto.getConditions());
+    //     }
+    //     if (dto.getJourEcheancePaiement() != null) {
+    //         preContrat.setJourEcheancePaiement(dto.getJourEcheancePaiement());
+    //     }
+    //     if (dto.getDateDebutPrevu() != null) {
+    //         preContrat.setDateDebutPrevu(dto.getDateDebutPrevu());
+    //     }
 
-        preContrat.setStatutPreContrat(StatutPreContrat.EN_ATTENTE);
+    //     preContrat.setStatutPreContrat(StatutPreContrat.EN_ATTENTE);
 
-        PreContrat saved = preContratRepository.save(preContrat);
-        return preContratMapper.toResponseDTO(saved);
-    }
+    //     PreContrat saved = preContratRepository.save(preContrat);
+    //     return preContratMapper.toResponseDTO(saved);
+    // }
 }
