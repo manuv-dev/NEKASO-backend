@@ -10,6 +10,7 @@ public record LoginResponseDto(
     String nom,
     String prenom,
     String telephone,
+    Long id,
     List<String> roles
 ) {
    

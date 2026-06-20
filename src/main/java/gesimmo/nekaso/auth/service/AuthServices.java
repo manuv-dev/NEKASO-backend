@@ -43,7 +43,7 @@ public class AuthServices {
 
   String token = jwtTokenProvider.generateToken(user);
      var roles = user.getRoles().stream().map(role -> role.getRole().name()).toList();
-     return new LoginResponseDto(token, user.getNom(), user.getPrenom(), user.getTelephone(), roles);
+     return new LoginResponseDto(token, user.getNom(), user.getPrenom(), user.getTelephone(),user.getId(), roles);
     }
 
     public  RegisterResponseDto createUser(RegisterRequestDto registerRequest) {
