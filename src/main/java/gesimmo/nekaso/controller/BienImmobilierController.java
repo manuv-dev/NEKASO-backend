@@ -11,9 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
@@ -21,6 +21,8 @@ import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOGes;
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierUpdateForm;
 import gesimmo.nekaso.entity.BienImmobilier;
+import gesimmo.nekaso.entity.Gestionnaire;
+import gesimmo.nekaso.entity.Locataire;
 import gesimmo.nekaso.entity.PhotoBien;
 import gesimmo.nekaso.mapper.BienImmobilierMapper;
 import gesimmo.nekaso.service.BienImmobilierService;
@@ -53,11 +55,13 @@ public class BienImmobilierController {
        return new ResponseEntity<>(PageResponse.fromPage(bienDto), HttpStatus.OK);
     }
 
-    @GetMapping("/gestionnaire/{gestionnaireId}")
+    @GetMapping("/gestionnaire/mes-biens")
     public ResponseEntity<PageResponse<BienImmobilierResponseDTOGes>> getBiensByGestionnaireId(
-            @PathVariable Long gestionnaireId,
+            Authentication authentication,
             @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
             @RequestParam(defaultValue = "${api.pagination.default-size}") int size) {
+        Gestionnaire gestionnaire = (Gestionnaire) authentication.getPrincipal();
+		Long gestionnaireId = gestionnaire.getId();
         Pageable pageable = PageRequest.of(page, size);
         Page<BienImmobilier> bienPage = bienService.getBiensByGestionnaireId(gestionnaireId, pageable);
         Page<BienImmobilierResponseDTOGes> bienDto=bienPage.map(bienImmobilierMapper::toDTO);
@@ -95,7 +99,7 @@ public class BienImmobilierController {
     @PatchMapping(value = "/gestionnaire/update-bien/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BienImmobilierCreateDTO> updateBien(
             @PathVariable Long id,
-            @ModelAttribute BienImmobilierUpdateForm form) { // 👈 Tout est groupé ici proprement
+            @ModelAttribute BienImmobilierUpdateForm form) { 
         
         // Extraction et filtrage de sécurité des photos du formulaire
         MultipartFile[] photosArray = new MultipartFile[0];

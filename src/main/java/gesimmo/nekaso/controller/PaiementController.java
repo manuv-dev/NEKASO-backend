@@ -29,7 +29,17 @@ public class PaiementController {
         return paiementService.CreatePaiement(dto);
     }
 
-    @GetMapping("/historiques-paiements/contrat/{contratId}")
+    @GetMapping("/gestionnaire/historiques-paiements/contrat/{contratId}")
+    public ResponseEntity<PageResponse<PaiementDTO>> getHistoryPaiementByContratG(
+        @PathVariable Long contratId,
+        @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
+        @RequestParam(defaultValue = "${api.pagination.default-size}") int size){
+
+    PageResponse<PaiementDTO> paiements = PageResponse.fromPage(paiementService.getPaiementByContratId(contratId, PageRequest.of(page, size)));
+        
+        return new ResponseEntity<>(paiements, HttpStatus.OK);
+    }
+        @GetMapping("/locataire/historiques-paiements/contrat/{contratId}")
     public ResponseEntity<PageResponse<PaiementDTO>> getHistoryPaiementByContrat(
         @PathVariable Long contratId,
         @RequestParam(defaultValue = "${api.pagination.default-page}") int page,
