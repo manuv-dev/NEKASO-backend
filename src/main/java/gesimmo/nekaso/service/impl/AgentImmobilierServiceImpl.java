@@ -1,5 +1,6 @@
 package gesimmo.nekaso.service.impl;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.stereotype.Service;
 
 import gesimmo.nekaso.dto.AgentImmoDTO.AgentImmoCreateDto;
@@ -28,26 +29,29 @@ public class AgentImmobilierServiceImpl implements AgentImmobilierService {
     }
 
 @Override
-public AgentImmocreateResponseDto createDemandeVisite(AgentImmoCreateRequestDto agentImmoCreateRequest) {
+public AgentImmocreateResponseDto createAgentImmo(AgentImmoCreateRequestDto agentImmoCreateRequest,long id_Gestionnaire) {
     
 
     agentImmobilierRepository.findByTelephone(agentImmoCreateRequest.telephone())
             .ifPresent(agent -> {
                 throw new EntityExistException("Un agent immobilier avec ce numéro existe déjà.");
             });
-
-    Gestionnaire gestionnaire = gestionnaireRepository.findById(agentImmoCreateRequest.Idgestionnaire())
-            .orElseThrow(() -> new RuntimeException("Gestionnaire avec ID " + agentImmoCreateRequest.Idgestionnaire() + " non trouvé"));    
+           
+           
+    Gestionnaire gestionnaire = gestionnaireRepository.findById(id_Gestionnaire)
+            .orElseThrow(() -> new RuntimeException("Gestionnaire avec ID " + id_Gestionnaire + " non trouvé"));    
     AgentImmobilier agentImmobilier = new AgentImmobilier();
     agentImmobilier.setNom(agentImmoCreateRequest.nom());
     agentImmobilier.setPrenom(agentImmoCreateRequest.prenom());
     agentImmobilier.setTelephone(agentImmoCreateRequest.telephone());
+    
     agentImmobilier.setGestionnaire(gestionnaire);
 
-    AgentImmobilier saved = agentImmobilierRepository.save(agentImmobilier); // ← manquant
+    AgentImmobilier saved = agentImmobilierRepository.save(agentImmobilier); 
 
     return new AgentImmocreateResponseDto(
         saved.getNom(),
+        saved.getId(),
         saved.getPrenom(),
         saved.getTelephone()
     );

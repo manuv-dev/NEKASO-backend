@@ -26,13 +26,8 @@ public class AgentImmoController {
     public ResponseEntity<AgentImmocreateResponseDto> createAgentImmo(@RequestBody AgentImmoCreateRequestDto agentImmoCreateRequest,Authentication authentication) {
         	Gestionnaire gestionnaire = (Gestionnaire) authentication.getPrincipal();
 			Long id_Gestionnaire = gestionnaire.getId();
-            agentImmoCreateRequest = new AgentImmoCreateRequestDto(
-                agentImmoCreateRequest.nom(),
-                agentImmoCreateRequest.prenom(),
-                agentImmoCreateRequest.telephone(),
-                id_Gestionnaire
-            );
-        AgentImmocreateResponseDto response = agentImmobilierService.createDemandeVisite(agentImmoCreateRequest);
+            
+        AgentImmocreateResponseDto response = agentImmobilierService.createAgentImmo(agentImmoCreateRequest,id_Gestionnaire);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

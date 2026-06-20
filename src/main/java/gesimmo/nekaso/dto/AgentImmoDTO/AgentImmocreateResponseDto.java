@@ -6,6 +6,7 @@ import lombok.Builder;
 public record AgentImmocreateResponseDto(
   
     String nom,
+    Long id,
     String prenom,
     String telephone
   

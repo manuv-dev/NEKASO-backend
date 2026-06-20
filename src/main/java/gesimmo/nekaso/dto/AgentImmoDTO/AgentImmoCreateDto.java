@@ -6,7 +6,7 @@ import lombok.Builder;
 public record AgentImmoCreateDto(
     String nom, 
     String prenom,
-
+    Long Idgestionnaire,
     String telephone
     ) {
 }
