@@ -81,15 +81,28 @@ public class BienImmobilierController {
         return new ResponseEntity<>(PageResponse.fromPage(bienDto), HttpStatus.OK);
     }
 
+    // @PostMapping(value = "/gestionnaire/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    // public ResponseEntity<BienImmobilierCreateDTO> createBien(@ModelAttribute BienImmobilierForm form) {
+    //     MultipartFile[] photosArray = form.getPhotos() != null ? 
+    //             form.getPhotos().toArray(new MultipartFile[0]) : new MultipartFile[0];
+        
+    //     BienImmobilierCreateDTO responseDTO = bienService.createBien(form, photosArray);
+        
+    //     return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+    // }
+
     @PostMapping(value = "/gestionnaire/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<BienImmobilierCreateDTO> createBien(@ModelAttribute BienImmobilierForm form) {
-        MultipartFile[] photosArray = form.getPhotos() != null ? 
-                form.getPhotos().toArray(new MultipartFile[0]) : new MultipartFile[0];
-        
-        BienImmobilierCreateDTO responseDTO = bienService.createBien(form, photosArray);
-        
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
-    }
+public ResponseEntity<BienImmobilierCreateDTO> createBien(
+        @ModelAttribute BienImmobilierForm form,
+        Authentication authentication) {  // ← injecté par Spring Security
+    
+    MultipartFile[] photosArray = form.getPhotos() != null ? 
+            form.getPhotos().toArray(new MultipartFile[0]) : new MultipartFile[0];
+    
+    BienImmobilierCreateDTO responseDTO = bienService.createBien(form, photosArray, authentication);
+    
+    return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+}
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {

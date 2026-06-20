@@ -10,13 +10,14 @@ import gesimmo.nekaso.entity.BienImmobilier;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 
 
 public interface BienImmobilierService {
     public Page<BienImmobilier> searchBienImmobilierByStatut(String statut,String type, Pageable pageable);
     public Page<BienImmobilier> Flitrer(String libelle, String adresse, double surface, int nombrePieces, double loyer);
-    BienImmobilierCreateDTO createBien(BienImmobilierForm form, MultipartFile[] photos);
+    BienImmobilierCreateDTO createBien(BienImmobilierForm form, MultipartFile[] photos, Authentication authentication);
     public Page<BienImmobilier> getBiensByGestionnaireId(Long gestionnaireId, Pageable pageable);
     public Page<BienImmobilier> getAllBienImmobilierDisponble(Pageable pageable);
     public BienImmobilierCreateDTO updateBien(Long id, BienImmobilierUpdateForm form, MultipartFile[] photos);

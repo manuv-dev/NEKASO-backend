@@ -23,6 +23,8 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+
 import gesimmo.nekaso.mapper.BienImmobilierMapper;
 import gesimmo.nekaso.repository.UserRepository;
 import gesimmo.nekaso.repository.GestionnaireRepository;
@@ -80,7 +82,7 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
 
     @Override
     @Transactional
-    public BienImmobilierCreateDTO createBien(BienImmobilierForm form, MultipartFile[] photos) {
+    public BienImmobilierCreateDTO createBien(BienImmobilierForm form, MultipartFile[] photos, Authentication authentication) {
 
         if (photos != null && photos.length > 5) {
             throw new PhotoCountExceededException("Le nombre de photos ne peut pas dépasser 5 pour un bien immobilier.");
@@ -88,7 +90,7 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
 
         TypeBien typeBienEnum = TypeBien.valueOf(form.getTypeBien().toUpperCase());
 
-        Gestionnaire gestionnaire = (Gestionnaire) form.getAuthentication().getPrincipal();
+        Gestionnaire gestionnaire = (Gestionnaire) authentication.getPrincipal();
 		Long gestionnaireId = gestionnaire.getId();
         
         if (gestionnaireId == null) {
