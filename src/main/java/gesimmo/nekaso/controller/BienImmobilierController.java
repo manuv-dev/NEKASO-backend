@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
-import io.swagger.v3.oas.annotations.Operation;
+
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierResponseDTOGes;
 import gesimmo.nekaso.dto.BienImmbilierDTO.BienImmobilierUpdateForm;
 import gesimmo.nekaso.entity.BienImmobilier;
@@ -25,8 +25,7 @@ import gesimmo.nekaso.entity.PhotoBien;
 import gesimmo.nekaso.mapper.BienImmobilierMapper;
 import gesimmo.nekaso.service.BienImmobilierService;
 import gesimmo.nekaso.shared.Response.PageResponse;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
+
 
 @RestController
 @RequestMapping("/api/biens")
@@ -78,7 +77,7 @@ public class BienImmobilierController {
         return new ResponseEntity<>(PageResponse.fromPage(bienDto), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/gestionnaire/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BienImmobilierCreateDTO> createBien(@ModelAttribute BienImmobilierForm form) {
         MultipartFile[] photosArray = form.getPhotos() != null ? 
                 form.getPhotos().toArray(new MultipartFile[0]) : new MultipartFile[0];

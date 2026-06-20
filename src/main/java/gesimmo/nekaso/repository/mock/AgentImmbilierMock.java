@@ -20,9 +20,9 @@ public class AgentImmbilierMock implements CommandLineRunner {
     public void run(String... args) throws Exception {
        if(agentImmobilierRepository.count() == 0) {
         var agent1 = new AgentImmobilier();
-        agent1.setNom("Doe");
-        agent1.setPrenom("Jane");
-        agent1.setTelephone("0987654321");
+        agent1.setNom("Traore");
+        agent1.setPrenom("Youssouf");
+        agent1.setTelephone("778492735");
         agentImmobilierRepository.save(agent1);
        }
     }

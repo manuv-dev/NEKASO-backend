@@ -45,6 +45,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth->auth
             .requestMatchers("/api/v1/auth/**").permitAll()
             .requestMatchers("/api/biens/locataire/biens_disponibles/**").permitAll()
+
              .requestMatchers(
         "/h2-console/**",
         "/swagger-ui/**",
@@ -54,6 +55,12 @@ public class SecurityConfig {
         "/swagger-resources/**",
         "/webjars/**"
     ).permitAll()
+    .requestMatchers("/api/biens/gestionnaire/**").hasRole("GESTIONNAIRE")
+    .requestMatchers("/api/biens/locataire/**").hasRole("LOCATAIRE")
+    .requestMatchers("/api/visites/gestionnaire/**").hasRole("GESTIONNAIRE")
+    .requestMatchers("/api/visites/locataire/**").hasRole("LOCATAIRE")
+    .requestMatchers("/api/demandes/gestionnaire/**").hasRole("GESTIONNAIRE")
+    
             
             .anyRequest().authenticated())
             .headers(headers -> headers
