@@ -88,7 +88,10 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
 
         TypeBien typeBienEnum = TypeBien.valueOf(form.getTypeBien().toUpperCase());
 
-        if (form.getGestionnaireId() == null) {
+        Gestionnaire gestionnaire = (Gestionnaire) form.getAuthentication().getPrincipal();
+		Long gestionnaireId = gestionnaire.getId();
+        
+        if (gestionnaireId == null) {
             throw new IllegalArgumentException("Impossible de créer un bien sans un gestionnaire.");
         }
         boolean existeDeja = bienImmobilierRepository.existsByTypeBienAndLibelleAndAdresseAndSurfaceAndNombrePiecesAndLoyerAndDescriptionAndGestionnaireId(
@@ -99,7 +102,7 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
                 form.getNombrePieces(), 
                 form.getLoyer(), 
                 form.getDescription(),
-                form.getGestionnaireId()
+                gestionnaireId
         );
 
         if (existeDeja) {
@@ -107,8 +110,6 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
         }
 
         BienImmobilier bien = bienImmobilierMapper.toEntity(form); 
-        Gestionnaire gestionnaire = gestionnaireRepository.findById(form.getGestionnaireId())
-                .orElseThrow(() -> new EntityNotFoundException("Gestionnaire non trouvé."));
         bien.setGestionnaire(gestionnaire);
 
         bien.setStatutBien(StatutBien.DISPONIBLE);
@@ -173,10 +174,12 @@ public class BienImmobilierServiceImpl implements BienImmobilierService {
         if (form.getNombrePieces() != null) bienExistant.setNombrePieces(form.getNombrePieces());
         if (form.getLoyer() != null) bienExistant.setLoyer(form.getLoyer());
 
-        if (form.getGestionnaireId() != null) {
-            Gestionnaire gestionnaire = gestionnaireRepository.findById(form.getGestionnaireId())
+        Gestionnaire gestionnaire = (Gestionnaire) form.getAuthentication().getPrincipal();
+		Long gestionnaireId = gestionnaire.getId();
+        if (gestionnaireId != null) {
+            Gestionnaire gestionnaire1 = gestionnaireRepository.findById(gestionnaireId)
                     .orElseThrow(() -> new EntityNotFoundException("Gestionnaire non trouvé."));
-            bienExistant.setGestionnaire(gestionnaire);
+            bienExistant.setGestionnaire(gestionnaire1);
         }
 
         if (photos != null && photos.length > 0) {
