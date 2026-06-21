@@ -154,6 +154,17 @@ public class DemandeVisiteController {
 				"Créneau accepté avec succès.",
 				updatedDemande.statut().toString()), HttpStatus.OK);
 	}
+	@PostMapping("/locataire/demande/{id_Demande}/refuser-creneau")
+	public ResponseEntity<CreationRequestResponse> refuserCreneau(
+			@PathVariable Long id_Demande) {
+
+		DemandeVisiteCreateResponseDTO updatedDemande = demandeVisiteService.refuserCreneau(id_Demande);
+
+		return new ResponseEntity<>(new CreationRequestResponse(
+				updatedDemande.id(),
+				"Créneau refusé avec succès.",
+				updatedDemande.statut().toString()), HttpStatus.OK);
+	}
 
 	@PostMapping("/gestionnaire/demande/{id_Demande}/proposer-precontrat")
 	public ResponseEntity<CreationRequestResponse> proposerUnPreContrat(

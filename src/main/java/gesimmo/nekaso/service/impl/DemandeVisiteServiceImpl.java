@@ -316,6 +316,7 @@ public DemandeVisiteCreateResponseDTO ProposerUnCreneau(Long idDemande, String c
 
 
 };
+@Transactional
 @Override
 public DemandeVisiteCreateResponseDTO accepterCreneau(Long idDemande) {
 	DemandeVisite demande = demandeVisiteRepository.findById(idDemande)
@@ -360,14 +361,31 @@ public DemandeVisiteCreateResponseDTO proposerUnPreContrat(PreContratRequestDTO 
         }
     }
 
-    // Lier explicitement l'ID de la visite
+   
     preContratDto.setDemandeVisiteId(demande.getId());
     preContratDto.setDemandeLocationId(null);
 
-    // 4. Appel de ton service de pré-contrat
+   
     preContratService.createPreContrat(preContratDto);
 
     // 5. Retourner la demande mise à jour
     return demandeVisiteMapper.toDto(demande);
 }
+@Transactional
+@Override
+public DemandeVisiteCreateResponseDTO refuserCreneau(Long idDemande) {
+	DemandeVisite demande = demandeVisiteRepository.findById(idDemande)
+			.orElseThrow(() -> new EntityNotFoundException("Demande introuvable avec l'ID " + idDemande));
+
+	if (demande.getStatut() != VisiteStatut.PROPOSEE) {
+		throw new IllegalStateException("Seules les demandes avec un créneau proposé peuvent être refusées.");
+	}
+
+	demande.setStatut(VisiteStatut.REFUSEE);
+
+	DemandeVisite updatedDemande = demandeVisiteRepository.save(demande);
+
+	return demandeVisiteMapper.toDto(updatedDemande);
+}
+
 }
