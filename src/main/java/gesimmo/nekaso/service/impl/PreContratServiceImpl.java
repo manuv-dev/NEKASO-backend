@@ -84,8 +84,8 @@ public class PreContratServiceImpl implements PreContratService {
                 DemandeVisite dv = demandeVisiteRepository.findById(dto.getDemandeVisiteId())
                         .orElseThrow(() -> new EntityNotFoundException("Demande de visite introuvable avec l'ID : " + dto.getDemandeVisiteId()));
                 
-                if (dv.getStatut() != VisiteStatut.TERMINEE) { 
-                    throw new IllegalArgumentException("Action impossible : La demande de visite doit être TERMINEE pour initier un pré-contrat. Statut actuel : " + dv.getStatut());
+                if (dv.getStatut() != VisiteStatut.CONFIRMEE) { 
+                    throw new IllegalArgumentException("Action impossible : La demande de visite doit être CONFIRMEE pour initier un pré-contrat. Statut actuel : " + dv.getStatut());
                 }
 
                 preContrat.setDemandeVisite(dv);

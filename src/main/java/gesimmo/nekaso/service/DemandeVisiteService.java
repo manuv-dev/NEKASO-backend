@@ -20,6 +20,7 @@ public interface DemandeVisiteService {
 	DemandeVisiteCreateResponseDTO cloturerVisite(Long idDemande, ClotureVisite choixCloture);
 	DemandeVisiteCreateResponseDTO ProposerUnCreneau(Long idDemande, String creneauVisite,Long IdAgent);
 	DemandeVisiteCreateResponseDTO accepterCreneau(Long idDemande);
+	DemandeVisiteCreateResponseDTO refuserCreneau(Long idDemande);	
 	DemandeVisiteCreateResponseDTO proposerUnPreContrat(PreContratRequestDTO preContratDto);
 	// DemandeVisite annulerDemandeVisite(Long id);
 	// DemandeVisite accepterDemandeVisite(Long id);
