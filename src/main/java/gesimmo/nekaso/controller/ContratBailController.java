@@ -53,4 +53,22 @@ public class ContratBailController {
 		Long gestionnaireId = gestionnaire.getId();
         return ResponseEntity.ok(PageResponse.fromPage(contratBailService.getContratsPourGestionnaire(gestionnaireId, pageable)));
     }
+
+    @PatchMapping("/gestionnaire/{id}/demander-rupture")
+    public ResponseEntity<String> rompreContratGestionnaire(@PathVariable("id") Long id) {
+        contratBailService.rompreContratGestionnaire(id);
+        return ResponseEntity.ok("La demande de rupture a été transmise. Statut : EN_RUPTURE");
+    }
+
+    @PatchMapping("/locataire/{id}/accepter-rupture")
+    public ResponseEntity<String> accepterRompreContrat(@PathVariable("id") Long id) {
+        contratBailService.accepterRompreContrat(id);
+        return ResponseEntity.ok("La rupture du contrat a été validée. Statut : ROMPU");
+    }
+
+    @PatchMapping("/locataire/{id}/refuser-rupture")
+    public ResponseEntity<String> refuserRompreContrat(@PathVariable("id") Long id) {
+        contratBailService.refuserRompreContrat(id);
+        return ResponseEntity.ok("La rupture a été refusée. Le contrat repasse au statut : ACTIF");
+    }
 }

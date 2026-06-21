@@ -3,10 +3,12 @@ package gesimmo.nekaso.service.impl;
 import gesimmo.nekaso.dto.ContratDTO.ContratBailRequestDTO;
 import gesimmo.nekaso.dto.ContratDTO.ContratBailResponseDTO;
 import gesimmo.nekaso.entity.*;
+import gesimmo.nekaso.entity.enums.StatutBien;
 import gesimmo.nekaso.entity.enums.StatutContrat;
 import gesimmo.nekaso.entity.enums.StatutPreContrat;
 import gesimmo.nekaso.exception.EntityNotFoundException;
 import gesimmo.nekaso.mapper.ContratBailMapper;
+import gesimmo.nekaso.repository.BienImmobilierRepository;
 import gesimmo.nekaso.repository.ContratBailRepository;
 import gesimmo.nekaso.repository.PreContratRepository;
 import gesimmo.nekaso.service.CloudinaryService;
@@ -27,9 +29,11 @@ public class ContratBailServiceImpl implements ContratBailService {
 
     private final ContratBailRepository contratRepo;
     private final PreContratRepository preContratRepo;
+    private final BienImmobilierRepository bienImmobilierRepository;
     private final PdfService pdfService;
     private final CloudinaryService cloudinaryService;
     private final ContratBailMapper contratMapper;
+    private final ContratBailRepository contratBailRepository;
 
     @Override
     @Transactional
@@ -91,12 +95,13 @@ public class ContratBailServiceImpl implements ContratBailService {
 
         contrat.setCheminPDF(urlCloudinaryPdf);
         contrat = contratRepo.save(contrat);
+        preContrat.setStatutPreContrat(StatutPreContrat.CLOTURER );
 
         return contratMapper.toDTO(contrat);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public Page<ContratBailResponseDTO> getContratsPourLocataire(Long locataireId, Pageable pageable) {
         if (locataireId == null) {
             throw new IllegalArgumentException("L'ID du locataire ne peut pas être nul.");
@@ -107,7 +112,7 @@ public class ContratBailServiceImpl implements ContratBailService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public Page<ContratBailResponseDTO> getContratsPourGestionnaire(Long gestionnaireId, Pageable pageable) {
         if (gestionnaireId == null) {
             throw new IllegalArgumentException("L'ID du gestionnaire ne peut pas être nul.");
@@ -116,4 +121,68 @@ public class ContratBailServiceImpl implements ContratBailService {
         return contratRepo.findByGestionnaireId(gestionnaireId, pageable)
                 .map(contratMapper::toDTO);
     }
+
+    @Override
+    @Transactional
+    public void rompreContratGestionnaire(Long contratId) {
+        ContratBail contrat = contratBailRepository.findById(contratId)
+                .orElseThrow(() -> new RuntimeException("Contrat introuvable avec l'ID : " + contratId));
+
+        if (contrat.getStatutContrat() != StatutContrat.ACTIF) {
+            throw new IllegalStateException("Seul un contrat au statut ACTIF peut être mis en rupture.");
+        }
+
+        contrat.setStatutContrat(StatutContrat.EN_RUPTURE);
+        contratBailRepository.save(contrat);
+    }
+
+    @Override
+    @Transactional
+    public void accepterRompreContrat(Long contratId) {
+        ContratBail contrat = contratBailRepository.findById(contratId)
+                .orElseThrow(() -> new RuntimeException("Contrat introuvable avec l'ID : " + contratId));
+
+        if (contrat.getStatutContrat() != StatutContrat.EN_RUPTURE) {
+            throw new IllegalStateException("Impossible d'accepter : le contrat n'est pas en cours de rupture.");
+        }
+
+        if (contrat.getPreContrat() == null) {
+            throw new EntityNotFoundException("Erreur d'intégrité : Aucun pré-contrat n'est rattaché à ce contrat.");
+        }
+
+        BienImmobilier bien = null;
+        if (contrat.getPreContrat().getDemandeLocation() != null
+                && contrat.getPreContrat().getDemandeLocation().getBien() != null) {
+            bien = contrat.getPreContrat().getDemandeLocation().getBien();
+        } else if (contrat.getPreContrat().getDemandeVisite() != null
+                && contrat.getPreContrat().getDemandeVisite().getBienImmobilier() != null) {
+            bien = contrat.getPreContrat().getDemandeVisite().getBienImmobilier();
+        }
+
+        if (bien == null) {
+            throw new EntityNotFoundException("Erreur d'intégrité : Aucun bien immobilier n'est rattaché à ce contrat.");
+        }
+
+        bien.setStatutBien(StatutBien.DISPONIBLE);
+        bienImmobilierRepository.save(bien);
+
+        contrat.setStatutContrat(StatutContrat.ROMPU);
+        contratBailRepository.save(contrat);
+    }
+
+    @Override
+    @Transactional
+    public void refuserRompreContrat(Long contratId) {
+        ContratBail contrat = contratBailRepository.findById(contratId)
+                .orElseThrow(() -> new RuntimeException("Contrat introuvable avec l'ID : " + contratId));
+
+        if (contrat.getStatutContrat() != StatutContrat.EN_RUPTURE) {
+            throw new IllegalStateException("Impossible de refuser : le contrat n'est pas en cours de rupture.");
+        }
+
+        contrat.setStatutContrat(StatutContrat.ACTIF);
+        contratBailRepository.save(contrat);
+    }
+
+
 }

@@ -9,6 +9,8 @@ import gesimmo.nekaso.dto.ContratDTO.ContratBailResponseDTO;
 public interface ContratBailService {
     ContratBailResponseDTO creerContrat(ContratBailRequestDTO dto);
     Page<ContratBailResponseDTO> getContratsPourLocataire(Long locataireId, Pageable pageable);
-    
     Page<ContratBailResponseDTO> getContratsPourGestionnaire(Long gestionnaireId, Pageable pageable);
+    void rompreContratGestionnaire(Long contratId);
+    void accepterRompreContrat(Long contratId);
+    void refuserRompreContrat(Long contratId);
 }

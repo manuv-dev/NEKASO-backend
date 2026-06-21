@@ -1,7 +1,7 @@
 package gesimmo.nekaso.entity.enums;
 
 public enum StatutContrat {
-    ACTIF,ROMPU
+    ACTIF,ROMPU,EN_RUPTURE
     
 }
 
