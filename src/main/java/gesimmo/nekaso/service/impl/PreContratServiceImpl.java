@@ -32,112 +32,208 @@ public class PreContratServiceImpl implements PreContratService {
     private final BienImmobilierRepository bienImmobilierRepository;
     private final PreContratMapper preContratMapper;
 
-        @Override
-        @Transactional
-        public PreContratResponseDTO createPreContrat(PreContratRequestDTO dto) {
+    
 
-            if (dto.getConditions() == null || dto.getConditions().trim().isEmpty()) {
-                throw new IllegalArgumentException("Erreur : Les clauses et conditions particulières du pré-contrat ne peuvent pas être nulles ou vides.");
-            }
+    //     @Override
+    //     @Transactional
+    //     public PreContratResponseDTO createPreContrat(PreContratRequestDTO dto) {
 
-            if (dto.getJourEcheancePaiement() == null || dto.getJourEcheancePaiement() <= 0 || dto.getJourEcheancePaiement() > 31) {
-                throw new IllegalArgumentException("Erreur : Le jour d'échéance du paiement est invalide. Il doit être compris entre 1 et 31.");
-            }
+    //         if (dto.getConditions() == null || dto.getConditions().trim().isEmpty()) {
+    //             throw new IllegalArgumentException("Erreur : Les clauses et conditions particulières du pré-contrat ne peuvent pas être nulles ou vides.");
+    //         }
 
-            if (dto.getDateDebutPrevu() == null) {
-                throw new IllegalArgumentException("Erreur : La date de début prévue du bail ne peut pas être nulle.");
-            }
-            if (dto.getDateDebutPrevu().isBefore(LocalDate.now())) {
-                throw new IllegalArgumentException("Erreur : La date de début prévue (" + dto.getDateDebutPrevu() + ") ne peut pas être antérieure à la date du jour.");
-            }
+    //         if (dto.getJourEcheancePaiement() == null || dto.getJourEcheancePaiement() <= 0 || dto.getJourEcheancePaiement() > 31) {
+    //             throw new IllegalArgumentException("Erreur : Le jour d'échéance du paiement est invalide. Il doit être compris entre 1 et 31.");
+    //         }
 
-            if (dto.getDemandeLocationId() == null && dto.getDemandeVisiteId() == null) {
-                throw new IllegalArgumentException("Erreur : Un pré-contrat doit obligatoirement être rattaché soit à une demande de location, soit à une demande de visite.");
-            }
-            if (dto.getDemandeLocationId() != null && dto.getDemandeVisiteId() != null) {
-                throw new IllegalArgumentException("Erreur : Impossible de lier un pré-contrat simultanément à une location et une visite.");
-            }
+    //         if (dto.getDateDebutPrevu() == null) {
+    //             throw new IllegalArgumentException("Erreur : La date de début prévue du bail ne peut pas être nulle.");
+    //         }
+    //         if (dto.getDateDebutPrevu().isBefore(LocalDate.now())) {
+    //             throw new IllegalArgumentException("Erreur : La date de début prévue (" + dto.getDateDebutPrevu() + ") ne peut pas être antérieure à la date du jour.");
+    //         }
 
-            PreContrat preContrat = preContratMapper.toEntity(dto);
+    //         if (dto.getDemandeLocationId() == null && dto.getDemandeVisiteId() == null) {
+    //             throw new IllegalArgumentException("Erreur : Un pré-contrat doit obligatoirement être rattaché soit à une demande de location, soit à une demande de visite.");
+    //         }
+    //         if (dto.getDemandeLocationId() != null && dto.getDemandeVisiteId() != null) {
+    //             throw new IllegalArgumentException("Erreur : Impossible de lier un pré-contrat simultanément à une location et une visite.");
+    //         }
+
+    //         PreContrat preContrat = preContratMapper.toEntity(dto);
             
-            BienImmobilier bien = null;
-            Locataire locataire = null;
-            Gestionnaire gestionnaire = null; 
+    //         BienImmobilier bien = null;
+    //         Locataire locataire = null;
+    //         Gestionnaire gestionnaire = null; 
 
-            if (dto.getDemandeLocationId() != null) {
-                DemandeLocation dl = demandeLocationRepository.findById(dto.getDemandeLocationId())
-                        .orElseThrow(() -> new EntityNotFoundException("Demande de location introuvable avec l'ID : " + dto.getDemandeLocationId()));
+    //         if (dto.getDemandeLocationId() != null) {
+    //             DemandeLocation dl = demandeLocationRepository.findById(dto.getDemandeLocationId())
+    //                     .orElseThrow(() -> new EntityNotFoundException("Demande de location introuvable avec l'ID : " + dto.getDemandeLocationId()));
                 
-                if (dl.getStatut() != StatutDemande.ACCEPTEE) { 
-                    throw new IllegalArgumentException("Action impossible : La demande de location doit être ACCEPTEE pour initier un pré-contrat. Statut actuel : " + dl.getStatut());
-                }
+    //             if (dl.getStatut() != StatutDemande.ACCEPTEE) { 
+    //                 throw new IllegalArgumentException("Action impossible : La demande de location doit être ACCEPTEE pour initier un pré-contrat. Statut actuel : " + dl.getStatut());
+    //             }
 
-                preContrat.setDemandeLocation(dl);
-                bien = dl.getBien();
-                locataire = dl.getLocataire();
+    //             preContrat.setDemandeLocation(dl);
+    //             bien = dl.getBien();
+    //             locataire = dl.getLocataire();
                 
-                if (bien != null) {
-                    gestionnaire = bien.getGestionnaire(); 
-                }
+    //             if (bien != null) {
+    //                 gestionnaire = bien.getGestionnaire(); 
+    //             }
                 
-            } else {
-                DemandeVisite dv = demandeVisiteRepository.findById(dto.getDemandeVisiteId())
-                        .orElseThrow(() -> new EntityNotFoundException("Demande de visite introuvable avec l'ID : " + dto.getDemandeVisiteId()));
+    //         } else {
+    //             DemandeVisite dv = demandeVisiteRepository.findById(dto.getDemandeVisiteId())
+    //                     .orElseThrow(() -> new EntityNotFoundException("Demande de visite introuvable avec l'ID : " + dto.getDemandeVisiteId()));
                 
-                if (dv.getStatut() != VisiteStatut.CONFIRMEE) { 
-                    throw new IllegalArgumentException("Action impossible : La demande de visite doit être CONFIRMEE pour initier un pré-contrat. Statut actuel : " + dv.getStatut());
-                }
+    //             if (dv.getStatut() != VisiteStatut.CONFIRMEE) { 
+    //                 throw new IllegalArgumentException("Action impossible : La demande de visite doit être CONFIRMEE pour initier un pré-contrat. Statut actuel : " + dv.getStatut());
+    //             }
 
-                preContrat.setDemandeVisite(dv);
-                bien = dv.getBienImmobilier();
-                locataire = dv.getLocataire();
+    //             preContrat.setDemandeVisite(dv);
+    //             bien = dv.getBienImmobilier();
+    //             locataire = dv.getLocataire();
                 
-                if (bien != null) {
-                    gestionnaire = bien.getGestionnaire();
-                }
-            }
+    //             if (bien != null) {
+    //                 gestionnaire = bien.getGestionnaire();
+    //             }
+    //         }
 
-            if (bien == null) {
-                throw new EntityNotFoundException("Erreur critique : Aucun bien immobilier n'est rattaché à cette demande.");
-            }
-            if (locataire == null) {
-                throw new EntityNotFoundException("Erreur critique : Aucun locataire n'est trouvé dans cette demande.");
-            }
-            if (gestionnaire == null) {
-                throw new EntityNotFoundException("Erreur critique : Le bien '" + bien.getLibelle() + "' n'est associé à aucun gestionnaire en base de données.");
-            }
+    //         if (bien == null) {
+    //             throw new EntityNotFoundException("Erreur critique : Aucun bien immobilier n'est rattaché à cette demande.");
+    //         }
+    //         if (locataire == null) {
+    //             throw new EntityNotFoundException("Erreur critique : Aucun locataire n'est trouvé dans cette demande.");
+    //         }
+    //         if (gestionnaire == null) {
+    //             throw new EntityNotFoundException("Erreur critique : Le bien '" + bien.getLibelle() + "' n'est associé à aucun gestionnaire en base de données.");
+    //         }
 
-            if (bien.getStatutBien() != StatutBien.DISPONIBLE) {
-                throw new BienNonDisponibleException("Action impossible : Le bien (" + bien.getLibelle() + ") n'est plus disponible. Statut actuel : " + bien.getStatutBien());
-            }
+    //         if (bien.getStatutBien() != StatutBien.DISPONIBLE) {
+    //             throw new BienNonDisponibleException("Action impossible : Le bien (" + bien.getLibelle() + ") n'est plus disponible. Statut actuel : " + bien.getStatutBien());
+    //         }
 
-            double montantLoyer = bien.getLoyer();
-            double montantCaution = montantLoyer * 2;
+    //         double montantLoyer = bien.getLoyer();
+    //         double montantCaution = montantLoyer * 2;
 
-            preContrat.setLocataire(locataire);
-            preContrat.setMontantLoyer(montantLoyer);
-            preContrat.setMontantCaution(montantCaution);
+    //         preContrat.setLocataire(locataire);
+    //         preContrat.setMontantLoyer(montantLoyer);
+    //         preContrat.setMontantCaution(montantCaution);
 
-            bien.setStatutBien(StatutBien.RESERVE);
-            bienImmobilierRepository.save(bien);
+    //         bien.setStatutBien(StatutBien.RESERVE);
+    //         bienImmobilierRepository.save(bien);
 
-            PreContrat saved = preContratRepository.save(preContrat);
-             DemandeVisite dv = demandeVisiteRepository.findById(dto.getDemandeVisiteId())
-                .orElse(null);
-                dv.setStatut(VisiteStatut.TERMINEE);
-                demandeVisiteRepository.save(dv);
+    //         PreContrat saved = preContratRepository.save(preContrat);
+    //          DemandeVisite dv = demandeVisiteRepository.findById(dto.getDemandeVisiteId())
+    //             .orElse(null);
+    //             dv.setStatut(VisiteStatut.TERMINEE);
+    //             demandeVisiteRepository.save(dv);
 
-            return preContratMapper.toResponseDTO(saved);
-        }
+    //         return preContratMapper.toResponseDTO(saved);
+    //     }
 
     @Override
     @Transactional
-    public Page<PreContratResponseDTO> getPreContratsByLocataire(Long locataireId, Pageable pageable) {
-        if (locataireId == null) {
-            throw new IllegalArgumentException("L'ID du locataire ne peut pas être nul.");
+    public PreContratResponseDTO createPreContrat(PreContratRequestDTO dto) {
+
+        if (dto.getConditions() == null || dto.getConditions().trim().isEmpty()) {
+            throw new IllegalArgumentException("Erreur : Les clauses et conditions particulières du pré-contrat ne peuvent pas être nulles ou vides.");
         }
-        return preContratRepository.findByLocataireUserId(locataireId, pageable)
-                .map(preContratMapper::toResponseDTO);
+
+        if (dto.getJourEcheancePaiement() == null || dto.getJourEcheancePaiement() <= 0 || dto.getJourEcheancePaiement() > 31) {
+            throw new IllegalArgumentException("Erreur : Le jour d'échéance du paiement est invalide. Il doit être compris entre 1 et 31.");
+        }
+
+        if (dto.getDateDebutPrevu() == null) {
+            throw new IllegalArgumentException("Erreur : La date de début prévue du bail ne peut pas être nulle.");
+        }
+        if (dto.getDateDebutPrevu().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Erreur : La date de début prévue (" + dto.getDateDebutPrevu() + ") ne peut pas être antérieure à la date du jour.");
+        }
+
+        if (dto.getDemandeLocationId() == null && dto.getDemandeVisiteId() == null) {
+            throw new IllegalArgumentException("Erreur : Un pré-contrat doit obligatoirement être rattaché soit à une demande de location, soit à une demande de visite.");
+        }
+        if (dto.getDemandeLocationId() != null && dto.getDemandeVisiteId() != null) {
+            throw new IllegalArgumentException("Erreur : Impossible de lier un pré-contrat simultanément à une location et une visite.");
+        }
+
+        PreContrat preContrat = preContratMapper.toEntity(dto);
+        
+        BienImmobilier bien = null;
+        Locataire locataire = null;
+        Gestionnaire gestionnaire = null; 
+        DemandeVisite demandeVisiteChargee = null;
+
+        if (dto.getDemandeLocationId() != null) {
+            DemandeLocation dl = demandeLocationRepository.findById(dto.getDemandeLocationId())
+                    .orElseThrow(() -> new EntityNotFoundException("Demande de location introuvable avec l'ID : " + dto.getDemandeLocationId()));
+            
+            if (dl.getStatut() != StatutDemande.ACCEPTEE) { 
+                throw new IllegalArgumentException("Action impossible : La demande de location doit être ACCEPTEE pour initier un pré-contrat. Statut actuel : " + dl.getStatut());
+            }
+
+            preContrat.setDemandeLocation(dl);
+            bien = dl.getBien();
+            locataire = dl.getLocataire();
+            
+        } else {
+            DemandeVisite dv = demandeVisiteRepository.findById(dto.getDemandeVisiteId())
+                    .orElseThrow(() -> new EntityNotFoundException("Demande de visite introuvable avec l'ID : " + dto.getDemandeVisiteId()));
+            
+            if (dv.getStatut() != VisiteStatut.CONFIRMEE) { 
+                throw new IllegalArgumentException("Action impossible : La demande de visite doit être CONFIRMEE pour initier un pré-contrat. Statut actuel : " + dv.getStatut());
+            }
+
+            preContrat.setDemandeVisite(dv);
+            bien = dv.getBienImmobilier();
+            locataire = dv.getLocataire();
+            demandeVisiteChargee = dv;
+        }
+
+        if (bien == null) {
+            throw new EntityNotFoundException("Erreur critique : Aucun bien immobilier n'est rattaché à cette demande.");
+        }
+        if (locataire == null) {
+            throw new EntityNotFoundException("Erreur critique : Aucun locataire n'est trouvé dans cette demande.");
+        }
+        
+        gestionnaire = bien.getGestionnaire();
+        if (gestionnaire == null) {
+            throw new EntityNotFoundException("Erreur critique : Le bien '" + bien.getLibelle() + "' n'est associé à aucun gestionnaire en base de données.");
+        }
+
+        if (bien.getStatutBien() != StatutBien.DISPONIBLE) {
+            throw new BienNonDisponibleException("Action impossible : Le bien (" + bien.getLibelle() + ") n'est plus disponible. Statut actuel : " + bien.getStatutBien());
+        }
+
+        double montantLoyer = bien.getLoyer();
+        double montantCaution = montantLoyer * 2;
+
+        preContrat.setLocataire(locataire);
+        preContrat.setMontantLoyer(montantLoyer);
+        preContrat.setMontantCaution(montantCaution);
+
+        bien.setStatutBien(StatutBien.RESERVE);
+        bienImmobilierRepository.save(bien);
+
+        if (demandeVisiteChargee != null) {
+            demandeVisiteChargee.setStatut(VisiteStatut.TERMINEE);
+            demandeVisiteRepository.save(demandeVisiteChargee);
+        }
+
+        PreContrat saved = preContratRepository.save(preContrat);
+        return preContratMapper.toResponseDTO(saved);
+    }
+
+     @Override
+     @Transactional
+     public Page<PreContratResponseDTO> getPreContratsByLocataire(Long locataireId, Pageable pageable) {
+     if (locataireId == null) {
+             throw new IllegalArgumentException("L'ID du locataire ne peut pas être nul.");
+         }
+         return preContratRepository.findByLocataireUserId(locataireId, pageable)
+                 .map(preContratMapper::toResponseDTO);
     }
     @Override
     @Transactional

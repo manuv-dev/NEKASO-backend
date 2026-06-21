@@ -49,4 +49,5 @@ public class PreContrat {
     @ManyToOne
     @JoinColumn(name = "locataire_id", nullable = false)
     private Locataire locataire;
+
 }
