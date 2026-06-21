@@ -34,7 +34,9 @@ public class DemandeVisiteMapper {
            return  DemandeVisiteDTOList.builder()
             .id(demandeVisite.getId())
             .id_Locataire(demandeVisite.getLocataire().getId())
-            
+            .nomLocataire(demandeVisite.getLocataire().getNom())
+            .prenomLocataire(demandeVisite.getLocataire().getPrenom())
+            .telephoneLocataire(demandeVisite.getLocataire().getTelephone())
             .dateCreation(dateMapper.formatLocalDateTime(demandeVisite.getDateCreation(), "yyyy-MM-dd HH:mm:ss"))
             .statut(demandeVisite.getStatut().toString())
             .bien(demandeVisite.getBienImmobilier()!=null ? bienImmobilierMapper.toDTO(demandeVisite.getBienImmobilier()) : null)

@@ -31,7 +31,7 @@ public class DemandeLocationServiceImpl implements DemandeLocationService {
     private final BienImmobilierRepository bienRepository;
 
     public DemandeLocationServiceImpl(DemandeLocationRepository demandeRepo
-            
+
             
             , LocataireRepository locataireRepository
             , BienImmobilierRepository bienRepository
