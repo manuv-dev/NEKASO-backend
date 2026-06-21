@@ -17,7 +17,10 @@ public interface DemandeVisiteService {
 	DemandeVisiteCreateResponseDTO updateDemandeVisiteStatut(Long id, String statut);
 	DemandeVisiteCreateResponseDTO confirmerDemandeVisite(Long id,Long id_bien,Long id_agent);
 	DemandeVisite annulerDemandeVisite(Long idDemande);
-	DemandeVisiteCreateResponseDTO cloturerVisite(Long idDemande, ClotureVisite choixCloture, PreContratRequestDTO preContratDto);
+	DemandeVisiteCreateResponseDTO cloturerVisite(Long idDemande, ClotureVisite choixCloture);
+	DemandeVisiteCreateResponseDTO ProposerUnCreneau(Long idDemande, String creneauVisite,Long IdAgent);
+	DemandeVisiteCreateResponseDTO accepterCreneau(Long idDemande);
+	DemandeVisiteCreateResponseDTO proposerUnPreContrat(PreContratRequestDTO preContratDto);
 	// DemandeVisite annulerDemandeVisite(Long id);
 	// DemandeVisite accepterDemandeVisite(Long id);
 

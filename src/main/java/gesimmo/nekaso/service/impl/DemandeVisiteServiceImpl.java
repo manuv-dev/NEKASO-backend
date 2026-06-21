@@ -2,7 +2,9 @@ package gesimmo.nekaso.service.impl;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -188,37 +190,21 @@ public class DemandeVisiteServiceImpl implements DemandeVisiteService {
 	// return demandeVisiteRepository.save(demandeVisite);
 	// }
 @Override
-public DemandeVisiteCreateResponseDTO cloturerVisite(Long idDemande, ClotureVisite choixCloture, PreContratRequestDTO preContratDto) {
+public DemandeVisiteCreateResponseDTO cloturerVisite(Long idDemande, ClotureVisite choixCloture) {
     
     DemandeVisite demande = demandeVisiteRepository.findById(idDemande)
         .orElseThrow(() -> new ResourceNotFoundException("Demande de visite introuvable"));
+	
 
     if (demande.getStatut() != VisiteStatut.CONFIRMEE) {
         throw new IllegalStateException("Impossible de clôturer une visite qui n'est pas CONFIRMEE");
     }
 
-    // 1. Mise à jour des statuts de la visite
-   
     demande.setClotureVisite(choixCloture);
+	
+	return demandeVisiteMapper.toDto(demandeVisiteRepository.save(demande));
 
-    // 2. Traitement du choix métier
-    if (choixCloture == ClotureVisite.AVEC_CONTRAT) {
-        if (preContratDto == null) {
-            throw new IllegalArgumentException("Les données du pré-contrat sont obligatoires pour une clôture avec contrat.");
-        }
-        
-        // On s'assure que l'ID de la demande de visite est bien lié dans le DTO
-        preContratDto.setDemandeVisiteId(idDemande);
-        
-        // Appel du service pour créer le pré-contrat
-        preContratService.createPreContrat(preContratDto);
-		 
-    }
-
-    // 3. Sauvegarde de la visite
-    DemandeVisite demandeMiseAJour = demandeVisiteRepository.save(demande);
-    return demandeVisiteMapper.toDto(demandeMiseAJour);
-}
+   }
 
 
 	@Override
@@ -299,12 +285,89 @@ public DemandeVisiteCreateResponseDTO confirmerDemandeVisite(Long id, Long idBie
 		throw new EntityExistsException("Cette demande est déjà confirmée");
 	}
     demandeAConfirmer.setStatut(VisiteStatut.CONFIRMEE);
-	
+
     demandeAConfirmer.setAgent(agent);
 
     demandeVisiteRepository.saveAll(bien.getDemandesVisite());
 
     return demandeVisiteMapper.toDto(demandeAConfirmer);
 	
+}
+@Transactional
+@Override
+public DemandeVisiteCreateResponseDTO ProposerUnCreneau(Long idDemande, String creneauVisite,Long IdAgent){
+	
+	DemandeVisite demande = demandeVisiteRepository.findById(idDemande)
+			.orElseThrow(() -> new EntityNotFoundException("Demande introuvable avec l'ID " + idDemande));
+
+	if (demande.getStatut() != VisiteStatut.EN_ATTENTE) {
+		throw new IllegalStateException("Seules les demandes en attente peuvent proposer un créneau.");
+	}
+	AgentImmobilier agent = agentImmobilierRepository.findById(IdAgent)
+			.orElseThrow(() -> new EntityNotFoundException("Agent introuvable avec l'ID " + IdAgent));
+
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+	demande.setCreneauVisite(LocalDateTime.parse(creneauVisite, formatter));
+	demande.setStatut(VisiteStatut.PROPOSEE);
+	demande.setAgent(agent);
+	DemandeVisite updatedDemande = demandeVisiteRepository.save(demande);
+
+	return demandeVisiteMapper.toDto(updatedDemande);
+
+
+};
+@Override
+public DemandeVisiteCreateResponseDTO accepterCreneau(Long idDemande) {
+	DemandeVisite demande = demandeVisiteRepository.findById(idDemande)
+			.orElseThrow(() -> new EntityNotFoundException("Demande introuvable avec l'ID " + idDemande));
+
+	if (demande.getStatut() != VisiteStatut.PROPOSEE) {
+		throw new IllegalStateException("Seules les demandes avec un créneau proposé peuvent être acceptées.");
+	}
+
+	demande.setStatut(VisiteStatut.CONFIRMEE);
+
+	DemandeVisite updatedDemande = demandeVisiteRepository.save(demande);
+
+	return demandeVisiteMapper.toDto(updatedDemande);
+}
+
+
+@Override
+@Transactional
+public DemandeVisiteCreateResponseDTO proposerUnPreContrat(PreContratRequestDTO preContratDto) {
+    
+    // 1. Récupération de la demande de visite
+    DemandeVisite demande = demandeVisiteRepository.findById(preContratDto.getDemandeVisiteId())
+            .orElseThrow(() -> new EntityNotFoundException("Demande introuvable avec l'ID " + preContratDto.getDemandeVisiteId()));
+	demande.setStatut(VisiteStatut.TERMINEE);
+    // 2. Vérifications de sécurité
+    if (demande.getStatut() != VisiteStatut.TERMINEE) {
+        throw new IllegalStateException("Seules les demandes terminées peuvent faire l'objet d'un pré-contrat.");
+    }
+    if (demande.getClotureVisite() != ClotureVisite.AVEC_CONTRAT) {
+        throw new IllegalStateException("Le locataire n'a pas validé cette visite avec une option de contrat.");
+    }
+
+
+    if (preContratDto.getDateDebutPrevu() == null) {
+        LocalDate dateVisite = demande.getCreneauVisite().toLocalDate();
+        // Si la date de visite est dans le passé par rapport à aujourd'hui (2026), on ajuste à aujourd'hui
+        if (dateVisite.isBefore(LocalDate.now())) {
+            preContratDto.setDateDebutPrevu(LocalDate.now());
+        } else {
+            preContratDto.setDateDebutPrevu(dateVisite);
+        }
+    }
+
+    // Lier explicitement l'ID de la visite
+    preContratDto.setDemandeVisiteId(demande.getId());
+    preContratDto.setDemandeLocationId(null);
+
+    // 4. Appel de ton service de pré-contrat
+    preContratService.createPreContrat(preContratDto);
+
+    // 5. Retourner la demande mise à jour
+    return demandeVisiteMapper.toDto(demande);
 }
 }

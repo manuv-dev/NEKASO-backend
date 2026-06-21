@@ -53,5 +53,7 @@ public class DemandeVisite {
 	@Enumerated(EnumType.STRING)
 	private ClotureVisite clotureVisite;
 
+	private LocalDateTime creneauVisite;
+
 
 }

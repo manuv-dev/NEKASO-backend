@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteCreateResponseDTO;
 
 import gesimmo.nekaso.dto.DemandeVisiteDTO.DemandeVisiteDTOList;
+import gesimmo.nekaso.dto.DemandeVisiteDTO.ProposerCreneauDTO;
 import gesimmo.nekaso.dto.PreContratDTO.PreContratRequestDTO;
 import gesimmo.nekaso.entity.DemandeVisite;
 import gesimmo.nekaso.entity.Gestionnaire;
@@ -106,7 +107,7 @@ public class DemandeVisiteController {
 
 	@PatchMapping("/gestionnaire/demande/{id_Demande}/confirmer/bien/{idBien}/agent/{idAgent}")
 	public ResponseEntity<CreationRequestResponse> confirmerDemandeVisite(@PathVariable Long id_Demande,
-			@PathVariable Long idBien, @PathVariable Long idAgent) {
+			@PathVariable Long idBien, @PathVariable Long idAgent, @RequestParam String creneauVisite) {
 		DemandeVisiteCreateResponseDTO updatedDemande = demandeVisiteService.confirmerDemandeVisite(id_Demande, idBien,
 				idAgent);
 		return new ResponseEntity<>(new CreationRequestResponse(
@@ -122,8 +123,7 @@ public class DemandeVisiteController {
 			@RequestParam ClotureVisite choix,
 			@RequestBody(required = false) PreContratRequestDTO preContratDto) {
 
-		DemandeVisiteCreateResponseDTO updatedDemande = demandeVisiteService.cloturerVisite(id_Demande, choix,
-				preContratDto);
+		DemandeVisiteCreateResponseDTO updatedDemande = demandeVisiteService.cloturerVisite(id_Demande, choix);
 
 		return new ResponseEntity<>(new CreationRequestResponse(
 				updatedDemande.id(),
@@ -131,5 +131,45 @@ public class DemandeVisiteController {
 				updatedDemande.statut().toString()), HttpStatus.OK);
 	}
 
+	@PostMapping("/gestionnaire/demande/{id_Demande}/proposer-creneau")
+	public ResponseEntity<CreationRequestResponse> proposerUnCreneau(
+			@PathVariable Long id_Demande,
+			@RequestBody ProposerCreneauDTO proposerCreneau) {
 
+		DemandeVisiteCreateResponseDTO updatedDemande = demandeVisiteService.ProposerUnCreneau(id_Demande, proposerCreneau.creneauVisite(), proposerCreneau.IdAgent());
+
+		return new ResponseEntity<>(new CreationRequestResponse(
+				updatedDemande.id(),
+				"Créneau proposé avec succès.",
+				updatedDemande.statut().toString()), HttpStatus.OK);
+	}
+	@PostMapping("/locataire/demande/{id_Demande}/accepter-creneau")
+	public ResponseEntity<CreationRequestResponse> accepterCreneau(
+			@PathVariable Long id_Demande) {
+
+		DemandeVisiteCreateResponseDTO updatedDemande = demandeVisiteService.accepterCreneau(id_Demande);
+
+		return new ResponseEntity<>(new CreationRequestResponse(
+				updatedDemande.id(),
+				"Créneau accepté avec succès.",
+				updatedDemande.statut().toString()), HttpStatus.OK);
+	}
+
+	@PostMapping("/gestionnaire/demande/{id_Demande}/proposer-precontrat")
+	public ResponseEntity<CreationRequestResponse> proposerUnPreContrat(
+			@PathVariable Long id_Demande,
+			@RequestBody PreContratRequestDTO preContratDto) {
+
+		preContratDto.setDemandeVisiteId(id_Demande);
+		DemandeVisiteCreateResponseDTO updatedDemande = demandeVisiteService.proposerUnPreContrat(preContratDto);
+
+		return new ResponseEntity<>(new CreationRequestResponse(
+				updatedDemande.id(),
+				"Pré-contrat proposé avec succès.",
+				updatedDemande.statut().toString()), HttpStatus.OK);
+	}
+
+
+	
 }
+
